@@ -1,7 +1,7 @@
 <html>
 <body>
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="jquery-3.1.1.slim.min.js"></script>
 <SCRIPT src = "d3v4-brush-lite.js"></script>
 
 
@@ -10,6 +10,8 @@
 /* or https://code.jquery.com/jquery-3.3.1.slim.min.js
 https://code.jquery.com/jquery-2.2.4.min.js
 https://code.jquery.com/jquery-3.3.1.min.js
+https://code.jquery.com/jquery-1.12.4.min.js
+https://code.jquery.com/jquery-1.12.4.min.js
  */
 
 body {
@@ -1048,7 +1050,8 @@ var bindex=0;
         if (resp == 1) {
 
         //alert('coming soon:finish clicked');
-        var closeBar = $(this).closest("g.GBarGroup");  //WORKS
+    //    var closeBar = $(this).closest("g.GBarGroup");  //WORKS
+      var closeBar = d3.select(this).closest("g.GBarGroup");
 
             var closeData = d3.select(closeBar).data();
 
@@ -1916,8 +1919,10 @@ d3.select(this)
 //   d3.select(this)
 //   .moveToFront()
 
+console.log("almost at closest, this class:" + d3.select(this).attr("class"));
 
-
+//  var closeBar = d3.select(this).closest("g.GBarGroup");  //WORKS
+  var closeBar = d3.select(this.parentNode);//.closest("g.GBarGroup");  //WORKS
 
   //if (d3.select(this).classed("AssignedGroup") == true || d3.select(this).classed("dragbottom") == true) {
   if (d3.select(this).classed("AssignedGroup") == true) {   // || d3.select(this).classed("dragbottom") == true) {
@@ -1988,7 +1993,7 @@ var gpName = d3.select(this).attr("assignedName");
 
 //
     // THIS BAR'S DATA
-      var closeBar = $(d3.select(this)).closest("g.GBarGroup");  //WORKS
+
 
       //   colVal = collisionDetection(d3.select(closeBar).select('.barGroup')); // removed from vanilla
 
@@ -2016,11 +2021,12 @@ var gpName = d3.select(this).attr("assignedName");
 
 
 
-      var closeData = d3.select(closeBar).data();
+    //  var closeData = d3.select(closeBar).data();
+            var closeData = d3.select(this.parentNode).data();
     //  var closeData = closeBar.data();
     //  var closeData = $(closeBar).data();
   //var closeData = $(this).closest("g.GBarGroup").data();
-    console.log(d3.select(this));
+    console.log(d3.select(closeBar));
       console.log(closeData);
       console.log(closeData.length);
       if(closeData.length > 0 && closeData[0] != null) {
@@ -2114,9 +2120,11 @@ var newDuration = calcBusinessDays(new Date(scriptDate), new Date(scriptFinishDa
   //
 
   //    d3.select(this)
-d3.select(closeBar).selectAll(".dateText").remove();
+//d3.select(closeBar).selectAll(".dateText").remove();
+d3.select(this.parentNode).selectAll(".dateText").remove();
 
-  d3.select(closeBar).select('svg')
+  d3.select(this.parentNode).select('svg')
+//  d3.select(closeBar).select('svg')
       .insert("text")
       .attr('y', 22)
       .attr("font-size", 9)
@@ -2126,9 +2134,10 @@ d3.select(closeBar).selectAll(".dateText").remove();
       .text("new start:" + xPosition);
 
 
-
-      d3.select(closeBar).selectAll(".finDateText").remove();
-    tempFinText =    d3.select(closeBar).select('svg')
+  //    d3.select(closeBar).selectAll(".finDateText").remove();
+      d3.select(this.parentNode).selectAll(".finDateText").remove();
+  //  tempFinText =    d3.select(closeBar).select('svg')
+    tempFinText =    d3.select(this.parentNode).select('svg')
             .insert("text")
             .attr('y', BAR_H)
             .attr("font-size", 9)
@@ -2860,8 +2869,8 @@ var relBarDim;
     var closeBar = $(this).closest("g.GBarGroup");  //WORKS
 
  //
-    var closeData = d3.select(closeBar).data();
-
+//    var closeData = d3.select(closeBar).data();
+  var closeData = d3.select(this.parentNode).data();
     var dateFormat = d3.timeFormat("%a %d/%m/%Y");
     var scriptDateFormat = d3.timeFormat("%Y,%m,%d");
 
@@ -2911,8 +2920,8 @@ var relBarDim;
 
 
 
-        d3.select(closeBar).selectAll(".finDateText").remove();
-          d3.select(closeBar).select('svg')
+        d3.select(this.parentNode).selectAll(".finDateText").remove();
+          d3.select(this.parentNode) //.select('svg')
               .append("text")
               .attr('y', BAR_H)
               .attr("font-size", 9)
@@ -4000,6 +4009,27 @@ d3.selection.prototype.moveToFront = function() {
         }
        });
       };
+
+
+d3.selection.prototype.closest = function(selector){
+            var closestMatch = undefined;
+            var matchArr = [];
+            this.each(function(){
+                var elm = this;
+                while(typeof elm.parentNode.matches === "function" && !closestMatch){
+                    elm = elm.parentNode;
+                    if(elm.matches(selector)){
+                        closestMatch = elm;
+                        matchArr.push(closestMatch);
+                    }
+                }
+                closestMatch = undefined;
+            });
+            return d3.selectAll(matchArr);
+        }
+
+
+
 
 
 
