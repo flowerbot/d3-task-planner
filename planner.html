@@ -115,7 +115,7 @@ left: 0%;
 color: white;
 
 }
-/*
+
 .axisWeek {
 position: sticky;
 bottom: 0%;
@@ -123,7 +123,7 @@ left: 0%;
 background: white;
 
 }
-*/
+
 
 .axisWeekFloating, .axisWeekFloating3 {
 position: sticky;
@@ -303,11 +303,11 @@ table.projectInfo tr th {
            }
 
            .circComplete:hover {
-                  cursor: url('http://tscppm/SiteAssets/scripts/prettyGantt/greencheck36x36.png') 16 16, auto;
+                  cursor: url('greencheck36x36.png') 16 16, auto;
                 }
 
                 .circRemove:hover {
-                       cursor: url('http://tscppm/SiteAssets/scripts/prettyGantt/redCrossSm.png') 16 16, auto;
+                       cursor: url('redCrossSm.png') 16 16, auto;
                      }
 
 
@@ -516,6 +516,80 @@ cursor: help;
 
 }
 
+
+
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 80%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+
+.modal-body {padding: 2px 16px;
+background-color: #FFFF !important}
+
+.modal-footer {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+
 </style>
 
 <div id='info'><div class="about"><input type="button" id="UnlockZoomBtn" name="UnlockZoomBtn" locked="false" value="Lock Zoom/Pan"/>
@@ -528,7 +602,7 @@ cursor: help;
   <input type="checkbox" name="MondayLock" id="MondayLock" checked='true' />Lock dragged Start to Monday ~
   <input type="checkbox" name="FridayLock" id="FridayLock" checked='true' />Lock dragged Finish to Friday ~
   <input type="checkbox" name="trainingProjects" id="trainingProjects" checked='true' />Use Training Projects ~
-  <a id="instructions" href="http://tscppm/Help%20Wiki/Construction%20Planner.aspx" target="_blank">Click for instructions</a><br />
+  <a id="instructions" href="BrightWork - Construction Planner User Functions Explained.html" target="_blank">Click for instructions</a><br />
 <div class='key'>Key (top right circle):
   <div id='circleKeyGreen'> </div> <span class="addDef">Issued for Construction</span> ~ <div id='circleKeyAqua'> </div> Design >75% Complete ~ <div id='circleKeyOrange' > </div> Design Started ~ <div id='circleKeySilver' > </div> Design NOT started </div>
 
@@ -554,7 +628,11 @@ var newName = "";
 
 var pageX;
 
+var symbolAssignees;
 
+// elevated variable - SP version has them deeper
+var BAR_H = 30;
+var newItemCtr = -1;
 
 
 function runAfterEverythingElse() {
@@ -569,6 +647,11 @@ if (browser.name != "Chrome") {
 
 // if viewing in IE, code doesn't even get this far:
   $("#IEMessage").remove();
+
+
+//$("#modal-content").css("display", "none");
+
+
 
 
 //var theFromSlider = d3.select('#slider6').call(d3.slider().axis(false).min(startYear).max(maxYear).step(1).value(thisYear).on("slide", function(evt, value) {
@@ -633,7 +716,6 @@ $(document).mousemove(function(event) {
 //  var parser = d3.isoParse;
   // stuff for resizing bars
 var GROUP_HANDLE_H = 6;
-var BAR_H = 30;
 
   var MAP_WIDTH = clWidth;
   var MAP_HEIGHT = clHeight;
@@ -652,6 +734,7 @@ var BAR_H = 30;
     var HANDLE_R_ACTIVE = 12;
 
     var activeNameGroupId = "";
+    var activeNameGroupSvgId = "";
 
 
 //  const minX = d3.min(VEHICLES, d => parser(d.start));
@@ -699,7 +782,7 @@ const maxX = d3.max(MATRIXDATA, d => parser(convertSPDateOnly(d.FinishDateExpres
 //
 
 //    const symbolAssignees = d3.nest()
-    var symbolAssignees = d3.nest()
+     symbolAssignees = d3.nest()
       .key(d => d.AssignedToName).sortKeys(d3.ascending)
     //  .key(d => d.UniqueReference["#text"] + "_" + d.ID ["#text"])
      //UID
@@ -769,11 +852,7 @@ var uniqueAssignees = symbols.forEach(function(d, i) {
   //    .range(["#ffbfba","#ffffba","#bae1ff"]);
     .range(['rgba(255,191,186,0.7)','rgba(255,255,186,0.7)','rgba(186,255,255,0.7)']);
 
-    var colorScaleNewSection = d3.scaleLinear()
-        .domain([0, 3, 5])
-        .interpolate(d3.interpolateHcl)
-    //    .range(["#ffbfba","#ffffba","#bae1ff"]);
-      .range(['rgba(255,255,204,0.7)','rgba(204,204,0,0.7)','rgba(173,255,47,0.7)']);
+
 
 
     var backColorScale = d3.scaleLinear()
@@ -783,7 +862,11 @@ var uniqueAssignees = symbols.forEach(function(d, i) {
       .range(['rgba(255,191,186,0.4)','rgba(255,255,186,0.4)','rgba(186,255,255,0.4)']);
 
 
-
+      var colorScaleNewSection = d3.scaleLinear()
+          .domain([0, 3, 5])
+          .interpolate(d3.interpolateHcl)
+      //    .range(["#ffbfba","#ffffba","#bae1ff"]);
+        .range(['rgba(255,255,204,0.7)','rgba(204,204,0,0.7)','rgba(173,255,47,0.7)']);
 
 
 
@@ -1055,13 +1138,16 @@ var bindex=0;
 
         //alert('coming soon:finish clicked');
     //    var closeBar = $(this).closest("g.GBarGroup");  //WORKS
-      var closeBar = d3.select(this).closest("g.GBarGroup");
+  //    var closeBar = d3.select(this).closest("g.GBarGroup");
+      var closeBar = d3.select(this.parentNode.parentNode); //.closest("g.GBarGroup");
+      console.log("closeBar class:" + d3.select(this).attr("class"));
+      console.log("closeBar parent-2 class:" + d3.select(this.parentNode.parentNode).attr("class"));
 
-            var closeData = d3.select(closeBar).data();
+            var closeData = d3.select(this.parentNode.parentNode).data();
 
             closeData[0].newCompletion = "1";
-              d3.select(this.parentNode).select('rect').classed("changed", true); // to pick it up in the update part of the code
-            d3.select(this.parentNode).select('rect').classed("completed", true);  // to show it as green not red
+              d3.select(this.parentNode.parentNode).select('rect').classed("changed", true); // to pick it up in the update part of the code
+            d3.select(this.parentNode.parentNode).select('rect').classed("completed", true);  // to show it as green not red
           //closeBar.classed("changed", true);
         } //end resp =1
 
@@ -1094,8 +1180,8 @@ var bindex=0;
 
         if (resp == 1) {
 
-        var closeBar = $(this).closest("g.GBarGroup").remove();  //WORKS
-
+    //    var closeBar = $(this).closest("g.GBarGroup").remove();  //WORKS
+    var closeBar = $(this.parentNode).remove();  //WORKS
         } //end resp =1
 
       })
@@ -1296,11 +1382,17 @@ d3.select('.chart').select('svg').append('svg')
 
                 d3.select(this).lower();
                 newName = gpName;
-                activeNameGroup = $(this).closest("g.assignedGroupGp");
-                activeNameGroupId = d3.select(activeNameGroup).attr("ID");
+              //  activeNameGroup = $(this).closest("g.assignedGroupGp");
+                activeNameGroup = d3.select(this.parentNode); //.closest("g.assignedGroupGp")
+                activeNameGroupSvgId = d3.select(this).attr("assignedName");
+                console.log('activeNameGroup class:'+ activeNameGroup.attr("class") + 'activeNameGroup ID:'+ activeNameGroup.attr("ID"));
+              //  console.log('activeNameGroup class:'+ d3.select(activeNameGroup).attr("class") + 'activeNameGroup ID:'+ d3.select(activeNameGroup).attr("ID"));
+                console.log(activeNameGroup);
+                activeNameGroupId = activeNameGroup.attr("ID");
 
 
-            var closeBar = $(this).closest("g.GBarGroup");
+            //var closeBar = $(this).closest("g.GBarGroup");
+            var closeBar = d3.select(this.parentNode); //.closest("g.GBarGroup");
            d3.select("g.GBarGroup").sort(function (a, b) { // select the parent and sort the path's
              if (a != closeBar) return -1;               // a is not the hovered element, send "a" to the back
              else return 1;                             // a is the hovered element, bring "a" to the front
@@ -1384,7 +1476,8 @@ d3.select('.chart').select('svg').append('svg')
 
         allCharts.on("mouseover", function(d) {
       //
-            var closeBar = $(this).closest("g.GBarGroup");
+          //  var closeBar = $(this).closest("g.GBarGroup");
+              var closeBar = $(this.parentNode); //.closest("g.GBarGroup");
           //
           //  d3.selectAll("path").sort(function (a, b) { // select the parent and sort the path's
             d3.select("g.GBarGroup").sort(function (a, b) { // select the parent and sort the path's
@@ -1440,7 +1533,118 @@ function dragended() {
 
 
 
+function updateResources() {
 
+      if(deactivateNames == true)  {
+        d3.selectAll(".labelText").classed("darker", false);
+
+      }
+      if(newName != "") {
+      newId = "assignedto-"+newName;
+
+      // BEGINNING OF CREATION
+      symbolAssignees.push({key: newName, values:[]});
+
+      groupCtr = symbolAssignees.length-1;
+
+
+
+  var newSection = d3.select('.chart')
+  //d3.select(wrapper)
+//  allCharts
+    .insert('g', ":first-child")
+    .attr('class', 'assignedGroupGp new')
+    .attr('id', newId)
+    .datum(symbolAssignees[groupCtr])
+    .enter();
+
+    d3.select('.new').append('svg')
+    .attr('height', BAR_H)
+    .attr('class','AssignedGroup')
+    .attr('assignedName', newName)
+    .attr('height', BAR_H)
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', '100%')
+    .attr('style', function(d,i) {
+      newItemCtr++;
+    return 'background-color: '  + d3.rgb(colorScaleNewSection(newItemCtr));
+  })
+    .attr('opacity', '0.7')
+    .attr('data-length',1)
+    .call(dragHandler)
+    ;
+
+
+
+    var today = new Date();
+    var xNow = x(today)*oldScale+tempTrans[0];
+
+      d3.select('.new').select('.AssignedGroup').append("line").attr("class","today")
+      .attr("x1", xNow) //<<== change your code here
+      .attr("y1", 0)
+      .attr("x2", xNow) //<<== and here
+      .attr("y2", function(d) {
+          return d3.select(this.parentNode).attr('height');
+      })
+
+      .style("stroke-width", 2)
+      .style("stroke", "red")
+      .style("fill", "none");
+
+    var newLabel =  d3.select('[assignedName="'+newName+'"]')
+      .append('g')
+      .attr("class", "labelGroup")
+      .append('text')
+      .text(newName)
+      .attr('class','labelText')
+      .attr('width', '100')
+      .attr("y", 20)
+      .attr("font-size", 20)
+      .attr("font-family", "sans-serif")
+        .attr("font-weight", "bold")
+        .attr('fill', 'silver')
+        .attr('opacity', '0.9');
+
+        newLabel.append('line')
+          .attr("class","divider")
+          .attr("x1", x(minX))
+          .attr("x2", x(maxX))
+          .attr("stroke", "silver")
+          .attr("stroke-width", 1)
+            .attr("opacity", 0.5);
+
+
+
+
+
+//calculateAndApplyHeight(BAR_H);
+
+
+      };
+
+      var dataLength = 0;
+      /// deal with removals
+          d3.selectAll("g.assignedGroupGp")
+             .each(function(d,i){
+            //
+               if (d3.select(this).classed("Remove")){
+
+                  dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
+                 d3.select(this).remove();
+               }
+
+             }); // end each
+      // }; //end if classed
+  if (dataLength > 0) {
+
+    //calculateAndApplyHeight();
+
+  }
+
+
+       //} //end if result
+} //end updateresources
 
 
 
@@ -1819,220 +2023,141 @@ var current, currentParent;
 var dragHandler = d3.drag()
     .on("start", function (d) {
 
-
-    //  var current=d3.select(this);
-        var current=d3.select(this);
+      var current=d3.select(this);
       var currentParent=d3.select(this.parentNode);
 
 
-  //    deltaX = current.attr("x");// - d3.event.x; //restore without -xxx if can't make ot work
-    //  deltaY = current.attr("y");// - d3.event.y;//restore without -xxx if can't make ot work
+      if (d3.select(this).classed("AssignedGroup") == true) {
+
+          thisOffsetY = current.attr("height") - d3.event.y;
+      } else {
 
 
+        thisDimensions = computeDimensions(currentParent);
+        thisOffsetX = d3.event.x - thisDimensions.x;
+        thisOffsetY = d3.event.y - thisDimensions.y;
 
-  if (d3.select(this).classed("AssignedGroup") == true) {
+      var newX = d3.event.x - thisOffsetX;
 
-    thisOffsetY = current.attr("height") - d3.event.y;
-  } else {
-
-
-    thisDimensions = computeDimensions(currentParent);
-    thisOffsetX = d3.event.x - thisDimensions.x;
-    thisOffsetY = d3.event.y - thisDimensions.y;
-  //  deltaXparent = currentParent.attr("x");//- d3.event.x;//restore without -xxx if can't make ot work
-  //  deltaYparent = currentParent.attr("y");// - d3.event.y;//restore without -xxx if can't make ot work
-
-    //deltaXparent = currentParent.attr("x") - d3.event.x;
-  //  deltaYparent = currentParent.attr("y") - d3.event.y;
-  var newX = d3.event.x - thisOffsetX;
-
-
-  /*
-
-
-  */
-
-
-
-
-
-
-  }
-
-//  d3.select(this.rootNode.appendChild(this.parentNode));
-  //
-    //  if (d3.select(this.parentNode.parentNode).classed("Assigned"))
-    //  {
-        // attempt to stop random bar jumping = DIDN'T SEEM TO DO ANYTHING USEFUL
-      //  d3.select(this.parentNode.parentNode.appendChild(this.parentNode));
-      //
-    //  }
-//  d3.select(this.parentNode).moveToFront;
-
-  //d3.select('.chart').appendChild(this.parentNode);
+      }
 
     })
     // no need, dragging the copy NOW (not a copy, have put the node back on top actually)
 
     .on("drag", function () {
-  //getAllElementsFromPoint(d3.event.x, d3.event.y);
 
-//pageX = d3.event.pageX;
-//if (d3.select(this).classed("AssignedGroup") == true || d3.select(this).classed("dragbottom") == true) {
-  if (d3.select(this).classed("AssignedGroup") == true) { // dragbottom gone for now .. may not bring back
+      if (d3.select(this).classed("AssignedGroup") == true) { // dragbottom gone for now .. may not bring back
 
 
-  //
-//
+        d3.select(this).attr("height", d3.max([BAR_H,d3.event.y+thisOffsetY]));
 
-/*  d3.select(this).select(".dragbottom")
-//  .moveToFront()
-
-  //    .attr("x", d3.event.x + deltaX)
-      .attr("y", d3.event.y-GROUP_HANDLE_H)
-      .moveToFront();
-*/
-  d3.select(this).attr("height", d3.max([BAR_H,d3.event.y+thisOffsetY]));
-
-} else {
-
-//
-
-//d3.select(this.parentNode).attr("transform", "translate("+d3.event.translate+")");
+    } else {
 
 
-d3.select(this)
-      .attr("x", d3.event.x-thisOffsetX)//restore without + deltaX if can't make ot work
-      .attr("y", d3.event.y-thisOffsetY);// - deltaY); //restore without +deltaY if can't make ot work
-    //  .attr("x", d3.event.x)
-    //  .attr("y", d3.event.y);
+
+      d3.select(this)
+            .attr("x", d3.event.x-thisOffsetX)//restore without + deltaX if can't make ot work
+            .attr("y", d3.event.y-thisOffsetY);// - deltaY); //restore without +deltaY if can't make ot work
+          //  .attr("x", d3.event.x)
+          //  .attr("y", d3.event.y);
 
 
-     } // end if not dragbottom
+           } // end if not dragbottom
     })
     .on("end", function(d){
 
 
-      // find the new bar locations
-    //  passThruEvents(d3.select(this.parentNode));
-  // ALL DATA:
-//
-//   passThruToGroup(deltaX, deltaY);
+        console.log("almost at closest, this class:" + d3.select(this).attr("class"));
+
+      //  var closeBar = d3.select(this).closest("g.GBarGroup");  //WORKS
+        var closeBar = d3.select(this.parentNode);//.closest("g.GBarGroup");  //WORKS
+    //    console.log(closeBar.attr("class"));
+
+        //if (d3.select(this).classed("AssignedGroup") == true || d3.select(this).classed("dragbottom") == true) {
+        if (d3.select(this).classed("AssignedGroup") == true) {   // || d3.select(this).classed("dragbottom") == true) {
+
+              d3.selectAll('.labelGroup').select('text').classed("darker", false);
+              d3.select(this).select('.labelGroup').select('text').classed("darker", true);
+
+              var gpName = d3.select(this).attr("assignedName");
+
+            //d3.select(this).lower();
+              newName = gpName;
+              activeNameGroup = d3.select(this.parentNode); //.closest("g.assignedGroupGp");
+              activeNameGroupSvgId = d3.select(this).attr("assignedName");
+            //  activeNameGroup = $(this).closest("g.assignedGroupGp");
+              activeNameGroupId = activeNameGroup.attr("ID");
+              console.log("angID: " + activeNameGroupId);
+
+              var trimmedHeight;
+
+              d3.select(this).attr("height", function(d) {
+                untrimmedHeight = parseInt(d3.select(this).attr("height"));
+                trimmedHeight = parseInt(untrimmedHeight -untrimmedHeight%(BAR_H/oldScale));
+                return trimmedHeight;
+              });
+
+              d3.select(this).select('.today').attr('y2', trimmedHeight);
+              var newDataLength = parseInt(trimmedHeight/BAR_H/oldScale);
+              d3.select(this).attr("data-length", newDataLength);
 
 
-//   d3.select(this)
-//   .moveToFront()
-
-console.log("almost at closest, this class:" + d3.select(this).attr("class"));
-
-//  var closeBar = d3.select(this).closest("g.GBarGroup");  //WORKS
-  var closeBar = d3.select(this.parentNode);//.closest("g.GBarGroup");  //WORKS
-
-  //if (d3.select(this).classed("AssignedGroup") == true || d3.select(this).classed("dragbottom") == true) {
-  if (d3.select(this).classed("AssignedGroup") == true) {   // || d3.select(this).classed("dragbottom") == true) {
-
-d3.selectAll('.labelGroup').select('text').classed("darker", false);
-d3.select(this).select('.labelGroup').select('text').classed("darker", true);
-
-var gpName = d3.select(this).attr("assignedName");
-
-  //d3.select(this).lower();
-    newName = gpName;
-    activeNameGroup = $(this).closest("g.assignedGroupGp");
-    activeNameGroupId = d3.select(activeNameGroup).attr("ID");
-    //var thisNode = d3.select(this.parentNode);  // actualy its the assigned group thats being dragged
-    //
-
-    //
-    var trimmedHeight;
-    d3.select(this).attr("height", function(d) {
-      untrimmedHeight = parseInt(d3.select(this).attr("height"));
-      trimmedHeight = parseInt(untrimmedHeight -untrimmedHeight%(BAR_H/oldScale));
-      return trimmedHeight;
-    });
-    d3.select(this).select('.today').attr('y2', trimmedHeight);
-    var newDataLength = parseInt(trimmedHeight/BAR_H/oldScale);
-    d3.select(this).attr("data-length", newDataLength);
-
-/*
-// no dragbottom at the moment
-    d3.select(this).select(".dragbottom")
-  //  .moveToFront()
-
-    //    .attr("x", d3.event.x + deltaX)
-        .attr("y", trimmedHeight-GROUP_HANDLE_H)
-        .moveToFront();
-*/
-
-      /*  xAxisWeekFloating.tickSize(xAxisWeekFloating.tickSize()+trimmedHeight);
-        xAxisWeekFloating3.tickSize(xAxisWeekFloating3.tickSize()+trimmedHeight);
-
-        globalXWeekFloating3.call(xAxisWeekFloating3);
-        globalXWeekFloating.call(xAxisWeekFloating);
-         */
-
-      //   calculateAndApplyHeight(BAR_H);
-                  calculateAndApplyHeight(BAR_H);
-        //    d3.select(this).moveToBack();
-
-    /*  var groups = d3.selectAll(".AssignedGroup")
-    .filter(function(d, i) {
-    //
-      return d.key != thisNode.attr("assignedName");
-      // return i != 2;
-     });
-     //
-     //
-    d3.selectAll(groups.parentNode).moveToBack(); */
- //d3.select(this).moveToFront();
+              calculateAndApplyHeight(BAR_H);
 
 
-   } else {
+           } else {
 
 
 
-      d3.select(this).select('rect').classed("changed", true);
-      //   d3.selectAll(groups.parentNode).moveToBack();
-      d3.select(this).moveToFront();
+              d3.select(this).select('rect').classed("changed", true);
+              //   d3.selectAll(groups.parentNode).moveToBack();
+              d3.select(this).moveToFront();
 
-//
-    // THIS BAR'S DATA
-
-
-      //   colVal = collisionDetection(d3.select(closeBar).select('.barGroup')); // removed from vanilla
-
-    //  closeBar.moveToFront();
-  //  d3.select(activeNameGroup).select(".AssignedGroup").append(closeBar);
+        //      console.log("activeNameGroupID:" + activeNameGroupId);
 
   // THE BIT THAT MOVES MY BAR INTO THE CORRECT GROUP SO I CAN KEEP SELECTING IT AFTER I'VE CHANGED THE NAME ON IT
-  if (activeNameGroupId != "") {
+            if (activeNameGroupId != "") {
 
-    $("[id='"+activeNameGroupId+"']").find(".AssignedGroup").prepend(closeBar);
+        //    console.log("closebar class:" + closeBar.attr("class") + ", d-index:" + closeBar.attr("bar-data-index"));
+          //  console.log("this class:" + d3.select(this).attr("class"));
+            //  $("[id='"+activeNameGroupId+"']").find(".AssignedGroup").prepend(d3.select(this.parentNode));
+              //  d3.select("[id='"+ activeNameGroupSvgId +"']").insert(closeBar);
 
-   d3.select(closeBar).select('.barGroup').attr("y",function(d){
-  //   try {
-     var groupHeight = d3.select(closeBar.parentNode).attr("height");
-     var currY = d3.select(closeBar).select(".barGroup").attr("y");
-
-     return d3.min([currY,(groupHeight - BAR_H)]);
-//   } catch (ex) {
-//     return 0;
-//   }
-   });
-
-  }
-  //  d3.select(closeBar).attr("y", 0);
+            //    $("[id='"+activeNameGroupId+"'] svg").prepend(d3.select(this.parentNode));
+            //  document.getElementById(activeNameGroupId).getElementsByClassName("AssignedGroup")[0].appendChild(d3.select(this.parentNode));
+          //  activeNameGroup.select(".AssignedGroup").append(this.parentNode);
 
 
 
-    //  var closeData = d3.select(closeBar).data();
+                //  d3.select("#"+ activeNameGroupSvgId).append(closeBar);
+                      //  d3.select("[assignedName='"+ activeNameGroupSvgId+"']").append(closeBar);
+                      //OMG SO PAINFUL TODO: do I need to relook at the SP version?
+                         $("[assignedName='"+ activeNameGroupSvgId+"']").prepend($(this).parent());
+
+
+                         d3.select(this).attr("y",function(d){
+                             // closeBar.select('.barGroup').attr("y",function(d){
+                             //   try {
+                                var groupHeight = activeNameGroup.select(".AssignedGroup").attr("height");
+
+                                var currY =d3.select(this).attr("y");
+                                //console.log("currY:" + currY);
+                                //console.log("groupHeight:" + groupHeight);
+
+                                return d3.max([0,d3.min([currY,(groupHeight - BAR_H)])]);
+                           //   } catch (ex) {
+                           //     return 0;
+                           //   }
+                         });
+
+
+      } // end if activenamegroup
+
             var closeData = d3.select(this.parentNode).data();
-    //  var closeData = closeBar.data();
-    //  var closeData = $(closeBar).data();
-  //var closeData = $(this).closest("g.GBarGroup").data();
-    console.log(d3.select(closeBar));
-      console.log(closeData);
-      console.log(closeData.length);
+
+    //console.log(d3.select(closeBar));
+    //  console.log(closeData);
+    //  console.log(closeData.length);
       if(closeData.length > 0 && closeData[0] != null) {
       if(closeData[0].hasOwnProperty("UID")) {
         var projectKey = closeData[0].UID;
@@ -2234,36 +2359,95 @@ bars.on("mouseover",  function(d, i) {
     });
 
 
-/*
+    function LaunchMessageDialog(dlgTitle,dlgText,action) {
+    // Get the modal
 
-    function bdragresize(d) {
+      $(".modal-body").html(dlgText);
+      $(".modal-header h2").html(dlgTitle);
+      //$("").css("display", "block");
+      var modal = document.getElementById('myModal');
+          modal.style.display="block";
+      // Get the button that opens the modal
+      //  var btn = document.getElementById(btnID);
 
-      // if (isYChecked) {
-         //Max x on the left is x - width
-         //Max x on the right is width of screen + (dragbarw/2)
-    //     var dragy = Math.max(d.y + (dragbarw/2), Math.min(h, d.y + height + d3.event.dy));
-    var thisBar = d3.select(this)
-    var parentHeight = d3.select(this.parentNode).attr("height");
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+      var footer = document.getElementById('modal-footer');
 
+      footer.style.display = "none";
 
+      // When the user clicks on the button, open the modal
+      //  btn.onclick = function() {
+      //    modal.style.display = "block";
+      //    }
 
-  //var dragy = Math.max(d.y, Math.min(h, d.y + height + d3.event.dy));
-         //recalculate width
-      //   height = dragy - d.y;
-  //d3.select(this).attr("y", d3.event.y);
-      d3.select(this.parentNode).attr("height", d3.event.y);
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+      modal.style.display = "none";
+      }
 
-         //move the right drag handle
-        // dragbarbottom
-        //    .attr("y", function(d) { return dragy  });
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
 
-         //resize the drag rectangle
-         //as we are only resizing from the right, the x coordinate does not need to change
-
-    //  }
+        }
+      }
     }
 
-*/
+
+    function LaunchConfirmDialog(dlgTitle,dlgText, action) {
+    // Get the modal
+
+      $(".modal-body").html(dlgText);
+      $(".modal-header h2").html(dlgTitle);
+      var modal = document.getElementById('myModal');
+          modal.style.display="block";
+          var footer = document.getElementById('modal-footer');
+          footer.style.display = "block";
+
+          var okBtn = document.getElementById('modal-footer-Okbtn');
+          var cclBtn = document.getElementById('modal-footer-Cancelbtn');
+
+
+    cclBtn.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    okBtn.onclick = function() {
+      modal.style.display = "none";
+      if (dlgTitle == "Update Resources") {
+        //call a function
+        updateResources();
+      //  return true;
+      } else {
+        // do some other stuff
+      }
+    }
+
+      // Get the button that opens the modal
+      //  var btn = document.getElementById(btnID);
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+
+      // When the user clicks on the button, open the modal
+      //  btn.onclick = function() {
+      //    modal.style.display = "block";
+      //    }
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+      modal.style.display = "none";
+      }
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+    }
 
 
 // for detecting underlying group
@@ -2870,7 +3054,8 @@ var relBarDim;
   var relatedBar = d3.select(this.parentNode); //.select('rect');
         //  deltaX = relBarDim.x - d3.event.x;
 
-    var closeBar = $(this).closest("g.GBarGroup");  //WORKS
+//    var closeBar = $(this).closest("g.GBarGroup");  //WORKS
+    var closeBar = $(this.parentNode); //.closest("g.GBarGroup");  //WORKS
 
  //
 //    var closeData = d3.select(closeBar).data();
@@ -3539,6 +3724,7 @@ function getGangList(btnEvent) {
 d3.select('#updateResourcesBtn').on("click", function() {
   newName = "";
 activeNameGroupId = "";
+activeNameGroupSvgId = "";
 //IteratethroughGroup();
 //getGangList(this);
 gangArr = ["Someone Else1", "Someone Else2"];
@@ -3550,7 +3736,7 @@ updateResourcesBtnClickContinued(this, gangArr);
 
 }); //end on click
 
-var newItemCtr = -1;
+
 
 function updateResourcesBtnClickContinued(bntEvent, gangArr) {
   var dlgText = "";
@@ -3568,162 +3754,11 @@ function updateResourcesBtnClickContinued(bntEvent, gangArr) {
         "<div><span class='boxPrompt'>Check names to remove from the Planner:</span></div>" + dlgText;
         dlgText = dlgText + "<span class='boxPrompt'>Add a name: </span><input box id='newResource' placeholder='A Full Username known to SP' size='30' onchange='javascript:addResource(this)' />";
         dlgText = dlgText += "<div><span class='gangList boxPrompt'>Gang names available:</span><ul class='gangList'><li> " + gangArr.join('</li><li>') +"</li></ul></div>";
-        LaunchConfirmDialog("Update Resources",dlgText, function(result){
-             if (result == true) {
-                //deal with new person
-
-            if(deactivateNames == true)  {
-              d3.selectAll(".labelText").classed("darker", false);
-
-            }
-            if(newName != "") {
-            //  d3.select("g.assignedGroupGp")  // 1 only??
-            newId = "assignedto-"+newName;
-
-  // BEGINNING OF CREATION
-  symbolAssignees.push({key: newName, values:[]});
-
-  groupCtr = symbolAssignees.length-1;
-
-//
-//
-
-
-        var newSection = d3.select(wrapper)
-      //  allCharts
-          .insert('g', ":first-child")
-          .attr('class', 'assignedGroupGp new')
-          .attr('id', newId)
-          .datum(symbolAssignees[groupCtr])
-          .enter();
-
-          d3.select('.new').append('svg')
-          .attr('height', BAR_H)
-          .attr('class','AssignedGroup')
-
-          .attr('assignedName', newName)
-        //  .append('rect')
-          .attr('height', BAR_H)
-          .attr('x', 0)
-          .attr('y', 0)
-          .attr('width', '100%')
-        /*  .attr('background-color', function(d,i) {
-
-          return d3.rgb(colorScaleNewSection(i))
-        } ) */
-          .attr('style', function(d,i) {
-
-            newItemCtr++;
-          return 'background-color: '  + d3.rgb(colorScaleNewSection(newItemCtr));
-        })
-          .attr('opacity', '0.7')
-          .attr('data-length',1)
-          .call(dragHandler)
-        //  .call()
-
-
-          ;
-
-
-
-          var today = new Date();
-          var xNow = x(today)*oldScale+tempTrans[0];
-        //
-            d3.select('.new').select('.AssignedGroup').append("line").attr("class","today")
-            .attr("x1", xNow) //<<== change your code here
-          //  d3.select('.chart').append("line").attr("class","today").attr("x1", xNow) //<<== change your code here
-            .attr("y1", 0)
-            .attr("x2", xNow) //<<== and here
-            .attr("y2", function(d) {
-    //
-            //  return d3.select('.new').select('.AssignedGroup').attr('height');
-                return d3.select(this.parentNode).attr('height');
-            })
-
-            .style("stroke-width", 2)
-            .style("stroke", "red")
-            .style("fill", "none");
-//newSection.append
-
-
-      var newLabel =  d3.select('[assignedName="'+newName+'"]')
-        .append('g')
-        .attr("class", "labelGroup")
-        .append('text')
-        .text(newName)
-        .attr('class','labelText')
-        .attr('width', '100')
-        .attr("y", 20)
-        .attr("font-size", 20)
-        .attr("font-family", "sans-serif")
-          .attr("font-weight", "bold")
-          .attr('fill', 'silver')
-          .attr('opacity', '0.9');
-
-          newLabel.append('line')
-            .attr("class","divider")
-            .attr("x1", x(minX))
-            .attr("x2", x(maxX))
-            .attr("stroke", "silver")
-            .attr("stroke-width", 1)
-              .attr("opacity", 0.5);
-          //    .call();
-
-              //above line not showing, why??
-        //  newGroup = newSection.select('.AssignedGroup'); // get them afresh .. don't now if i need to do that
-        //   dragHandler(newGroup);
-
-
-      calculateAndApplyHeight(BAR_H);
-
-  //newSection.each(label(null));
-
-    //newSection.moveToFront();
-    //.attr('rect')
-  //  .attr('x' 0)
-  //  .attr('y', 0)
-  //  .attr('height', 100)
-  // .attr('fill', 'green') //;
-  //  .attr('width' '100')
-  //  .attr('height', '100')
-  //  .attr('fill', 'green');
-
-  // END OF CREATION
-
-            };
-
-var dataLength = 0;
-            /// deal with removals
-            d3.selectAll("g.assignedGroupGp")
-               .each(function(d,i){
-              //
-                 if (d3.select(this).classed("Remove")){
-                  //
-
-                    dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
-                   d3.select(this).remove();
-                 }
-
-               }); // end each
-            // }; //end if classed
-        if (dataLength > 0) {
-
-          /*
-
-          xAxisWeekFloating.tickSize(xAxisWeekFloating.tickSize()-(dataLength+1)*height);
-          xAxisWeekFloating3.tickSize(xAxisWeekFloating3.tickSize()-(dataLength+1)*height);
-
-          globalXWeekFloating3.call(xAxisWeekFloating3);
-          globalXWeekFloating.call(xAxisWeekFloating);
-*/
-          calculateAndApplyHeight();
-
-        }
-
-
-             } //end if result
-           }); //end launchconfirm
+        LaunchConfirmDialog("Update Resources",dlgText, null); //end launchconfirm
 }
+
+
+
 
 
 function clearOldItems() {
@@ -3894,6 +3929,10 @@ d3.select('#instructions').on("click", function() {
   }
     //disableZoom();
   })
+
+
+
+
 
 
 
@@ -4340,8 +4379,8 @@ return obj;
 
 
 
-
-
+/*
+// SHAREPOINT ON
 function OpenDialog(strPageURL)
 
 {
@@ -4369,6 +4408,9 @@ function OpenDialog(strPageURL)
 
 
 
+
+
+
 // Dialog close event capture function
 
 function CloseCallback(strReturnValue, target)
@@ -4392,6 +4434,121 @@ function CloseCallback(strReturnValue, target)
    }
 
 }
+*/
+
+function updateResources() {
+
+      if(deactivateNames == true)  {
+        d3.selectAll(".labelText").classed("darker", false);
+
+      }
+      if(newName != "") {
+      newId = "assignedto-"+newName;
+
+      // BEGINNING OF CREATION
+      symbolAssignees.push({key: newName, values:[]});
+
+      groupCtr = symbolAssignees.length-1;
+
+
+
+  var newSection = d3.select('.chart')
+  //d3.select(wrapper)
+//  allCharts
+    .insert('g', ":first-child")
+    .attr('class', 'assignedGroupGp new')
+    .attr('id', newId)
+    .datum(symbolAssignees[groupCtr])
+    .enter();
+
+    d3.select('.new').append('svg')
+    .attr('height', BAR_H)
+    .attr('class','AssignedGroup')
+    .attr('assignedName', newName)
+    .attr('height', BAR_H)
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', '100%')
+    .attr('style', function(d,i) {
+      newItemCtr++;
+    return 'background-color: '  + d3.rgb(colorScaleNewSection(newItemCtr));
+  })
+    .attr('opacity', '0.7')
+    .attr('data-length',1)
+    .call(dragHandler)
+    ;
+
+
+
+    var today = new Date();
+    var xNow = x(today)*oldScale+tempTrans[0];
+
+      d3.select('.new').select('.AssignedGroup').append("line").attr("class","today")
+      .attr("x1", xNow) //<<== change your code here
+      .attr("y1", 0)
+      .attr("x2", xNow) //<<== and here
+      .attr("y2", function(d) {
+          return d3.select(this.parentNode).attr('height');
+      })
+
+      .style("stroke-width", 2)
+      .style("stroke", "red")
+      .style("fill", "none");
+
+    var newLabel =  d3.select('[assignedName="'+newName+'"]')
+      .append('g')
+      .attr("class", "labelGroup")
+      .append('text')
+      .text(newName)
+      .attr('class','labelText')
+      .attr('width', '100')
+      .attr("y", 20)
+      .attr("font-size", 20)
+      .attr("font-family", "sans-serif")
+        .attr("font-weight", "bold")
+        .attr('fill', 'silver')
+        .attr('opacity', '0.9');
+
+        newLabel.append('line')
+          .attr("class","divider")
+          .attr("x1", x(minX))
+          .attr("x2", x(maxX))
+          .attr("stroke", "silver")
+          .attr("stroke-width", 1)
+            .attr("opacity", 0.5);
+
+
+
+
+
+//calculateAndApplyHeight(BAR_H);
+
+
+      };
+
+      var dataLength = 0;
+      /// deal with removals
+          d3.selectAll("g.assignedGroupGp")
+             .each(function(d,i){
+            //
+               if (d3.select(this).classed("Remove")){
+
+                  dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
+                 d3.select(this).remove();
+               }
+
+             }); // end each
+      // }; //end if classed
+  if (dataLength > 0) {
+
+    //calculateAndApplyHeight();
+
+  }
+
+
+       //} //end if result
+} //end updateresources
+
 
 function addResource(input) {
   //
@@ -4399,6 +4556,9 @@ function addResource(input) {
 
 
 }
+
+
+
 
 
 
@@ -4640,5 +4800,23 @@ if (trainingProjects == true) {
 
 
 </script>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+<!-- Modal content -->
+<div id="modal-content">
+  <div class="modal-header">
+    <span class="close">&times;</span>
+    <h2>Modal Header</h2>
+  </div>
+  <div class="modal-body">
+    <p>Some text in the Modal Body</p>
+    <p>Some other text...</p>
+  </div>
+  <div class="modal-footer" id="modal-footer">
+    <input type="button" id = "modal-footer-Okbtn" name="modal-footer-Okbtn" value="OK">  <input type="button" id = "modal-footer-Cancelbtn" name="modal-footer-Cancelbtn" value="Cancel">
+  </div>
+</div>
+</div>
 </body>
 </html>
