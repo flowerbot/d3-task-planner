@@ -3,29 +3,16 @@
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 
-
-
 <style>
+  <!--  SEE http://tscppm/Projects/Site%20Pages/Construction%20Planner.aspx  -->
+  <!--  SEE also work-in-progress scripts start with words "timeline-snapshot"  -->
+  <!--  SEE also http://tscppm/Projects/Site%20Pages/Construction%20Planner%20Mk%20III.aspx  -->
 
-/*
 
-"d3v4-brush-lite.js
 
-or https://code.jquery.com/jquery-3.3.1.slim.min.js
-https://code.jquery.com/jquery-2.2.4.min.js
-https://code.jquery.com/jquery-3.3.1.min.js
-https://code.jquery.com/jquery-1.12.4.min.js
-https://code.jquery.com/jquery-1.12.4.min.js
- */
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-
-}
 .chart {
 margin: 0 auto;
-/* width: 960px; */
-width: 100%;
+width: 960px;
 min-height: 8px;
 /* height: 20px; */
 /*   height: 100%; */
@@ -303,11 +290,11 @@ table.projectInfo tr th {
            }
 
            .circComplete:hover {
-                  cursor: url('greencheck36x36.png') 16 16, auto;
+                  cursor: url('http://tscppm/SiteAssets/scripts/prettyGantt/greencheck36x36.png') 16 16, auto;
                 }
 
                 .circRemove:hover {
-                       cursor: url('redCrossSm.png') 16 16, auto;
+                       cursor: url('http://tscppm/SiteAssets/scripts/prettyGantt/redCrossSm.png') 16 16, auto;
                      }
 
 
@@ -442,15 +429,30 @@ cursor: help;
   color: red;
 }
 
+.chartAxisSpacer {
+  display:none;
+}
+
+#collisionBtn {
+  display: none;
+}
+
+
 @media print {
+
+  .chartAxisSpacer {
+    display: block;
+    height: 30px;
+  }
 
   .darker {
 
   }
 
-#s4-titlerow, #suiteBar, #UnlockZoomBtn, #bw-help-tab, #updateChangedItemsBtn, .key, #clearOldBtn, #getDataBtn, #info, .removeText, .completedText, #DeltaTopNavigation {
+#s4-titlerow, #suiteBar, #UnlockZoomBtn, #bw-help-tab, #updateChangedItemsBtn, #collisionBtn, .key, #clearOldBtn, #getDataBtn, #info, .removeText, .completedText, #DeltaTopNavigation {
   display: none !important;
 }
+
 
 .labelText {
   fill: gray;
@@ -495,7 +497,7 @@ cursor: help;
   /*  z-order: -10000; */
   }
 
-  .chart {
+  #chartContainer {
     overflow: hidden;
   }
 
@@ -516,80 +518,6 @@ cursor: help;
 
 }
 
-
-
-
-/* The Modal (background) */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-/* Modal Content */
-.modal-content {
-  position: relative;
-  background-color: #fefefe;
-  margin: auto;
-  padding: 0;
-  border: 1px solid #888;
-  width: 80%;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-  -webkit-animation-name: animatetop;
-  -webkit-animation-duration: 0.4s;
-  animation-name: animatetop;
-  animation-duration: 0.4s
-}
-
-/* Add Animation */
-@-webkit-keyframes animatetop {
-  from {top:-300px; opacity:0}
-  to {top:0; opacity:1}
-}
-
-@keyframes animatetop {
-  from {top:-300px; opacity:0}
-  to {top:0; opacity:1}
-}
-
-/* The Close Button */
-.close {
-  color: white;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.modal-header {
-  padding: 2px 16px;
-  background-color: #5cb85c;
-  color: white;
-}
-
-.modal-body {padding: 2px 16px;
-background-color: #FFFF !important}
-
-.modal-footer {
-  padding: 2px 16px;
-  background-color: #5cb85c;
-  color: white;
-}
-
 </style>
 
 <div id='info'><div class="about"><input type="button" id="UnlockZoomBtn" name="UnlockZoomBtn" locked="false" value="Lock Zoom/Pan"/>
@@ -599,10 +527,11 @@ background-color: #FFFF !important}
   <input type="button" id="updateChangedItemsBtn" name="updateChangedItemsBtn" value="Update Changed Items"/>
 
   <input type="button" id="getDataBtn" name="getDataBtn" value="Get Data"/>
+    <input type="button" id="collisionBtn" name="collisionBtn" value="Collision Test"/>
   <input type="checkbox" name="MondayLock" id="MondayLock" checked='true' />Lock dragged Start to Monday ~
   <input type="checkbox" name="FridayLock" id="FridayLock" checked='true' />Lock dragged Finish to Friday ~
   <input type="checkbox" name="trainingProjects" id="trainingProjects" checked='true' />Use Training Projects ~
-  <a id="instructions" href="BrightWork - Construction Planner User Functions Explained.html" target="_blank">Click for instructions</a><br />
+  <a id="instructions" href="http://tscppm/Help%20Wiki/Construction%20Planner.aspx" target="_blank">Click for instructions</a><br />
 <div class='key'>Key (top right circle):
   <div id='circleKeyGreen'> </div> <span class="addDef">Issued for Construction</span> ~ <div id='circleKeyAqua'> </div> Design >75% Complete ~ <div id='circleKeyOrange' > </div> Design Started ~ <div id='circleKeySilver' > </div> Design NOT started </div>
 
@@ -611,7 +540,10 @@ background-color: #FFFF !important}
 
 <div class=".slider-holder"></div>
 <div class="spacer"></div></div>
+<div id='chartContainer'>
+<div class="chartAxisSpacer"></div>
 <div class="chart"></div>
+</div>
 <script type="text/javascript">
 
 
@@ -622,17 +554,13 @@ var trainingProjects = true;
 //const checkme = "bb1";
 //const XMLFileName = "/Data/Project Ready Matrix Data - Training.xml";
 //const XMLFileName = "/Data/Project Ready Matrix Data.xml"
-var XMLFileName = "Project Ready Matrix Data.xml"
+var XMLFileName = "/Data/Project Ready Matrix Data.xml"
 
 var newName = "";
 
 var pageX;
 
-var symbolAssignees;
 
-// elevated variable - SP version has them deeper
-var BAR_H = 30;
-var newItemCtr = -1;
 
 
 function runAfterEverythingElse() {
@@ -649,15 +577,9 @@ if (browser.name != "Chrome") {
   $("#IEMessage").remove();
 
 
-//$("#modal-content").css("display", "none");
-
-
-
-
 //var theFromSlider = d3.select('#slider6').call(d3.slider().axis(false).min(startYear).max(maxYear).step(1).value(thisYear).on("slide", function(evt, value) {
 
-/*
-// GLOSSARY DEFINITION POPUP - not relevant outside of sharepoint
+// GLOSSARY DEFINITION POPUP
 jQuery(".addDef").addClass("ms-rteStyle-Accent1");
 
 jQuery(".addDef").click(function() {
@@ -665,11 +587,10 @@ jQuery(".addDef").click(function() {
   var url = "/SitePages/ViewGlossary.aspx?Term="+term;
     OpenDialog(url);
   });
-*/
 
 //////
-//get currentUser up front because it can't be done fast enough during updates  - can't do it outside of SP
-/*
+//get currentUser up front because it can't be done fast enough during updates
+
 var userid= _spPageContextInfo.userId;
 var currentUser;
  var requestUri = _spPageContextInfo.webAbsoluteUrl + "/_api/web/getuserbyid(" + userid + ")";
@@ -692,12 +613,12 @@ var currentUser;
 //   alert("error");
  }
 
-*/
+
 
 
 $(document).mousemove(function(event) {
   pageX = event.pageX;
-//
+//  console.log(pageX);
 })
 
 
@@ -716,6 +637,7 @@ $(document).mousemove(function(event) {
 //  var parser = d3.isoParse;
   // stuff for resizing bars
 var GROUP_HANDLE_H = 6;
+var BAR_H = 30;
 
   var MAP_WIDTH = clWidth;
   var MAP_HEIGHT = clHeight;
@@ -734,7 +656,6 @@ var GROUP_HANDLE_H = 6;
     var HANDLE_R_ACTIVE = 12;
 
     var activeNameGroupId = "";
-    var activeNameGroupSvgId = "";
 
 
 //  const minX = d3.min(VEHICLES, d => parser(d.start));
@@ -761,7 +682,7 @@ const maxX = d3.max(MATRIXDATA, d => parser(convertSPDateOnly(d.FinishDateExpres
     .rangeRound([0, width]); */ // not needed
   //const newData =
   // --- nest all the data
-//
+//    console.log(MATRIXDATA);
 //http://bl.ocks.org/phoebebright/raw/3176159/
 /*
 // NOT USED ??
@@ -779,10 +700,10 @@ const maxX = d3.max(MATRIXDATA, d => parser(convertSPDateOnly(d.FinishDateExpres
 
 
 
-//
+//    console.log(symbols);
 
 //    const symbolAssignees = d3.nest()
-     symbolAssignees = d3.nest()
+    var symbolAssignees = d3.nest()
       .key(d => d.AssignedToName).sortKeys(d3.ascending)
     //  .key(d => d.UniqueReference["#text"] + "_" + d.ID ["#text"])
      //UID
@@ -806,16 +727,16 @@ const maxX = d3.max(MATRIXDATA, d => parser(convertSPDateOnly(d.FinishDateExpres
 
 
 
-    //
+    //  console.log(symbolAssignees);
 
-  //
+  //console.log(symbolAssignees);
 
 /*
 var uniqueAssignees = symbols.forEach(function(d, i) {
     var name = d.key;
 });
 */
-//
+//console.log(uniqueAssignees);
 
 //var assignees = checkUnique(tempOwners);
 
@@ -826,7 +747,7 @@ var uniqueAssignees = symbols.forEach(function(d, i) {
 //  const height = wrapper.getBoundingClientRect().bottom;
 //var height = 25;
  const height = 25;
-//
+//  console.log(height);
   var spanX = d => x(parser(convertSPDateOnly(d.StartDateExpression["#text"])));
   var spanW = d => x(parser(convertSPDateOnly(d.FinishDateExpression["#text"]))) - x(parser(convertSPDateOnly(d.StartDateExpression["#text"])));
 
@@ -841,8 +762,8 @@ var uniqueAssignees = symbols.forEach(function(d, i) {
       .domain(MATRIXDATA, d => d.AssignedTo["text"])
       .range([0, bBoxHeight]);
 */
-//
-//
+//console.log("length:" + MATRIXDATA.length);
+//console.log(MATRIXDATA);
 
 
 
@@ -852,7 +773,11 @@ var uniqueAssignees = symbols.forEach(function(d, i) {
   //    .range(["#ffbfba","#ffffba","#bae1ff"]);
     .range(['rgba(255,191,186,0.7)','rgba(255,255,186,0.7)','rgba(186,255,255,0.7)']);
 
-
+    var colorScaleNewSection = d3.scaleLinear()
+        .domain([0, 3, 5])
+        .interpolate(d3.interpolateHcl)
+    //    .range(["#ffbfba","#ffffba","#bae1ff"]);
+      .range(['rgba(255,255,204,0.7)','rgba(204,204,0,0.7)','rgba(173,255,47,0.7)']);
 
 
     var backColorScale = d3.scaleLinear()
@@ -862,22 +787,18 @@ var uniqueAssignees = symbols.forEach(function(d, i) {
       .range(['rgba(255,191,186,0.4)','rgba(255,255,186,0.4)','rgba(186,255,255,0.4)']);
 
 
-      var colorScaleNewSection = d3.scaleLinear()
-          .domain([0, 3, 5])
-          .interpolate(d3.interpolateHcl)
-      //    .range(["#ffbfba","#ffffba","#bae1ff"]);
-        .range(['rgba(255,255,204,0.7)','rgba(204,204,0,0.7)','rgba(173,255,47,0.7)']);
+
 
 
 
 
 const label = function(symbol) {
   const svgL = d3.select(this.parentNode).selectAll('.AssignedGroup').append('g');
-  //
+  //console.log(svgL)
 
   var lblText = symbol.key;
 
-//
+//console.log("got this far, name:" + lblText);
 
 
   svgL
@@ -897,8 +818,8 @@ const label = function(symbol) {
           //  for (var i = 0; i < MATRIXDATA.length; i++) {
           //    if (d.key.localeCompare(MATRIXDATA[i].undefined) == 0) {
       //if (d.key == symbolAssignees[i].key) {
-            //
-            //
+            //    console.log("d.key:" + d.key + "; " + symbolAssignees[i].key);
+            //    console.log(backColorScale(i));
         return d3.rgb(backColorScale(i)).darker(1.5);
 
       }
@@ -930,7 +851,7 @@ svgL.append('line')
 const groupDragHandle = function(symbol) {
   var gpDim =computeDimensions(d3.select(this.parentNode).select('.AssignedGroup'));
   ///d3.select(this.parentNode).select('svg.AssignedGroup').bringToFront();
-//
+//  console.log(gpDim)
   //var gpHt = d3.select(this.parentNode).select('svg.AssignedGroup').height;
   //const svgDL = d3.select(this.parentNode).select('.AssignedGroup').append("rect"); //.append('g');
   const svgDL = d3.select(this.parentNode).select('.AssignedGroup').append("rect"); //.append('g');
@@ -940,7 +861,7 @@ const groupDragHandle = function(symbol) {
       .attr('x', 0)
       .attr('y', function (d,i) {
       //  i++;
-    //
+    //  console.log(d);
         return height*(i)+gpDim.height;
       })
 //.attr('width', d => spanW(d))
@@ -967,7 +888,7 @@ var previousBar;
 // WHERE TO BREAK THIS UP
 function drawChart() {
 
-
+console.log('redrawing the chart')
 var chart =  function(symbol) {
   var svgB = d3.select(this);
 
@@ -1002,7 +923,7 @@ var bindex=0;
       })
 
     .attr("startDate", function(d) {
-      //
+      //console.log(d.StartDateExpression["#text"])
       return d.StartDateExpression["#text"]
     })
     .append('svg')
@@ -1016,12 +937,12 @@ var bindex=0;
         dindex++;
       } else {
   if (i > 0) {
-    //
-//
+    //console.log(d[i].DueDate, d[i-1].DueDate);
+//    console.log(d.FinishDateExpression);
     try {
-    //
+    //  console.log(d[i-1].FinishDateExpression);
     } catch (ex) {
-    //
+    //  console.log('previous data not found');
     }
   }
     dindex++;
@@ -1085,7 +1006,7 @@ var bindex=0;
  //   .attr('width', d => spanW(d))
      .attr('width', width)
      .attr('fill', function(d) {
-       //
+       //  console.log(d);
        for (var i = 0; i < MATRIXDATA.length; i++) {
      if (d.UniqueReference["#text"] == MATRIXDATA[i].UniqueReference["#text"]) {
        return d3.rgb(colorScale(i)).darker(2);
@@ -1137,17 +1058,15 @@ var bindex=0;
         if (resp == 1) {
 
         //alert('coming soon:finish clicked');
-    //    var closeBar = $(this).closest("g.GBarGroup");  //WORKS
-  //    var closeBar = d3.select(this).closest("g.GBarGroup");
-      var closeBar = d3.select(this.parentNode.parentNode); //.closest("g.GBarGroup");
-      console.log("closeBar class:" + d3.select(this).attr("class"));
-      console.log("closeBar parent-2 class:" + d3.select(this.parentNode.parentNode).attr("class"));
-
-            var closeData = d3.select(this.parentNode.parentNode).data();
-
+      //  var closeBar = $(this).closest("g.GBarGroup");  //WORKS
+          var closeBar = d3.select(this.parentNode);  //WORKS
+        console.log("closeBar data ...: ");
+            var closeData = closeBar.data();
+          //  var closeData = d3.select(closeBar).data();
+            console.log(closeData);
             closeData[0].newCompletion = "1";
-              d3.select(this.parentNode.parentNode).select('rect').classed("changed", true); // to pick it up in the update part of the code
-            d3.select(this.parentNode.parentNode).select('rect').classed("completed", true);  // to show it as green not red
+              d3.select(this.parentNode).select('rect').classed("changed", true); // to pick it up in the update part of the code
+            d3.select(this.parentNode).select('rect').classed("completed", true);  // to show it as green not red
           //closeBar.classed("changed", true);
         } //end resp =1
 
@@ -1180,8 +1099,8 @@ var bindex=0;
 
         if (resp == 1) {
 
-    //    var closeBar = $(this).closest("g.GBarGroup").remove();  //WORKS
-    var closeBar = $(this.parentNode).remove();  //WORKS
+        var closeBar = this.closest("g.GBarGroup").remove();  //WORKS
+
         } //end resp =1
 
       })
@@ -1239,7 +1158,7 @@ svgB.selectAll('.barGroup')
       };
 
 
-
+        console.log("newfinish:" + theData.newFinishDate);
         delete theData["#text"];
         var theString =
         "<table class='projectInfo'>" +
@@ -1262,7 +1181,7 @@ svgB.selectAll('.barGroup')
         "</table>";
         ;
         var thetitle = theData.UniqueReference["#text"];
-      //
+      //  console.log(theData);
         //  alert(JSON.stringify(theData));
         //NB: bELOW COMES FROM SPAlerts.js which is embedded as a SP ScriptLink on this site
         LaunchMessageDialog(thetitle,theString, null);
@@ -1277,7 +1196,7 @@ svgB.selectAll('.barGroup')
        if (statusIntAppr == 1) {
          statusInt = (statusInt + statusIntAppr)/2;
        }
-       //
+       //console.log(d.esignStatus);
        if(statusInt == 1) {
          return "lime";
        } else
@@ -1314,7 +1233,7 @@ function length(obj) {
 
 // THIS DOES ADD SOME TEXT TO TOP OF PAGE - COULD MOVE IT BY TRANSFORM, WANT TO TRY AND KEEP IT WITH THE RECTS IF POSSIBLE
 /*
-
+console.log(symbols);
 d3.select(wrapper).selectAll('svg')
 .data(symbols)
 .enter()
@@ -1326,7 +1245,7 @@ d3.select(wrapper).selectAll('svg')
 .text(function(d) {
 //  return d.key;
   return d.values[0].UniqueReference["#text"];
-//
+//console.log(d);
 //  return "some text"; //d[0].ListName["#text"];
   //return d.UniqueReference["#text"];
 });
@@ -1382,17 +1301,69 @@ d3.select('.chart').select('svg').append('svg')
 
                 d3.select(this).lower();
                 newName = gpName;
-              //  activeNameGroup = $(this).closest("g.assignedGroupGp");
-                activeNameGroup = d3.select(this.parentNode); //.closest("g.assignedGroupGp")
-                activeNameGroupSvgId = d3.select(this).attr("assignedName");
-                console.log('activeNameGroup class:'+ activeNameGroup.attr("class") + 'activeNameGroup ID:'+ activeNameGroup.attr("ID"));
-              //  console.log('activeNameGroup class:'+ d3.select(activeNameGroup).attr("class") + 'activeNameGroup ID:'+ d3.select(activeNameGroup).attr("ID"));
-                console.log(activeNameGroup);
-                activeNameGroupId = activeNameGroup.attr("ID");
+                activeNameGroup = this.closest("g.assignedGroupGp");
+                activeNameGroupId = d3.select(activeNameGroup).attr("ID");
+              //  d3.select(".AssignedGroup").attr("pointer-events","stroke"); //restore pointer events
+              //  console.log("this.pointer-events:" + d3.select(this).attr("pointer-events"));
+              //  d3.select(this).attr("pointer-events","stroke");
+
+            //    d3.select(activeNameGroup).moveToFront();
+
+        //    if (d3.select(this).select('.labelGroup').select('text').classed("darker")) {
+
+        //      d3.select(this).select('.labelGroup').select('text').classed("darker", false);
+              // already activated, deactivate it
+        //    } else {
+/*
+            if ( confirm("Increase grid height for "+ gpName +"?")) {
+
+              numIncreases++;
+
+              d3.select(this).attr("height", parseInt(gpHeight) + height);
+            //  console.log("class:"+d3.select(this).attr("class"));
+              d3.selectAll(".labelText").classed("darker", false);
+              d3.select(this).select('.labelGroup').select('text').classed("darker", true);
+              console.log("increasing height");
+
+              //calculateAndApplyHeight();
+
+              //xAxisWeekFloating.tickSize(xAxisWeekFloating.tickSize()+height);
+              //xAxisWeekFloating3.tickSize(xAxisWeekFloating3.tickSize()+height);
 
 
-            //var closeBar = $(this).closest("g.GBarGroup");
-            var closeBar = d3.select(this.parentNode); //.closest("g.GBarGroup");
+              wrapper = document.querySelector('.chart');
+              infowrapper = document.querySelector('#info');
+
+              wrapperDetails = wrapper.getBoundingClientRect();
+              infoDetails = infowrapper.getBoundingClientRect();
+
+              bBoxHeight = wrapperDetails.height;
+
+              xAxisWeekFloating.tickSize((bBoxHeight-infoDetails.height));
+              xAxisWeekFloating3.tickSize((bBoxHeight-infoDetails.height+20));
+
+
+              globalXWeekFloating3.call(xAxisWeekFloating3);
+              globalXWeekFloating.call(xAxisWeekFloating);
+
+                  d3.select(this).moveToBack();
+
+                      //          calculateAndApplyHeight();
+
+            } else {
+          //    assignedName = d3.select(this.attr("assignedName"));
+              console.log("name:" + gpName);
+
+            //  console.log("class:"+d3.select(this).attr("class"));
+              d3.selectAll(".labelText").classed("darker", false);
+              d3.select(this).select('.labelGroup').select('text').classed("darker", true);
+
+              d3.select(this).moveToBack();
+
+            }
+
+*/
+            var closeBar = this.closest("g.GBarGroup");
            d3.select("g.GBarGroup").sort(function (a, b) { // select the parent and sort the path's
              if (a != closeBar) return -1;               // a is not the hovered element, send "a" to the back
              else return 1;                             // a is the hovered element, bring "a" to the front
@@ -1404,14 +1375,14 @@ d3.select('.chart').select('svg').append('svg')
       } )
   //    .on('mouseover', function() { return d3.select(this).lower();})
       .attr('assignedName', function(d) {
-    //
+    //    console.log(d);
         return d.key;
       })
     //  .attr('height', 'auto')
      .attr('height', function(d, i){
-      //
-      //
-      //
+      //  console.log(d.values.length);
+      //  console.log(d);
+      //  console.log(d.values.length*25);
         return d.values.length*BAR_H;
       //  return (i+1)*height;
     })
@@ -1430,7 +1401,7 @@ d3.select('.chart').select('svg').append('svg')
        { return i; })
        /*
       .attr('background', function(d) {
-        //
+        //  console.log(d);
         for (var i = 0; i < symbolAssignees.length; i++) {
       if (d.key == symbolAssignees[i].key) {
         return d3.rgb(colorScale(i));
@@ -1441,8 +1412,8 @@ d3.select('.chart').select('svg').append('svg')
         for (var i = 0; i < symbolAssignees.length; i++) {
           if (d.key.localeCompare(symbolAssignees[i].key) == 0) {
       //if (d.key == symbolAssignees[i].key) {
-            //
-            //
+            //    console.log("d.key:" + d.key + "; " + symbolAssignees[i].key);
+            //    console.log(backColorScale(i));
         return backColorScale(i);
       }
       }
@@ -1475,10 +1446,9 @@ d3.select('.chart').select('svg').append('svg')
 
 
         allCharts.on("mouseover", function(d) {
-      //
-          //  var closeBar = $(this).closest("g.GBarGroup");
-              var closeBar = $(this.parentNode); //.closest("g.GBarGroup");
-          //
+      //    console.log('moused over');
+            var closeBar = this.closest("g.GBarGroup");
+          //  console.log(closeBar);
           //  d3.selectAll("path").sort(function (a, b) { // select the parent and sort the path's
             d3.select("g.GBarGroup").sort(function (a, b) { // select the parent and sort the path's
               if (a != closeBar) return -1;               // a is not the hovered element, send "a" to the back
@@ -1507,23 +1477,23 @@ var numIncreases = 0;
 
 
 function dragstarted() {
-
+  console.log("drag started");
 }
 
 function dragged() {
   // does work but the location is off
-
-  //
+  console.log("draged");
+  // console.log(d3.select(this.closest('svg')));
 //  d3.select(this).selectAll('path').attr("x", d.x = d3.event.x).attr("y", d.y = d3.event.y);
-d3.select($(this).closest('g')).selectAll("text").attr("x", d.x = d3.event.x).attr("y", d.y = d3.event.y);
-d3.select($(this).closest('g')).selectAll("rect").attr("x", d.x = d3.event.x).attr("y", d.y = d3.event.y);
+d3.select(this.closest('g')).selectAll("text").attr("x", d.x = d3.event.x).attr("y", d.y = d3.event.y);
+d3.select(this.closest('g')).selectAll("rect").attr("x", d.x = d3.event.x).attr("y", d.y = d3.event.y);
 
 
 }
 
 
 function dragended() {
-
+  console.log("drag ended");
 }
 
 
@@ -1533,118 +1503,7 @@ function dragended() {
 
 
 
-function updateResources() {
 
-      if(deactivateNames == true)  {
-        d3.selectAll(".labelText").classed("darker", false);
-
-      }
-      if(newName != "") {
-      newId = "assignedto-"+newName;
-
-      // BEGINNING OF CREATION
-      symbolAssignees.push({key: newName, values:[]});
-
-      groupCtr = symbolAssignees.length-1;
-
-
-
-  var newSection = d3.select('.chart')
-  //d3.select(wrapper)
-//  allCharts
-    .insert('g', ":first-child")
-    .attr('class', 'assignedGroupGp new')
-    .attr('id', newId)
-    .datum(symbolAssignees[groupCtr])
-    .enter();
-
-    d3.select('.new').append('svg')
-    .attr('height', BAR_H)
-    .attr('class','AssignedGroup')
-    .attr('assignedName', newName)
-    .attr('height', BAR_H)
-    .attr('x', 0)
-    .attr('y', 0)
-    .attr('width', '100%')
-    .attr('style', function(d,i) {
-      newItemCtr++;
-    return 'background-color: '  + d3.rgb(colorScaleNewSection(newItemCtr));
-  })
-    .attr('opacity', '0.7')
-    .attr('data-length',1)
-    .call(dragHandler)
-    ;
-
-
-
-    var today = new Date();
-    var xNow = x(today)*oldScale+tempTrans[0];
-
-      d3.select('.new').select('.AssignedGroup').append("line").attr("class","today")
-      .attr("x1", xNow) //<<== change your code here
-      .attr("y1", 0)
-      .attr("x2", xNow) //<<== and here
-      .attr("y2", function(d) {
-          return d3.select(this.parentNode).attr('height');
-      })
-
-      .style("stroke-width", 2)
-      .style("stroke", "red")
-      .style("fill", "none");
-
-    var newLabel =  d3.select('[assignedName="'+newName+'"]')
-      .append('g')
-      .attr("class", "labelGroup")
-      .append('text')
-      .text(newName)
-      .attr('class','labelText')
-      .attr('width', '100')
-      .attr("y", 20)
-      .attr("font-size", 20)
-      .attr("font-family", "sans-serif")
-        .attr("font-weight", "bold")
-        .attr('fill', 'silver')
-        .attr('opacity', '0.9');
-
-        newLabel.append('line')
-          .attr("class","divider")
-          .attr("x1", x(minX))
-          .attr("x2", x(maxX))
-          .attr("stroke", "silver")
-          .attr("stroke-width", 1)
-            .attr("opacity", 0.5);
-
-
-
-
-
-//calculateAndApplyHeight(BAR_H);
-
-
-      };
-
-      var dataLength = 0;
-      /// deal with removals
-          d3.selectAll("g.assignedGroupGp")
-             .each(function(d,i){
-            //
-               if (d3.select(this).classed("Remove")){
-
-                  dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
-                 d3.select(this).remove();
-               }
-
-             }); // end each
-      // }; //end if classed
-  if (dataLength > 0) {
-
-    //calculateAndApplyHeight();
-
-  }
-
-
-       //} //end if result
-} //end updateresources
 
 
 
@@ -1669,21 +1528,21 @@ return d3.sum(d, function(g) {return g.value ; });
 var yearData = [];
 symbols.forEach(function(d){
 try {
-//
+//console.log(d.values[0]);
 var dateVal = d.values[0].StartDateExpression["#text"];
 var year = dateVal.substring(0,4);
+console.log(year);
 
-
-yearData.indexOf(year) === -1 ? yearData.push(year) :
+yearData.indexOf(year) === -1 ? yearData.push(year) : console.log("This item already exists");
 } catch (ex) {}
 });
 
-
+console.log(yearData);
 const minYear = new Date(parseInt(d3.min(yearData)),1,1);
 const maxYear = new Date(parseInt(d3.max(yearData)),12,31);
 
-
-
+console.log(minYear);
+console.log(maxYear);
 var slider3 = d3.sliderHorizontal()
 .min(minYear)
 .max(maxYear)
@@ -1823,7 +1682,7 @@ var clWidth = wrapper.clientWidth;
 //var clHeight2 = wrapper.attr("height");
 var bBoxHeight = wrapper.getBoundingClientRect().height;
 var bBoxTop = wrapper.getBoundingClientRect().top;
-//
+//console.log(wrapper.getBoundingClientRect());
 var yearFormat = d3.timeFormat("%Y");
 var weekFormat = d3.timeFormat('%y-%W');
 //var weekNumFormat = d3.timeFormat('%W');
@@ -1833,9 +1692,9 @@ var weekOnlyFormat = d3.timeFormat('%W');
 
 var wHeight = window.innerHeight;
 
-//
-//
-//
+//console.log(bBoxHeight);
+//console.log(clHeight);
+//console.log(wrapper);
 
 
 
@@ -1996,7 +1855,7 @@ function makeAbsoluteContext(element, svgDocument) {
 /*
 var groupResizeDragHandler = d3.drag()
 .on("start", function(d){
-
+  console.log("started dragging:" + d3.event.y);
 })
 .on("drag", function(d) {
 d3.select(this).attr("y") = d3.event.y;
@@ -2023,142 +1882,212 @@ var current, currentParent;
 var dragHandler = d3.drag()
     .on("start", function (d) {
 
-      var current=d3.select(this);
+      console.log("dragging");
+    //  var current=d3.select(this);
+        var current=d3.select(this);
       var currentParent=d3.select(this.parentNode);
+      console.log("this class:" + current.attr("class"));
+      console.log("parent class:" + currentParent.attr("class"));
+  //    deltaX = current.attr("x");// - d3.event.x; //restore without -xxx if can't make ot work
+    //  deltaY = current.attr("y");// - d3.event.y;//restore without -xxx if can't make ot work
 
 
-      if (d3.select(this).classed("AssignedGroup") == true) {
 
-          thisOffsetY = current.attr("height") - d3.event.y;
-      } else {
+  if (d3.select(this).classed("AssignedGroup") == true) {
+
+    thisOffsetY = current.attr("height") - d3.event.y;
+  } else {
 
 
-        thisDimensions = computeDimensions(currentParent);
-        thisOffsetX = d3.event.x - thisDimensions.x;
-        thisOffsetY = d3.event.y - thisDimensions.y;
+    thisDimensions = computeDimensions(currentParent);
+    thisOffsetX = d3.event.x - thisDimensions.x-HANDLE_R;
+    thisOffsetY = d3.event.y - thisDimensions.y-HANDLE_R;
+  //  deltaXparent = currentParent.attr("x");//- d3.event.x;//restore without -xxx if can't make ot work
+  //  deltaYparent = currentParent.attr("y");// - d3.event.y;//restore without -xxx if can't make ot work
 
-      var newX = d3.event.x - thisOffsetX;
+    //deltaXparent = currentParent.attr("x") - d3.event.x;
+  //  deltaYparent = currentParent.attr("y") - d3.event.y;
+  var newX = d3.event.x - thisOffsetX;
 
-      }
+
+  /*
+        console.log("deltaX at start:" + deltaX);
+        console.log("deltaXparent at start:" + deltaXparent);
+  */
+        console.log("d3.event.x at start:"+d3.event.x);
+        console.log("d3.event.y at start:"+d3.event.y);
+
+        console.log("offset x at start:"+thisOffsetX);
+        console.log("offset y at start:"+thisOffsetY);
+
+  }
+
+//  d3.select(this.rootNode.appendChild(this.parentNode));
+  //    console.log("parentNode Before:" + d3.select(this.parentNode.parentNode).attr("class"));
+    //  if (d3.select(this.parentNode.parentNode).classed("Assigned"))
+    //  {
+        // attempt to stop random bar jumping = DIDN'T SEEM TO DO ANYTHING USEFUL
+      //  d3.select(this.parentNode.parentNode.appendChild(this.parentNode));
+      //  console.log("parentNode After:" + d3.select(this.parentNode.parentNode).attr("class"));
+    //  }
+//  d3.select(this.parentNode).moveToFront;
+
+  //d3.select('.chart').appendChild(this.parentNode);
 
     })
     // no need, dragging the copy NOW (not a copy, have put the node back on top actually)
 
     .on("drag", function () {
+  //getAllElementsFromPoint(d3.event.x, d3.event.y);
 
-      if (d3.select(this).classed("AssignedGroup") == true) { // dragbottom gone for now .. may not bring back
-
-
-        d3.select(this).attr("height", d3.max([BAR_H,d3.event.y+thisOffsetY]));
-
-    } else {
+//pageX = d3.event.pageX;
+//if (d3.select(this).classed("AssignedGroup") == true || d3.select(this).classed("dragbottom") == true) {
+  if (d3.select(this).classed("AssignedGroup") == true) { // dragbottom gone for now .. may not bring back
 
 
+  //console.log("true dragbottom");
+//console.log(d3.select(this).attr("class"));
 
-      d3.select(this)
-            .attr("x", d3.event.x-thisOffsetX)//restore without + deltaX if can't make ot work
-            .attr("y", d3.event.y-thisOffsetY);// - deltaY); //restore without +deltaY if can't make ot work
-          //  .attr("x", d3.event.x)
-          //  .attr("y", d3.event.y);
+/*  d3.select(this).select(".dragbottom")
+//  .moveToFront()
+
+  //    .attr("x", d3.event.x + deltaX)
+      .attr("y", d3.event.y-GROUP_HANDLE_H)
+      .moveToFront();
+*/
+  d3.select(this).attr("height", d3.max([BAR_H,d3.event.y+thisOffsetY]));
+
+} else {
+
+//console.log("not dragbottom");
+
+//d3.select(this.parentNode).attr("transform", "translate("+d3.event.translate+")");
 
 
-           } // end if not dragbottom
+d3.select(this)
+      .attr("x", d3.event.x-thisOffsetX)//restore without + deltaX if can't make ot work
+      .attr("y", d3.event.y-thisOffsetY);// - deltaY); //restore without +deltaY if can't make ot work
+    //  .attr("x", d3.event.x)
+    //  .attr("y", d3.event.y);
+
+
+     } // end if not dragbottom
     })
     .on("end", function(d){
 
 
-        console.log("almost at closest, this class:" + d3.select(this).attr("class"));
-
-      //  var closeBar = d3.select(this).closest("g.GBarGroup");  //WORKS
-        var closeBar = d3.select(this.parentNode);//.closest("g.GBarGroup");  //WORKS
-    //    console.log(closeBar.attr("class"));
-
-        //if (d3.select(this).classed("AssignedGroup") == true || d3.select(this).classed("dragbottom") == true) {
-        if (d3.select(this).classed("AssignedGroup") == true) {   // || d3.select(this).classed("dragbottom") == true) {
-
-              d3.selectAll('.labelGroup').select('text').classed("darker", false);
-              d3.select(this).select('.labelGroup').select('text').classed("darker", true);
-
-              var gpName = d3.select(this).attr("assignedName");
-
-            //d3.select(this).lower();
-              newName = gpName;
-              activeNameGroup = d3.select(this.parentNode); //.closest("g.assignedGroupGp");
-              activeNameGroupSvgId = d3.select(this).attr("assignedName");
-            //  activeNameGroup = $(this).closest("g.assignedGroupGp");
-              activeNameGroupId = activeNameGroup.attr("ID");
-              console.log("angID: " + activeNameGroupId);
-
-              var trimmedHeight;
-
-              d3.select(this).attr("height", function(d) {
-                untrimmedHeight = parseInt(d3.select(this).attr("height"));
-                trimmedHeight = parseInt(untrimmedHeight -untrimmedHeight%(BAR_H/oldScale));
-                return trimmedHeight;
-              });
-
-              d3.select(this).select('.today').attr('y2', trimmedHeight);
-              var newDataLength = parseInt(trimmedHeight/BAR_H/oldScale);
-              d3.select(this).attr("data-length", newDataLength);
+      // find the new bar locations
+    //  passThruEvents(d3.select(this.parentNode));
+  // ALL DATA:
+//  console.log(d.x)
+//   passThruToGroup(deltaX, deltaY);
 
 
-              calculateAndApplyHeight(BAR_H);
-
-
-           } else {
+//   d3.select(this)
+//   .moveToFront()
 
 
 
-              d3.select(this).select('rect').classed("changed", true);
-              //   d3.selectAll(groups.parentNode).moveToBack();
-              d3.select(this).moveToFront();
 
-        //      console.log("activeNameGroupID:" + activeNameGroupId);
+  //if (d3.select(this).classed("AssignedGroup") == true || d3.select(this).classed("dragbottom") == true) {
+  if (d3.select(this).classed("AssignedGroup") == true) {   // || d3.select(this).classed("dragbottom") == true) {
+
+d3.selectAll('.labelGroup').select('text').classed("darker", false);
+d3.select(this).select('.labelGroup').select('text').classed("darker", true);
+
+var gpName = d3.select(this).attr("assignedName");
+
+  //d3.select(this).lower();
+    newName = gpName;
+    activeNameGroup = this.closest("g.assignedGroupGp");
+    activeNameGroupId = d3.select(activeNameGroup).attr("ID");
+    //var thisNode = d3.select(this.parentNode);  // actualy its the assigned group thats being dragged
+    // console.log("assname:" + thisNode.attr("assignedName"));
+    console.log("yes this is dragbottom");
+    //console.log("oldScale:" + oldScale)
+    var trimmedHeight;
+    d3.select(this).attr("height", function(d) {
+      untrimmedHeight = parseInt(d3.select(this).attr("height"));
+      trimmedHeight = parseInt(untrimmedHeight -untrimmedHeight%(BAR_H/oldScale));
+      return trimmedHeight;
+    });
+    d3.select(this).select('.today').attr('y2', trimmedHeight);
+    var newDataLength = parseInt(trimmedHeight/BAR_H/oldScale);
+    d3.select(this).attr("data-length", newDataLength);
+
+/*
+// no dragbottom at the moment
+    d3.select(this).select(".dragbottom")
+  //  .moveToFront()
+
+    //    .attr("x", d3.event.x + deltaX)
+        .attr("y", trimmedHeight-GROUP_HANDLE_H)
+        .moveToFront();
+*/
+
+      /*  xAxisWeekFloating.tickSize(xAxisWeekFloating.tickSize()+trimmedHeight);
+        xAxisWeekFloating3.tickSize(xAxisWeekFloating3.tickSize()+trimmedHeight);
+
+        globalXWeekFloating3.call(xAxisWeekFloating3);
+        globalXWeekFloating.call(xAxisWeekFloating);
+         */
+
+      //   calculateAndApplyHeight(BAR_H);
+                  calculateAndApplyHeight(BAR_H);
+        //    d3.select(this).moveToBack();
+
+    /*  var groups = d3.selectAll(".AssignedGroup")
+    .filter(function(d, i) {
+    //  console.log(d);
+      return d.key != thisNode.attr("assignedName");
+      // return i != 2;
+     });
+     //console.log('exclude one group:');
+     //console.log(groups);
+    d3.selectAll(groups.parentNode).moveToBack(); */
+ //d3.select(this).moveToFront();
+
+
+   } else {
+
+      console.log("drag ended, get a new date");
+
+      d3.select(this).select('rect').classed("changed", true);
+      //   d3.selectAll(groups.parentNode).moveToBack();
+      d3.select(this).moveToFront();
+
+//    console.log(d3.selectAll('.GBarGroup').data()); // WORKS
+    // THIS BAR'S DATA
+      var closeBar = this.closest("g.GBarGroup");  //WORKS
+
+         colVal = collisionDetection(d3.select(closeBar).select('.barGroup'));
+         console.log("collision result:" + colVal);
+    //  closeBar.moveToFront();
+  //  d3.select(activeNameGroup).select(".AssignedGroup").append(closeBar);
 
   // THE BIT THAT MOVES MY BAR INTO THE CORRECT GROUP SO I CAN KEEP SELECTING IT AFTER I'VE CHANGED THE NAME ON IT
-            if (activeNameGroupId != "") {
+  if (activeNameGroupId != "") {
+    console.log("actGroupID:" + activeNameGroupId);
+    $("[id='"+activeNameGroupId+"']").find(".AssignedGroup").prepend(closeBar);
 
-        //    console.log("closebar class:" + closeBar.attr("class") + ", d-index:" + closeBar.attr("bar-data-index"));
-          //  console.log("this class:" + d3.select(this).attr("class"));
-            //  $("[id='"+activeNameGroupId+"']").find(".AssignedGroup").prepend(d3.select(this.parentNode));
-              //  d3.select("[id='"+ activeNameGroupSvgId +"']").insert(closeBar);
+   d3.select(closeBar).select('.barGroup').attr("y",function(d){
+  //   try {
+     var groupHeight = d3.select(closeBar.parentNode).attr("height");
+     var currY = d3.select(closeBar).select(".barGroup").attr("y");
+     console.log("groupHeight:" + groupHeight);
+     return d3.min([currY,(groupHeight - BAR_H)]);
+//   } catch (ex) {
+//     return 0;
+//   }
+   });
 
-            //    $("[id='"+activeNameGroupId+"'] svg").prepend(d3.select(this.parentNode));
-            //  document.getElementById(activeNameGroupId).getElementsByClassName("AssignedGroup")[0].appendChild(d3.select(this.parentNode));
-          //  activeNameGroup.select(".AssignedGroup").append(this.parentNode);
+  }
+  //  d3.select(closeBar).attr("y", 0);
 
-
-
-                //  d3.select("#"+ activeNameGroupSvgId).append(closeBar);
-                      //  d3.select("[assignedName='"+ activeNameGroupSvgId+"']").append(closeBar);
-                      //OMG SO PAINFUL TODO: do I need to relook at the SP version?
-                         $("[assignedName='"+ activeNameGroupSvgId+"']").prepend($(this).parent());
-
-
-                         d3.select(this).attr("y",function(d){
-                             // closeBar.select('.barGroup').attr("y",function(d){
-                             //   try {
-                                var groupHeight = activeNameGroup.select(".AssignedGroup").attr("height");
-
-                                var currY =d3.select(this).attr("y");
-                                //console.log("currY:" + currY);
-                                //console.log("groupHeight:" + groupHeight);
-
-                                return d3.max([0,d3.min([currY,(groupHeight - BAR_H)])]);
-                           //   } catch (ex) {
-                           //     return 0;
-                           //   }
-                         });
-
-
-      } // end if activenamegroup
-
-            var closeData = d3.select(this.parentNode).data();
-
-    //console.log(d3.select(closeBar));
-    //  console.log(closeData);
-    //  console.log(closeData.length);
-      if(closeData.length > 0 && closeData[0] != null) {
+      console.log("closeBar data ...: ");
+      console.log(d3.select(closeBar).data());
+      var closeData = d3.select(closeBar).data();
+      if(closeData.length > 0) {
       if(closeData[0].hasOwnProperty("UID")) {
         var projectKey = closeData[0].UID;
 
@@ -2166,20 +2095,22 @@ var dragHandler = d3.drag()
       var uniqueRef = closeData[0].UniqueReference["#text"];
       var ownerName = closeData[0].OwnerName;
       var projTitle = closeData[0].WebName["#text"];
-      var duration = closeData[0].EstDurationAtCompletion["#text"];
+
+
+
     }
   } // end size closedata
-
+      console.log(closeData);
 
 
 /*
 //TODO:  keep this for future reference
       let tempX = d3.scaleTime()
       .domain(xAxis.scale().domain());  // OF NO USE ??
+console.log(xAxis.scale().domain());
 
 
-
-
+console.log(xAxis.scale().range());
 */
 
 //**************************************************//
@@ -2193,16 +2124,16 @@ var scriptDateFormat = d3.timeFormat("%Y,%m,%d");
      var xPosition = dateFormat(x.invert(newX));
      var scriptDate = scriptDateFormat(x.invert(newX));
 
-//
+//console.log("MondayLock:" + d3.select("#MondayLock").attr("checked"));
 
 if (d3.select("#MondayLock").attr('checked') == 'true') {
 
         scriptDate = scriptDateFormat(nearestMonday(scriptDate));
         xPosition = dateFormat(new Date(scriptDate));
-      //
+      //  console.log("locking to MOnday");
 }
 
-
+     console.log("duration:" + duration);
      var newFinish = addBusinessDays(new Date(scriptDate), parseFloat(duration));
      var scriptFinishDate = scriptDateFormat(new Date(newFinish));
 
@@ -2215,8 +2146,8 @@ if (d3.select("#MondayLock").attr('checked') == 'true') {
 
    f.setDate(f.getDate() + (5 + 7 - f.getDay()) % 7); //assume 5 means it will be Friday
 
-
-
+  console.log("friday:" + f) ;
+  console.log("newFinish:" + newFinish);
 */
 
      closeData[0].newStartDate = xPosition;
@@ -2238,22 +2169,20 @@ if (d3.select("#MondayLock").attr('checked') == 'true') {
 //var holidays = [];
 var newDuration = calcBusinessDays(new Date(scriptDate), new Date(scriptFinishDate), holidays);
 
-//
-//
+//console.log("formfinishdate:" + formattedFinishDate);
+//console.log("new duration:" + newDuration);
 
   closeData[0].newDuration = newDuration;
 
 
 
 
-  //
+  //    console.log("class:" +  d3.select(this).attr("class"));
 
   //    d3.select(this)
-//d3.select(closeBar).selectAll(".dateText").remove();
-d3.select(this.parentNode).selectAll(".dateText").remove();
+d3.select(closeBar).selectAll(".dateText").remove();
 
-  d3.select(this.parentNode).select('svg')
-//  d3.select(closeBar).select('svg')
+  d3.select(closeBar).select('svg')
       .insert("text")
       .attr('y', 22)
       .attr("font-size", 9)
@@ -2263,10 +2192,9 @@ d3.select(this.parentNode).selectAll(".dateText").remove();
       .text("new start:" + xPosition);
 
 
-  //    d3.select(closeBar).selectAll(".finDateText").remove();
-      d3.select(this.parentNode).selectAll(".finDateText").remove();
-  //  tempFinText =    d3.select(closeBar).select('svg')
-    tempFinText =    d3.select(this.parentNode).select('svg')
+
+      d3.select(closeBar).selectAll(".finDateText").remove();
+    tempFinText =    d3.select(closeBar).select('svg')
             .insert("text")
             .attr('y', BAR_H)
             .attr("font-size", 9)
@@ -2279,7 +2207,7 @@ d3.select(this.parentNode).selectAll(".dateText").remove();
 tempFinText.moveToBack();
 
 
-
+    console.log("oldname: "+ oldName + "; assigned Name:" + newName);
 
     try {
     if (newName != "") {
@@ -2295,8 +2223,8 @@ tempFinText.moveToBack();
       d3.select(this.parentNode).select("text.barsText")
       .text(newText);
     //  .update();
-//
-    //
+//  console.log(updateObject(symbolAssignees, newName, projectKey,oldName))
+    //console.log(d3.select('.projectBars').datum());
 
 
     //circles = allCharts.selectAll('circle.circHandle'); // get them afresh .. don't now if i need to do that
@@ -2308,8 +2236,8 @@ tempFinText.moveToBack();
       }
     } catch (ex) {
 
-
-
+      console.log(ex);
+      console.log(ex);
       //alert("AssignedToName not found");
     }
 
@@ -2338,7 +2266,7 @@ dragHandler(nameGroups);
 
 
 bars.on("mouseover",  function(d, i) {
-//
+//  console.log("mouseover happened");
 
     var wholeNode = d3.select(this.parentNode);
     var thisBar = d3.select(this);
@@ -2348,7 +2276,7 @@ bars.on("mouseover",  function(d, i) {
 
 
   bars.on("click",  function(d, i) {
-
+    console.log("click happened");
     /*  return this.each(function() {
          this.parentNode.appendChild(this);
       }); */
@@ -2359,95 +2287,36 @@ bars.on("mouseover",  function(d, i) {
     });
 
 
-    function LaunchMessageDialog(dlgTitle,dlgText,action) {
-    // Get the modal
+/*
 
-      $(".modal-body").html(dlgText);
-      $(".modal-header h2").html(dlgTitle);
-      //$("").css("display", "block");
-      var modal = document.getElementById('myModal');
-          modal.style.display="block";
-      // Get the button that opens the modal
-      //  var btn = document.getElementById(btnID);
+    function bdragresize(d) {
+      console.log("got here");
+      // if (isYChecked) {
+         //Max x on the left is x - width
+         //Max x on the right is width of screen + (dragbarw/2)
+    //     var dragy = Math.max(d.y + (dragbarw/2), Math.min(h, d.y + height + d3.event.dy));
+    var thisBar = d3.select(this)
+    var parentHeight = d3.select(this.parentNode).attr("height");
+    console.log("parentHeight:" + parentHeight);
 
-      // Get the <span> element that closes the modal
-      var span = document.getElementsByClassName("close")[0];
-      var footer = document.getElementById('modal-footer');
+    console.log(d3.event.y);
+  //var dragy = Math.max(d.y, Math.min(h, d.y + height + d3.event.dy));
+         //recalculate width
+      //   height = dragy - d.y;
+  //d3.select(this).attr("y", d3.event.y);
+      d3.select(this.parentNode).attr("height", d3.event.y);
 
-      footer.style.display = "none";
+         //move the right drag handle
+        // dragbarbottom
+        //    .attr("y", function(d) { return dragy  });
 
-      // When the user clicks on the button, open the modal
-      //  btn.onclick = function() {
-      //    modal.style.display = "block";
-      //    }
+         //resize the drag rectangle
+         //as we are only resizing from the right, the x coordinate does not need to change
 
-      // When the user clicks on <span> (x), close the modal
-      span.onclick = function() {
-      modal.style.display = "none";
-      }
-
-      // When the user clicks anywhere outside of the modal, close it
-      window.onclick = function(event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-
-        }
-      }
+    //  }
     }
 
-
-    function LaunchConfirmDialog(dlgTitle,dlgText, action) {
-    // Get the modal
-
-      $(".modal-body").html(dlgText);
-      $(".modal-header h2").html(dlgTitle);
-      var modal = document.getElementById('myModal');
-          modal.style.display="block";
-          var footer = document.getElementById('modal-footer');
-          footer.style.display = "block";
-
-          var okBtn = document.getElementById('modal-footer-Okbtn');
-          var cclBtn = document.getElementById('modal-footer-Cancelbtn');
-
-
-    cclBtn.onclick = function() {
-      modal.style.display = "none";
-    }
-
-    okBtn.onclick = function() {
-      modal.style.display = "none";
-      if (dlgTitle == "Update Resources") {
-        //call a function
-        updateResources();
-      //  return true;
-      } else {
-        // do some other stuff
-      }
-    }
-
-      // Get the button that opens the modal
-      //  var btn = document.getElementById(btnID);
-
-      // Get the <span> element that closes the modal
-      var span = document.getElementsByClassName("close")[0];
-
-      // When the user clicks on the button, open the modal
-      //  btn.onclick = function() {
-      //    modal.style.display = "block";
-      //    }
-
-      // When the user clicks on <span> (x), close the modal
-      span.onclick = function() {
-      modal.style.display = "none";
-      }
-
-      // When the user clicks anywhere outside of the modal, close it
-      window.onclick = function(event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
-      }
-    }
+*/
 
 
 // for detecting underlying group
@@ -2483,7 +2352,7 @@ bars.on("mouseover",  function(d, i) {
     //    var obj = newVal;
     //var obj=obj;
 
-
+    console.log("new name:" + newNameKey + "; old name:" + oldName);
   //  var obj = object;
 
       var tempObj = {};
@@ -2492,9 +2361,9 @@ bars.on("mouseover",  function(d, i) {
 // find the right record, and update the name into a temp obj, delete the object from the data
       $.each(obj,function(i,entry) {
         if(entry.key == oldName) {
-      //
-      //
-      //
+      //    console.log("found");
+      //   console.log(entry);
+      //    console.log(entry.values);
       //     newArray = entry.values;  // why is this not active? do i not need it?
           $.each(newArray, function(k, proj) {
             if (proj.key == ProjectKey) {
@@ -2504,17 +2373,17 @@ bars.on("mouseover",  function(d, i) {
                 tempObj.values = [proj.values[0]];
                 delete proj.values[0];
 
-          //
-            //
+          //    console.log("found");
+            //  console.log(proj.values[0]);
               $.each(obj, function(i, e2){
                   if(e2.key == newNameKey) {
                     newArray.push(tempObj);
                   }
               });
             } catch (ex) {
-
-
-
+              console.log("assigntoname not found");
+                console.log(proj.value[0]);
+                console.log(ex);
               }
             }
 
@@ -2522,7 +2391,7 @@ bars.on("mouseover",  function(d, i) {
           })
 
 
-          //
+          //console.log(entry.name + " : " + entry.value)
    }
 });
 
@@ -2548,8 +2417,8 @@ function nearestMonday(date) { //1=Monday //5=Friday
      m.setDate(m.getDate() + (1 - m.getDay()) % 7);
    }
 
-  //
-
+  // console.log("returned date:" + m);
+   console.log("returned monday:" + m + "; original monday" + new Date(date));
 
    return m;
 
@@ -2572,8 +2441,8 @@ function nearestFriday(date) { //1=Monday //5=Friday
     // f.setDate(f.getDate() + (5 - f.getDay()) % 7);
    }
 
-  //
-
+  // console.log("returned date:" + m);
+   console.log("returned friday:" + f + "; original date:" + new Date(date));
 
    return f;
 
@@ -2589,7 +2458,7 @@ function getChangedItems() {
 
   d3.selectAll("g.GBarGroup").each(function (d,i) {
     if(d.hasOwnProperty("newStartDate") || d.hasOwnProperty("newFinishDate") || d.hasOwnProperty("newCompletion")) {
-
+    console.log(d);
     var webUrl = d.WebHref["#text"];
     var listName = d.ListName["#text"];
 //  var listName = "ProjectTaskList";
@@ -2600,10 +2469,10 @@ function getChangedItems() {
     var origAssTo = "";
     try { origAssTo = d.AssignedTo["#text"].split("#")[1]; } catch (ex) {
       // no value3
-
+      console.log(ex);
      };
-
-
+    console.log("new name:" + assToName + ", oldName:" + origAssTo);
+    console.log("webUrl:" + webUrl);
 
 
 
@@ -2613,7 +2482,7 @@ function getChangedItems() {
 
   //  var itemProps = {};
         var url = webUrl;// + "/_api/web/lists/getbytitle('" + listName + "')/items?$filter=ID eq " + itemId + "";
-
+        console.log("url: " + url);
 
 
         var itemType =  GetItemTypeForListName(listInternalName);
@@ -2665,10 +2534,10 @@ function getChangedItems() {
               itemProps["Predecessors"] = {"results":[]};
             }
 
-
+              console.log("localeCompare names:" + assToName.localeCompare(origAssTo));
 
               if (assToName.localeCompare(origAssTo) != 0) {
-              //
+              //  console.log("need to get the new name ID somehow or otherwise update a name - yikes");
                 try {
 
                   if (assToName == "ZZ Not assigned") {
@@ -2686,12 +2555,12 @@ function getChangedItems() {
 
 
                     // = [getUserId(assToName, webUrl)];
-                  //
-                  //
+                  //  console.log("AssignedTo id:" + getUserId(assToName, webUrl));
+                  //console.log()
                     updateListItem(url, listName, listGuid, listInternalName, itemId, itemProps, itemCount, "Construction Planner");
                   } catch(ex){
                     //couldn't get a user id somehow, update without it
-
+                    console.log(ex);
                     updateListItem(url, listName, listGuid, listInternalName, itemId, itemProps, itemCount, "Construction Planner");
                   }
               } else {
@@ -2719,7 +2588,7 @@ function getUserId(displayName, web){
   var requestUri = web +
   "/_api/web/siteusers?$select=*&$filter=Title eq '"+displayName+"'";
 
-
+  console.log(requestUri);
 
 	//			  "/_api/web/siteusers?$select=LoginName&$filter=Title eq '"+displayName+"'";
 
@@ -2742,7 +2611,7 @@ function getUserId(displayName, web){
 			//alert("Failed to get details");
 		}
 	});
-//
+//  console.log('returned userId:' + userId);
 	return userId;
 }
 
@@ -2758,7 +2627,7 @@ function getGroupId(displayName, web){
   var requestUri = web +
   "/_api/web/sitegroups?$select=*&$filter=Title eq '"+displayName+"'";
 
-
+  console.log(requestUri);
 
 	//			  "/_api/web/siteusers?$select=LoginName&$filter=Title eq '"+displayName+"'";
 
@@ -2778,7 +2647,7 @@ function getGroupId(displayName, web){
           return userId;
         }) */
 
-//
+//        console.log(userId)
 			}
 
 		},
@@ -2786,7 +2655,7 @@ function getGroupId(displayName, web){
 			//alert("Failed to get details");
 		}
 	});
-//
+//  console.log('returned userId:' + userId);
 	return groupId;
 }
 
@@ -2820,18 +2689,18 @@ function GetItemTypeForListName(name) {
 
 function updateListItem(webUrl,listName, listGuid, listInternalName, itemID, itemProperties, numitems, calltype)
 {
+  console.log("itemCount:" + numitems);
 
-
-
-//
-
+      console.log("updateListItem("+webUrl+","+ listName +","+ itemID +","  + itemProperties +","+ numitems +"," + calltype +")");
+//  console.log("calltype at updateListItem:" + calltype);
+console.log(itemProperties);
   var thisUrl = webUrl;
   var thisId = itemID;
   var thisUrlList = thisUrl + "/Lists/" + listInternalName; //so annoying
   var itemData = JSON.stringify(itemProperties);
   var formFolder = "";
 
-
+  console.log(JSON.stringify(itemProperties));
 
   // make a path for document libraries
   if (itemData.indexOf("ListItem") < 0)
@@ -2887,9 +2756,9 @@ function updateListItem(webUrl,listName, listGuid, listInternalName, itemID, ite
           }
        },
        error: function (err) {
-       		//
+       		//console.log("failure");
           closeMessage();
-
+       		console.log("AJAX error in request: " + JSON.stringify(err, null, 2));
        		//$("#Results").prepend("<div class='error'>ERROR:<div>"+ JSON.stringify(err, null, 2) +"</div></div>");
           statusMessage = "<div class='error'>ERROR:<div>"+ JSON.stringify(err, null, 2) +"</div></div>"+statusMessage;
           DismissDlgWithCode(null);
@@ -2921,7 +2790,7 @@ function updateObjectDates(obj, ProjectKey, newStart, newFinish) {
 //    var obj = newVal;
 //var obj=obj;
 
-//
+//console.log("new name:" + newNameKey + "; old name:" + oldName);
 //  var obj = object;
 
   var tempObj = {};
@@ -2930,9 +2799,9 @@ function updateObjectDates(obj, ProjectKey, newStart, newFinish) {
 // find the right record, and update the name into a temp obj, delete the object from the data
   $.each(obj,function(i,entry) {
   //  if(entry.key == oldName) {
-    //
-  //
-  //
+    //  console.log("found");
+  //   console.log(entry);
+  //    console.log(entry.values);
        newArray = entry.values;
       $.each(newArray, function(k, proj) {
         if (proj.key == ProjectKey) {
@@ -2941,8 +2810,8 @@ function updateObjectDates(obj, ProjectKey, newStart, newFinish) {
             tempObj.values = [proj.values[0]];
             delete proj.values[0];
             obj[i].values.push(tempObj);
-          //
-        //
+          //console.log("found");
+        //  console.log(proj.values[0]);
         //  $.each(obj, function(i, e2){
         //      if(e2.key == newNameKey) {
         //        newArray.push(tempObj);
@@ -2954,15 +2823,15 @@ function updateObjectDates(obj, ProjectKey, newStart, newFinish) {
     })
 
 
-      //
+      //console.log(entry.name + " : " + entry.value)
 //}
 });
 
 
-//
+//console.log(newArray);
 
 
-  //
+  //  console.log(obj);
 
 
     return obj;
@@ -2980,7 +2849,7 @@ var relBarDim;
   var resizeHandler = d3.drag()
       .on("start", function (d) {
 
-
+        console.log("resizing");
       //  var current=d3.select(this);
 
         if (d3.select(this).classed("circHandle") == true) {
@@ -3001,7 +2870,7 @@ var relBarDim;
           var relatedInfoCirc = d3.select(this.ParentNode).select("circle.circInfo");
         //    parentInfoCirc.attr("cx", d3.event.x);
           relBarDim = computeDimensions(relatedBar);
-        //
+        //  console.log(relatedBar.attr("x"));
           deltaX = relBarDim.x - d3.event.x;
           deltaY = relBarDim.y - d3.event.y;
           deltaCx = current.cx - d3.event.y - height/2;
@@ -3025,7 +2894,7 @@ var relBarDim;
       //  var current=d3.select(this);
 //var relatedBar = current.select(this.parentNode).select('rect');
   if (d3.select(this).classed("circHandle") == true) {
-  //
+  //console.log("deltaW:" + deltaW);
           d3.select(this)
         //  .moveToFront()
 
@@ -3047,30 +2916,29 @@ var relBarDim;
       })
       .on("end", function(d){
         // find the new bar locations
-      //
-    //
+      //  console.log(d.StartDateExpression['#text'])
+    //  console.log(d);
       if (d3.select(this).classed("circHandle") == true) {
 
   var relatedBar = d3.select(this.parentNode); //.select('rect');
         //  deltaX = relBarDim.x - d3.event.x;
 
-//    var closeBar = $(this).closest("g.GBarGroup");  //WORKS
-    var closeBar = $(this.parentNode); //.closest("g.GBarGroup");  //WORKS
+    var closeBar = this.closest("g.GBarGroup");  //WORKS
+    console.log("closeBar data ...: ");
+ //   console.log(d3.select(closeBar).data());
+    var closeData = d3.select(closeBar).data();
 
- //
-//    var closeData = d3.select(closeBar).data();
-  var closeData = d3.select(this.parentNode).data();
     var dateFormat = d3.timeFormat("%a %d/%m/%Y");
     var scriptDateFormat = d3.timeFormat("%Y,%m,%d");
 
     var newX = parseFloat(d3.select(this).attr("cx")) + parseFloat(d3.select(this.parentNode).attr("x"));  //svg + event //drag circle position
 
 /*
-
-
-
+    console.log("class:" + d3.select(this.parentNode).attr("class"));
+    console.log("parentX:" + d3.select(this.parentNode).attr("x"));
+    console.log("circ cx:" + d3.select(this).attr("cx"));
 */
-
+    console.log(newX);
 
    var newFinish = dateFormat(x.invert(newX));
    var scriptFinishDate = scriptDateFormat(x.invert(newX));
@@ -3095,22 +2963,22 @@ var relBarDim;
         if (closeData[0].hasOwnProperty("newStartDateScript"))
         {
 
-
+          console.log("newSDScript:" + new Date(closeData[0].newStartDateScript) +  ", new scriptFinishDate:" + new Date(scriptFinishDate));
           newDuration = calcBusinessDays(new Date(closeData[0].newStartDateScript), new Date(scriptFinishDate), holidays);
         } else {
 
-
+          console.log("finishdate expression date:" + new Date(parser(convertSPDateOnly(d.StartDateExpression["#text"]))) +  ", new scriptFinishDate:" + new Date(scriptFinishDate));
           newDuration = calcBusinessDays(new Date(parser(convertSPDateOnly(d.StartDateExpression["#text"]))), new Date(scriptFinishDate), holidays);
 
         }
 
-
+        console.log("newDuration:" + newDuration);
         closeData[0].newDuration = newDuration;
 
 
 
-        d3.select(this.parentNode).selectAll(".finDateText").remove();
-          d3.select(this.parentNode) //.select('svg')
+        d3.select(closeBar).selectAll(".finDateText").remove();
+          d3.select(closeBar).select('svg')
               .append("text")
               .attr('y', BAR_H)
               .attr("font-size", 9)
@@ -3197,7 +3065,7 @@ el
     } else { // else is html element
       dimensions = node.getBoundingClientRect();
     }
-    //
+    //console.log(dimensions);
     return dimensions;
   }
 
@@ -3225,13 +3093,13 @@ function rectResizeStartEnd() {
         isStarting || el.classed("hovering") ?
           HANDLE_R_ACTIVE : HANDLE_R
       );
-          //
+          //  console.log(getNewData);
 
       //    mydata=  getNewData();
   }
 
   function rectResizing(d) {
-//
+//console.log(d);
     var dragX = Math.max(
       Math.min(d3.event.x, MAX_TRANSLATE_X),
       MIN_TRANSLATE_X
@@ -3281,7 +3149,7 @@ function rectResizeStartEnd() {
 
 function intersectRect2(rec1, rec2) {
 
-  //
+  //console.log(rec1.class)
 
 var r1, r2;
     if (rec1 instanceof SVGElement) { // check if node is svg element
@@ -3324,7 +3192,7 @@ var r1, r2;
       } else { // else is html element
         r2 = node2.getBoundingClientRect();
       }
-      //
+      //console.log(dimensions);
     //  return dimensions;
     //}
 
@@ -3360,7 +3228,7 @@ var r1, r2;
     .attr("y1", 0).attr("x2", xNow) //<<== and here
 /*    .attr("y2", bBoxHeight) */
     .attr("y2", function(d) {
-
+      console.log('y2 height:' + d3.select(this.parentNode).attr('class'));
       return d3.select(this.parentNode).attr('height');
     })
 
@@ -3449,12 +3317,12 @@ var catchAllZoom =   catchAll.call(d3.zoom()
     .on("start", function() {
 
         const { transform } = d3.event;
-
+      console.log("zoom started");
 
     })
     .on("end", function() {
       const { transform } = d3.event;
-
+      console.log("zoom ended");
     /*  d3.select('.axisWeekFloating').select('line')
       .attr("y2", function(d) {
 
@@ -3470,7 +3338,7 @@ var catchAllZoom =   catchAll.call(d3.zoom()
     .on("zoom", function() {
       if (zoomable == true)
       {
-
+        console.log("zooming")
         const { transform } = d3.event;
 
         zoomChart(transform);
@@ -3490,9 +3358,7 @@ var catchAllZoom =   catchAll.call(d3.zoom()
   var parentBox;
 var tempTrans = [0, 0];
 function zoomChart(transform) {
-  try{
   tempTrans = getTranslation(transform);
-} catch(ex) {};
 
 
       d3.select('.chart').selectAll('g')
@@ -3535,25 +3401,25 @@ function zoomChart(transform) {
       //box = this.getBBox();
         box = this.getBoundingClientRect();
 
-      //
+      //  console.log(box);
         newY = parentBox.y - box.y;
         var groupBox = d3.select(this.parentNode.parentNode);
       //  var
       //  var groupBoxGroup = d3.select(this.parentNode.parentNode.ParentNode);
       //groupBoxSize = computeDimensions(groupBox);
-    //
+    //    console.log(groupBoxGroup.attr("class"));
       //  var groupBoxHeight = groupBox.height;
-      //
-      //
+      //  console.log(group)
+      //  console.log(d3.select(this.parentNode.parentNode).attr("class"));
       //   groupBox.attr("transform", "translate(" + tempTrans + ")scale(" + transform.k + ")");
          groupBox.attr("height", function(d) {
-      //
+      //   console.log(groupBox.attr("data-length"));
 
           return parseInt(groupBox.attr("data-length"))*BAR_H  *transform.k;
           //  return parseInt(groupBox.attr("height"))  *transform.k;
          })
          groupBox.attr("y", function(d) {
-    //
+    //     console.log(groupBox.attr("data-length"));
           return parseInt(groupBox.attr("data-length")-1)*BAR_H;
         //  return parseInt(groupBox.attr("height")-1)*transform.k;
          })
@@ -3571,8 +3437,8 @@ wrapper = document.querySelector('.chart');
 infowrapper = document.querySelector('#info');
 //wrapper2 = computeDimensions(d3.selectAll('svg'));
 //wrapperDim = d3.select(".chart").getBoundingClientRect();
-//
-//
+//console.log(wrapperDim);
+//console.log(wrapper);
 clHeight = wrapper.clientHeight;
 //var chartHeight = $(".chart").height();
 wrapperDetails = wrapper.getBoundingClientRect();
@@ -3595,7 +3461,7 @@ xAxis.scale(transform.rescaleX(x));
 
 
 var visibleDomain = (xAxis.scale().domain());
-
+console.log(visibleDomain);
 //shift name textlabels  along ...
 d3.selectAll(".labelText").attr("x", d => x(visibleDomain[0]));
 
@@ -3649,16 +3515,16 @@ d3.select('#updateChangedItemsBtn').on("click", function() {
 
     getChangedItems();
   } else {
-
+    console.log("nothing changed");
   }
 });
 
 
 d3.select("#trainingProjects").on("click", function(){
-
-
+  console.log('traning projects clicked');
+  console.log(d3.select("#trainingProjects").attr('checked'));
   if (d3.select("#trainingProjects").attr('checked') != true) {
-
+    console.log("training projects: no")
     trainingProjects = false;
     d3.select('.chart').selectAll('*').remove();
   //  d3.selectAll(".Axis").remove();
@@ -3683,7 +3549,7 @@ d3.select('#clearOldBtn').on("click", function() {
 
   //  getChangedItems();
   } else {
-
+    console.log("nothing changed");
   }
 });
 
@@ -3699,7 +3565,7 @@ function getGangList(btnEvent) {
               success: function (data) {
                   $.each(data.d.results, function (i, item){
                       var title = item.Title;
-                    //
+                    //  console.log(title);
                       if(title.startsWith("Gang-")) {
                         gangArr.push(title);
                       }
@@ -3711,7 +3577,7 @@ function getGangList(btnEvent) {
                   updateResourcesBtnClickContinued(btnEvent, gangArr);
               },
               error: function () {
-
+                  console.log("Error getting items");
               }
           });
 }
@@ -3724,19 +3590,15 @@ function getGangList(btnEvent) {
 d3.select('#updateResourcesBtn').on("click", function() {
   newName = "";
 activeNameGroupId = "";
-activeNameGroupSvgId = "";
 //IteratethroughGroup();
-//getGangList(this);
-gangArr = ["Someone Else1", "Someone Else2"];
+getGangList(this);
 
-updateResourcesBtnClickContinued(this, gangArr);
-
-//
+//console.log(gangList);
 
 
 }); //end on click
 
-
+var newItemCtr = -1;
 
 function updateResourcesBtnClickContinued(bntEvent, gangArr) {
   var dlgText = "";
@@ -3754,11 +3616,162 @@ function updateResourcesBtnClickContinued(bntEvent, gangArr) {
         "<div><span class='boxPrompt'>Check names to remove from the Planner:</span></div>" + dlgText;
         dlgText = dlgText + "<span class='boxPrompt'>Add a name: </span><input box id='newResource' placeholder='A Full Username known to SP' size='30' onchange='javascript:addResource(this)' />";
         dlgText = dlgText += "<div><span class='gangList boxPrompt'>Gang names available:</span><ul class='gangList'><li> " + gangArr.join('</li><li>') +"</li></ul></div>";
-        LaunchConfirmDialog("Update Resources",dlgText, null); //end launchconfirm
+        LaunchConfirmDialog("Update Resources",dlgText, function(result){
+             if (result == true) {
+                //deal with new person
+                console.log("newName:" + newName);
+            if(deactivateNames == true)  {
+              d3.selectAll(".labelText").classed("darker", false);
+
+            }
+            if(newName != "") {
+            //  d3.select("g.assignedGroupGp")  // 1 only??
+            newId = "assignedto-"+newName;
+
+  // BEGINNING OF CREATION
+  symbolAssignees.push({key: newName, values:[]});
+
+  groupCtr = symbolAssignees.length-1;
+
+//  console.log(symbolAssignees[groupCtr]);
+//  console.log(symbolAssignees);
+
+
+        var newSection = d3.select(wrapper)
+      //  allCharts
+          .insert('g', ":first-child")
+          .attr('class', 'assignedGroupGp new')
+          .attr('id', newId)
+          .datum(symbolAssignees[groupCtr])
+          .enter();
+
+          d3.select('.new').append('svg')
+          .attr('height', BAR_H)
+          .attr('class','AssignedGroup')
+
+          .attr('assignedName', newName)
+        //  .append('rect')
+          .attr('height', BAR_H)
+          .attr('x', 0)
+          .attr('y', 0)
+          .attr('width', '100%')
+        /*  .attr('background-color', function(d,i) {
+
+          return d3.rgb(colorScaleNewSection(i))
+        } ) */
+          .attr('style', function(d,i) {
+            console.log(d3.rgb(colorScaleNewSection(i)));
+            newItemCtr++;
+          return 'background-color: '  + d3.rgb(colorScaleNewSection(newItemCtr));
+        })
+          .attr('opacity', '0.7')
+          .attr('data-length',1)
+          .call(dragHandler)
+        //  .call()
+
+
+          ;
+
+console.log(tempTrans);
+
+          var today = new Date();
+          var xNow = x(today)*oldScale+tempTrans[0];
+        //  console.log("newSection classs:" +newSection.attr("class"));
+            d3.select('.new').select('.AssignedGroup').append("line").attr("class","today")
+            .attr("x1", xNow) //<<== change your code here
+          //  d3.select('.chart').append("line").attr("class","today").attr("x1", xNow) //<<== change your code here
+            .attr("y1", 0)
+            .attr("x2", xNow) //<<== and here
+            .attr("y2", function(d) {
+    //       console.log('y2 height:' + d3.select(this).attr('class'));
+            //  return d3.select('.new').select('.AssignedGroup').attr('height');
+                return d3.select(this.parentNode).attr('height');
+            })
+
+            .style("stroke-width", 2)
+            .style("stroke", "red")
+            .style("fill", "none");
+//newSection.append
+
+
+      var newLabel =  d3.select('[assignedName="'+newName+'"]')
+        .append('g')
+        .attr("class", "labelGroup")
+        .append('text')
+        .text(newName)
+        .attr('class','labelText')
+        .attr('width', '100')
+        .attr("y", 20)
+        .attr("font-size", 20)
+        .attr("font-family", "sans-serif")
+          .attr("font-weight", "bold")
+          .attr('fill', 'silver')
+          .attr('opacity', '0.9');
+
+          newLabel.append('line')
+            .attr("class","divider")
+            .attr("x1", x(minX))
+            .attr("x2", x(maxX))
+            .attr("stroke", "silver")
+            .attr("stroke-width", 1)
+              .attr("opacity", 0.5);
+          //    .call();
+
+              //above line not showing, why??
+        //  newGroup = newSection.select('.AssignedGroup'); // get them afresh .. don't now if i need to do that
+        //   dragHandler(newGroup);
+
+
+      calculateAndApplyHeight(BAR_H);
+
+  //newSection.each(label(null));
+
+    //newSection.moveToFront();
+    //.attr('rect')
+  //  .attr('x' 0)
+  //  .attr('y', 0)
+  //  .attr('height', 100)
+  // .attr('fill', 'green') //;
+  //  .attr('width' '100')
+  //  .attr('height', '100')
+  //  .attr('fill', 'green');
+
+  // END OF CREATION
+
+            };
+
+var dataLength = 0;
+            /// deal with removals
+            d3.selectAll("g.assignedGroupGp")
+               .each(function(d,i){
+              //   console.log(d3.select(this).attr('class'));
+                 if (d3.select(this).classed("Remove")){
+                  // console.log(d3.select(this));
+                   console.log(d.key);
+                    dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
+                   d3.select(this).remove();
+                 }
+
+               }); // end each
+            // }; //end if classed
+        if (dataLength > 0) {
+
+          /*
+
+          xAxisWeekFloating.tickSize(xAxisWeekFloating.tickSize()-(dataLength+1)*height);
+          xAxisWeekFloating3.tickSize(xAxisWeekFloating3.tickSize()-(dataLength+1)*height);
+
+          globalXWeekFloating3.call(xAxisWeekFloating3);
+          globalXWeekFloating.call(xAxisWeekFloating);
+*/
+          calculateAndApplyHeight();
+
+        }
+
+
+             } //end if result
+           }); //end launchconfirm
 }
-
-
-
 
 
 function clearOldItems() {
@@ -3779,7 +3792,7 @@ function clearOldItems() {
   });
   //reset heights
   d3.selectAll("g.assignedGroupGp").each(function() {
-
+    console.log("num items for:" + d3.select(this).attr("id") + ":- " + d3.select(this).selectAll(".GBarGroup").size());
     var numItems = d3.select(this).selectAll(".GBarGroup").size();
     d3.select(this).select(".AssignedGroup").attr("data-length",numItems);
     if (numItems == 0) { numItems = 1; };
@@ -3810,14 +3823,76 @@ d3.select("#deactivateNamesChk").on("click", function(){
 })
 
 
+d3.select("#collisionBtn").on("click", function(){
+  console.log("hit it");
+var previousObj;
+  var newHeight = BAR_H;
+  var newY = 0;
+  var hitadjusted = false;
+  var testCtr = -1;
+var testName = 'Gang-Day';
+  var size = d3.select("[assignedName='"+testName+"']").selectAll(".barGroup").size();
+d3.select("[assignedName='"+testName+"']").selectAll(".barGroup")
+.each(function(d, i) {
+  testCtr = -1;
+  d3.select(this).attr("y", 0);
+//  console.log(d);
+  mainObj = d3.select(this);
+console.log('size b4 main:' + size);
+console.log(mainObj.attr("y"));
+//  var size = d.length;
+
+//console.log(collisionDetection(d3.select(this).select('.bars')), i);
+
+    var k=0;
+      if (i >0){
+        console.log(previousObj.attr("y"));
+      while (k < size) {
+        k++;
+        console.log("hittest:" + collisionDetection(mainObj, i));
+        //if (hitTest(mainObj, previousObj))
+        if (collisionDetection(mainObj, i))
+        {
+        //testCtr++;
+          newY= newY+BAR_H;
+//          newHeight = d3.max([newHeight,newY+BAR_H]);
+          newHeight = d3.max([newHeight,newY+BAR_H]);
+          mainObj.attr("y", newY);
+        //  mainObj = d3.select(this);
+      //  testCtr = 0;
+      //  break;
+      }
+
+      }
+        newY = 0;
+        testCtr = 0;
+      newHeight = d3.max([newHeight,newY+BAR_H]);
+
+
+      } //end if i !=j
+    //} //end while hittest
+
+
+previousObj = mainObj;
+
+
+
+
+})
+
+d3.select("[assignedName='"+testName+"']").attr("height",newHeight);
+console.log("finished");
+});
+
+
 d3.select('#getDataBtn').on("click", function() {
 
 //  var changedCount = d3.selectAll(".changed").size();
 //  var itemCountText = "There are " + changedCount + " changed items.";
 //  if (changedCount  == 1 ) { itemCountText = "There is 1 changed item."};
 //var newData = getNewData();
-//
-
+//console.log(newData);
+console.log(d3.selectAll('g.assignedGroupGp').data());
 //var myData = JSON.stringify(d3.selectAll('g.assignedGroupGp').data());
 var myData = d3.selectAll('g.assignedGroupGp').data();
 myData.forEach(function(group,i){
@@ -3880,7 +3955,7 @@ function JSONstringify(json) {
 
     arr.unshift(json);
 
-  //
+  //  console.log.apply(console, arr);
     return(arr.toString(""));
 }
 
@@ -3892,7 +3967,7 @@ d3.select('#instructions').on("click", function() {
   catchAllZoom.on("click", function() {
   //  alert("clicked");
   //  alert('zoom clicked')
-
+  console.log("catchall clicked, class:"+d3.select(this).attr("class"));
   d3.event.stopPropagation();
   if(zoomable == true) {
 
@@ -3934,10 +4009,6 @@ d3.select('#instructions').on("click", function() {
 
 
 
-
-
-
-
 /* add a button to rezooom things */
 
 
@@ -3968,36 +4039,41 @@ function get_browser() {
 // STUFF TO TRY AND GET THE UNDERLYING group (selecting lower SVG objects)
 
 //https://medium.com/@jstubblefield7939/collision-detection-in-d3-js-502fb01290ed
-
-//var colliding = false;
-var collisionDetection = function(bar) {
-
-
-  var radius = 1;
+var collisionCount;
+var colliding = false;
+var collisionDetection = function(bar, i) {
+  console.log('col detect:');
+  console.log(bar);
+//  var radius = 1;
+    var radius = BAR_H;
   var collision = false;
   //var hero = bar;
-  d3.selectAll(".AssignedGroup").each(function() {
-    var groupX = d3.select(this).select('.bars').x;
-    var groupY = d3.select(this).select('.bars').y;
-    var groupW = d3.select(this).select('rect').width;
+  d3.selectAll(".barGroup").each(function(d, k) {
+    if (i !== k) {
+    var groupX = d3.select(this).x;
+    var groupY = d3.select(this).y;
+    var groupW = d3.select(this).width;
     var barX = bar.x;
     var barY = bar.y;
+    var barW = bar.width;
 /*
-
-
-
+    console.log(this.x);
+    console.log("gpx:" + groupX + "; gpy:" + groupY + "; gpW:" + groupW);
+    console.log("barx:" + barX + "; barY:" + barY);
     */
   //  var barW =
     var a = barX - groupX;
     var b = barY - groupY;
     var c = Math.sqrt(a * a + b * b);
-    var distance = c;
-    if (distance < radius * 2) {
+  //  var distance = c;
+    var distance = radius;
+    if (distance < radius) {
 
       collision = true;
-
+      console.log("collision:" + this);
       return this;
     }
+    } // end if i!=k;
   }); // end enemies.each
 
   if (collision && collision !== colliding) {
@@ -4006,6 +4082,7 @@ var collisionDetection = function(bar) {
   colliding = collision;
   return colliding;
 }; // end collisionDetection
+
 
 
 
@@ -4052,27 +4129,6 @@ d3.selection.prototype.moveToFront = function() {
         }
        });
       };
-
-
-d3.selection.prototype.closest = function(selector){
-            var closestMatch = undefined;
-            var matchArr = [];
-            this.each(function(){
-                var elm = this;
-                while(typeof elm.parentNode.matches === "function" && !closestMatch){
-                    elm = elm.parentNode;
-                    if(elm.matches(selector)){
-                        closestMatch = elm;
-                        matchArr.push(closestMatch);
-                    }
-                }
-                closestMatch = undefined;
-            });
-            return d3.selectAll(matchArr);
-        }
-
-
-
 
 
 
@@ -4159,11 +4215,11 @@ function getNewData() {
 // var nodes = $.extend(true, [], d3.selectAll('g.node'));
 
  //var closeBar = this.closest("g.GBarGroup");  //WORKS
-//
+// console.log("closeBar data ...: ");
 //   var closeData = d3.select(closeBar).data();
 //var nodes = $.extend(true, [], d3.selectAll('g.GBarGroup'));
 var nodes = $.extend(true, [], d3.selectAll('g.assignedGroupGp'));
-//
+//console.log(nodes);
 //  var nodes = $.extend(true, [], chart);
 // var nodes = $.extend(true, [], allCharts);
 //  var nodes = $.extend(true, [], d3.selectAll('.chart.node'));
@@ -4174,7 +4230,7 @@ var groupNodes = nodes._groups[0];
 
  nodes.each( function() {
      var node_data = d3.select(this).datum();
-  //
+  //   console.log(node_data);
      if (node_data.depth == 0) {
          var children = node_data.children;
          if (children != null) {
@@ -4187,15 +4243,15 @@ var groupNodes = nodes._groups[0];
 
 // root_node = nodes[0][0].__data__;
 //  return nodes[0][0].__data__;
-//
-//
-//
-//
-//
+//console.log(nodes.__data__);
+//console.log("got data");
+//  console.log(d3.selectAll('.AssignedGroup'));
+//console.log(nodes);
+//console.log(nodes._groups[0]);
 //  return nodes[0][0].__data__;
   return nodes._groups[0];
 
-  //
+  //  console.log(nodes._groups)//.__data__);
   //     return nodes._groups; //.__data__;
 }
 
@@ -4203,7 +4259,7 @@ var groupNodes = nodes._groups[0];
 
 var remove_d3_metadata = function(node_data) {
     // remove the d3 metadata
-
+    console.log(node_data);
 
     delete node_data.parent;
     delete node_data.x;
@@ -4229,7 +4285,7 @@ function addBusinessDays(d,n) {
 
 
 function calcBusinessDays(dDate1, dDate2, holidays) { // input given as Date objects
-    //
+    //console.log("dDate1:" + dDate1 + ", dDate2:" + dDate2);
     var iWeeks, iDateDiff, iAdjust = 0, i;
     if (dDate2 < dDate1) return -1; // error code if dates transposed
     var iWeekday1 = dDate1.getDay(); // day of week
@@ -4242,7 +4298,7 @@ function calcBusinessDays(dDate1, dDate2, holidays) { // input given as Date obj
 
     // calculate differnece in weeks (1000mS * 60sec * 60min * 24hrs * 7 days = 604800000)
     iWeeks = Math.floor((dDate2.getTime() - dDate1.getTime()) / 604800000)
-    //
+    //console.log("iWeeks:" + iWeeks);
     if (iWeekday1 <= iWeekday2) {
       iDateDiff = (iWeeks * 5) + (iWeekday2 - iWeekday1)
     } else {
@@ -4379,8 +4435,8 @@ return obj;
 
 
 
-/*
-// SHAREPOINT ON
+
+
 function OpenDialog(strPageURL)
 
 {
@@ -4408,9 +4464,6 @@ function OpenDialog(strPageURL)
 
 
 
-
-
-
 // Dialog close event capture function
 
 function CloseCallback(strReturnValue, target)
@@ -4434,124 +4487,9 @@ function CloseCallback(strReturnValue, target)
    }
 
 }
-*/
-
-function updateResources() {
-
-      if(deactivateNames == true)  {
-        d3.selectAll(".labelText").classed("darker", false);
-
-      }
-      if(newName != "") {
-      newId = "assignedto-"+newName;
-
-      // BEGINNING OF CREATION
-      symbolAssignees.push({key: newName, values:[]});
-
-      groupCtr = symbolAssignees.length-1;
-
-
-
-  var newSection = d3.select('.chart')
-  //d3.select(wrapper)
-//  allCharts
-    .insert('g', ":first-child")
-    .attr('class', 'assignedGroupGp new')
-    .attr('id', newId)
-    .datum(symbolAssignees[groupCtr])
-    .enter();
-
-    d3.select('.new').append('svg')
-    .attr('height', BAR_H)
-    .attr('class','AssignedGroup')
-    .attr('assignedName', newName)
-    .attr('height', BAR_H)
-    .attr('x', 0)
-    .attr('y', 0)
-    .attr('width', '100%')
-    .attr('style', function(d,i) {
-      newItemCtr++;
-    return 'background-color: '  + d3.rgb(colorScaleNewSection(newItemCtr));
-  })
-    .attr('opacity', '0.7')
-    .attr('data-length',1)
-    .call(dragHandler)
-    ;
-
-
-
-    var today = new Date();
-    var xNow = x(today)*oldScale+tempTrans[0];
-
-      d3.select('.new').select('.AssignedGroup').append("line").attr("class","today")
-      .attr("x1", xNow) //<<== change your code here
-      .attr("y1", 0)
-      .attr("x2", xNow) //<<== and here
-      .attr("y2", function(d) {
-          return d3.select(this.parentNode).attr('height');
-      })
-
-      .style("stroke-width", 2)
-      .style("stroke", "red")
-      .style("fill", "none");
-
-    var newLabel =  d3.select('[assignedName="'+newName+'"]')
-      .append('g')
-      .attr("class", "labelGroup")
-      .append('text')
-      .text(newName)
-      .attr('class','labelText')
-      .attr('width', '100')
-      .attr("y", 20)
-      .attr("font-size", 20)
-      .attr("font-family", "sans-serif")
-        .attr("font-weight", "bold")
-        .attr('fill', 'silver')
-        .attr('opacity', '0.9');
-
-        newLabel.append('line')
-          .attr("class","divider")
-          .attr("x1", x(minX))
-          .attr("x2", x(maxX))
-          .attr("stroke", "silver")
-          .attr("stroke-width", 1)
-            .attr("opacity", 0.5);
-
-
-
-
-
-//calculateAndApplyHeight(BAR_H);
-
-
-      };
-
-      var dataLength = 0;
-      /// deal with removals
-          d3.selectAll("g.assignedGroupGp")
-             .each(function(d,i){
-            //
-               if (d3.select(this).classed("Remove")){
-
-                  dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
-                 d3.select(this).remove();
-               }
-
-             }); // end each
-      // }; //end if classed
-  if (dataLength > 0) {
-
-    //calculateAndApplyHeight();
-
-  }
-
-
-       //} //end if result
-} //end updateresources
-
 
 function addResource(input) {
-  //
+  //console.log($(input).val());
    newName = $(input).val();
 
 
@@ -4560,12 +4498,9 @@ function addResource(input) {
 
 
 
-
-
-
 function alterResourceStatus(checkbox) {
-//
-//
+//  console.log(checkbox);
+//  console.log($(checkbox).is(':checked'));
   var checkedStatus = $(checkbox).is(':checked');
   var keyName = $(checkbox).attr('id');
   var resName = $(checkbox).attr('resource');
@@ -4586,13 +4521,13 @@ infoDetails = infowrapper.getBoundingClientRect();
 
 bBoxHeight = wrapperDetails.height;
 
-
+console.log('bboxheight:' + bBoxHeight);
 
 $(".axisWeekFloating3.tick > line").attr("y2",-(wrapperDetails.height));
 
   //d3.select("[]")
-  //
-//
+  //  console.log($("[id='assignedto-"+resName+"']").html());
+//  console.log(d3.select("[id='assignedto-"+resName+"']").html());
 //  return d3.select("[id='assignedto-"+resName+"']").html();
 }
 
@@ -4601,14 +4536,9 @@ $(".axisWeekFloating3.tick > line").attr("y2",-(wrapperDetails.height));
  window.MATRIXDATA = [];
 
 
-//Sys.Application.add_load(initSomething);
-
-$(document).ready(function() {
-  initSomething();
-});
-
+Sys.Application.add_load(initSomething);
 function initSomething() {
-
+ console.log("page reloaded");
 
 
 
@@ -4627,7 +4557,7 @@ function initSomething() {
          itemDataCopy = itemData;
          itemDataCopy2 = itemData;
 
-    //
+    //     console.log(itemDataCopy);
 
          itemData = $(itemData).filter(function(i, n) {return n.FinishDateExpression != null ; });
          itemData = $(itemData).filter(function(i, n) {return n.FinishDateExpression["#text"] != null ; });
@@ -4657,7 +4587,7 @@ if (trainingProjects == true) {
                 var d = new Date();
                 var yearFromNow = new Date(d.getFullYear()+1, d.getMonth(), d.getDate());
                 //var thisYear = d.getFullYear();
-              //
+              //  console.log(thisYear);
               //  if (parseInt(year) > 2020) {
                   return new Date(startDate) < yearFromNow;
               //  }
@@ -4678,11 +4608,11 @@ if (trainingProjects == true) {
 
           //    try{
                  $(itemDataCopy).filter(function(k, desItem) {
-                  //
+                  // console.log(desItem.TSCProjectReadyMatrix["#text"]);
                    try {
                      thisItemMatrixText = desItem.TSCProjectReadyMatrix["#text"];
                      thisItemReference = desItem.UniqueReference["#text"];
-            //
+            //     console.log("desItem PRM:" + desItem.ProjectReadyMatrix["#text"] + "desItemRef:" + desItem.Reference["#text"] + "thisItemRef:" + n.Reference["#text"]);
                     if ( designMatrixtext.localeCompare(thisItemMatrixText) == 0 && UniqueReference.localeCompare(thisItemReference) == 0) {
                       designStatus = desItem.PercentComplete["#text"];
                       return;
@@ -4702,11 +4632,11 @@ if (trainingProjects == true) {
 
       //    try{
              $(itemDataCopy).filter(function(j, appItem) {
-              //
+              // console.log(desItem.TSCProjectReadyMatrix["#text"]);
                try {
                  thisItemMatrixText = appItem.TSCProjectReadyMatrix["#text"];
                  thisItemReference = appItem.UniqueReference["#text"];
-        //
+        //     console.log("desItem PRM:" + desItem.ProjectReadyMatrix["#text"] + "desItemRef:" + desItem.Reference["#text"] + "thisItemRef:" + n.Reference["#text"]);
                 if ( approvalMatrixtext.localeCompare(thisItemMatrixText) == 0 && UniqueReference.localeCompare(thisItemReference) == 0) {
                   approvalStatus = appItem.PercentComplete["#text"];
                   return;
@@ -4785,7 +4715,7 @@ if (trainingProjects == true) {
  });
 
 
-//
+//console.log(MATRIXDATA);
 //runAfterEverythingElse();
  //_spBodyOnLoadFunctionNames.push("runAfterEverythingElse");
    //runAfterEverythingElse();
@@ -4800,23 +4730,3 @@ if (trainingProjects == true) {
 
 
 </script>
-
-<!-- The Modal -->
-<div id="myModal" class="modal">
-<!-- Modal content -->
-<div id="modal-content">
-  <div class="modal-header">
-    <span class="close">&times;</span>
-    <h2>Modal Header</h2>
-  </div>
-  <div class="modal-body">
-    <p>Some text in the Modal Body</p>
-    <p>Some other text...</p>
-  </div>
-  <div class="modal-footer" id="modal-footer">
-    <input type="button" id = "modal-footer-Okbtn" name="modal-footer-Okbtn" value="OK">  <input type="button" id = "modal-footer-Cancelbtn" name="modal-footer-Cancelbtn" value="Cancel">
-  </div>
-</div>
-</div>
-</body>
-</html>
