@@ -1,13 +1,13 @@
 # d3-task-planner
 # A task planner for multiple projects in BrightWork (SharePoint Project Management)
 
-##The problem
+**The problem**
 On any given day, a work team (resource) is responsible for a single task which comes from any one of a large number of projects.  Timing across multiple projects is critical to ensure teams are fully employed without downtime.  Resource planners needed a resource-focussed planning tool to focus on the resource programme, and found that other gantt applications, which are time-focussed, are not flexible enough for their needs. An Excel worksheet arranged by resource, using overlaid textboxes which could be moved not only left to right (time) but also up and down (resource) had been used for many years.  
 
-##The approach
+**The approach**
 Given that task dates and resource status were also being recorded in BrightWork projects (SharePoint task lists), this chart uses the same principles as the original Excel worksheet, with additional features that enable data to be read and saved back to the BrightWork project directly from the chart.
 
-##This solution
+**This solution**
 
 [Click here](https://flowerbot.github.io/d3-task-planner/planner.htm) to view an 'unSharePointed' version* of it.   
 
@@ -23,7 +23,7 @@ This solution would not be possible without the open source and sharing ethos of
 * SharePoint custom column (lookup) value to determine which of the tasks to display
 * BrightWork's reporter function > export as XML
 
-##Observations
+**Observations**
 * This could be rewritten to traverse a SharePoint site collection in real time, or alternatively use any other XML data source, etc
 ** Yeah the code could be better organised and more efficient, and I could delete all my console logging .. not 100% sorry about that :)
 
