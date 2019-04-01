@@ -34,6 +34,7 @@ This solution would not be possible without the open source and sharing ethos of
 
 **How to use in SharePoint**
 * Take the file called planner.htm, and copy everything inside the \<body\>\</body\> tags to a new javascript file (say planner.js).  Save this file somewhere that SharePoint will read without baulking - I use the SiteAssets folder.  
+* Find the variable bwroot and change it to the root site name of your Site Collection.  Check other path variables and adjust as required.
 * Export an XML dataset similarly configured to the example ** OR ** use any data set/method you like and rewrite the data import/cleansing function near the end of the file to reflect your data.  Depending on your column names you may also have to replace references within the rest of the script.  Fundamental to the layout and functionality are the start/finish dates and duration, and resources (AssignedToName).  Task filtering is derived from the value of TSCProjectReadyMatrix["#text"]. 
 * Link the new file (planner.js) file in a new SharePoint page's Content Editor Web part.  
 
