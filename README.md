@@ -27,7 +27,9 @@ This solution would not be possible without the open source and sharing ethos of
 
 **Observations**
 
-* This could be rewritten to traverse a SharePoint site collection in real time, or alternatively use any other XML data source, etc
+
+\* This could be rewritten to traverse a SharePoint site collection in real time, or alternatively use any other XML data source, etc
+
 ** Yeah the code could be better organised and more efficient, and I could delete all my console logging .. not 100% sorry about that :)
 
 **How to use in SharePoint**
