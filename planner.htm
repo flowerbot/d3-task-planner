@@ -314,11 +314,11 @@ table.projectInfo .warning {
            }
 
            .circComplete:hover {
-                  cursor: url('http://tscppm/SiteAssets/scripts/prettyGantt/greencheck36x36.png') 16 16, auto;
+                  cursor: url('greencheck36x36.png') 16 16, auto;
                 }
 
                 .circRemove:hover {
-                       cursor: url('http://tscppm/SiteAssets/scripts/prettyGantt/redCrossSm.png') 16 16, auto;
+                       cursor: url('redCrossSm.png') 16 16, auto;
                      }
 
 
@@ -682,6 +682,21 @@ input[type="radio"] {
 
 
 
+.overlayBtn2{
+  color: white;
+  font-size: 20px;
+  padding-top: 15px;
+  /*position: absolute; */
+  float: right;
+  top: 0;
+  /*left: 98%; */
+  width: 20px;
+  height: 40px;
+  z-index: 10;
+  background-color: rgba(0,0,0,0.5); /*dim the background*/
+}
+
+
 /* Darker background on mouse-over */
 #settingsButtons li:hover {
   background-color: RoyalBlue;
@@ -705,6 +720,7 @@ input[type="radio"] {
   border-radius: 8px;
 }
 
+
 .about {
   z-index: 100;
 
@@ -720,6 +736,32 @@ input[type="radio"] {
 #overlayBtn {
   cursor: pointer;
 }
+
+#overlayBtn2 {
+  cursor: pointer;
+
+}
+
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  font-size: small;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
 .aboutSpacer {
   width: 100%;
   /* height: 100px; */
@@ -729,6 +771,7 @@ input[type="radio"] {
 
 .hideMenu {
   display: none;
+  visibility: hidden;
 
   }
 .hugLeft {
@@ -750,6 +793,35 @@ input[type="radio"] {
   transition: width 0.5s, left 0.5s;
   font-size: 20px;
   height: 35px;
+
+}
+
+
+
+.hugLeft2 {
+  left 20px;
+  width: 0px;
+  margin-left: 20px;
+/*  transition: width 1s, left 1s; */
+  height: 20px;
+  border: none;
+  /*transition: none; */
+  box-shadow: none;
+
+}
+
+
+.hugLeftBtn2 {
+  position: absolute;
+  tooltip: "Show settings";
+  visibility: visible;
+  padding-top: 3px;
+  padding-left:15px;
+  width: 20px;
+  /*left: 10px; */
+  transition: width 0.5s, left 0.5s;
+  font-size: 15px;
+  height: 25px;
 
 }
 
@@ -886,7 +958,13 @@ background-color: #FFFF !important}
 
     </div>
 </div>
+
+
 <div id="chartSettings">
+  <div class="overlayBtn2 tooltip" id="overlayBtn2"><i id="pointLeft2" class="fas fa-chevron-left"></i><i id="pointRight2" class="hidden fas fa-chevron-right"></i><span class="tooltiptext">Hide/show settings</span></div>
+
+
+
   <input type="checkbox" name="MondayLock" id="MondayLock" checked='true' />Lock dragged Start to Monday ~
   <input type="checkbox" name="FridayLock" id="FridayLock" checked='true' />Lock dragged Finish to Friday ~
   <input type="checkbox" title="Check this to move bars without marking them for updating in BrightWork" name="dontMark" id="dontMark"  />Don't mark ~
@@ -914,9 +992,13 @@ background-color: #FFFF !important}
     </span>
 &nbsp; ~ &nbsp;
   <span class='nobreak'>Look <input type="text" name="yearsAheadTxt" id="yearsAheadTxt" size="3" value=2  /> years ahead</span> ~
-  <a id="instructions" href="BrightWork - Construction Planner User Functions Explained.html" target="_blank">Click for instructions</a></div>
+  <a id="instructions" href="BrightWork - Construction Planner User Functions Explained.html" target="_blank">Click for instructions</a>
 
-  </div>
+
+
+</div>
+</div>
+
 
 
     <div class="overlayBtn" id="overlayBtn"><i id="pointLeft" class="fas fa-chevron-left"></i><i id="pointRight" class="hidden fas fa-chevron-right"></i></div>
@@ -971,7 +1053,7 @@ if (localStorage.getItem("trainingProjects") == null) {
 }
 
 //var bwDataFolder = "/Data/";
-var bwroot = "tscppm";
+var bwroot = "rootsite";
 
 //var XMLFileName = "/Data/Project Ready Matrix Data.xml"
 var XMLFileName = "Project Ready Matrix Data.xml"
@@ -988,7 +1070,9 @@ var useSavedData= false;
 function runAfterEverythingElse() {
 /* sliders */
 
-$("link[rel='shortcut icon']").attr("href","http://tscppm/siteassets/scripts/prettygantt/favicon.ico");
+$("link[rel='shortcut icon']").attr("href","http://"+bwroot+"siteassets/scripts/prettygantt/favicon.ico");
+
+$("link[rel='shortcut icon']").attr("href","favicon.ico");
 
 var aboutHeight = parseFloat($(".about").height())+8;
 $(".aboutSpacer").css('height', aboutHeight+'px');
@@ -4350,6 +4434,27 @@ function zoomChart(transform) {
           d3.select("#pointRight").classed("hidden", false);
       }
     });
+
+    d3.select("#overlayBtn2").on("click", function(){
+      console.log("Overlay 2 clicked;")
+      if(d3.select("#chartSettings").classed("hideMenu")) {
+        d3.select("#chartSettings").classed("hideMenu", false);
+        d3.select("#chartSettings").classed("hugLeft2", false);
+          d3.select("#overlayBtn2").classed("hugLeftBtn2", false);
+
+          d3.select("#pointLeft2").classed("hidden", false);
+          d3.select("#pointRight2").classed("hidden", true);
+
+
+      } else {
+        d3.select("#chartSettings").classed("hideMenu", true);
+        d3.select("#chartSettings").classed("hugLeft2", true);
+          d3.select("#overlayBtn2").classed("hugLeftBtn2", true);
+
+          d3.select("#pointLeft2").classed("hidden", true);
+          d3.select("#pointRight2").classed("hidden", false);
+      }
+    });
 // ZOOMING ISN'T WORKING PROPERLY
 // LOOK AT THIS:  https://bl.ocks.org/SevenChan07/3fbb45be891cc3fda3bf139e4853535b
     d3.select("#UnlockZoomBtn").on("click", function() {
@@ -4386,7 +4491,7 @@ function zoomChart(transform) {
 
 d3.select("#addNewTaskBtn").on("click", function(){
 
-  var dlgText = "<a target='_blank' href='http://tscppm/Projects/built/materials/cop/BrightWork%20Pages/Selected%20Project%20Open%20Work.aspx?project=2#InplviewHash6e3a3cd7-2060-40e0-9477-74bc78f3dac9=CascDelWarnMessage%3D1-FilterField1%3DbwProjectItemID-FilterValue1%3DMiscellaneous%2520Jobs'>Click here</a> ...<br /><br />"+
+  var dlgText = "<a target='_blank' href='http://"+bwroot+"/Projects/built/materials/cop/BrightWork%20Pages/Selected%20Project%20Open%20Work.aspx?project=2#InplviewHash6e3a3cd7-2060-40e0-9477-74bc78f3dac9=CascDelWarnMessage%3D1-FilterField1%3DbwProjectItemID-FilterValue1%3DMiscellaneous%2520Jobs'>Click here</a> ...<br /><br />"+
   " to open the miscellaneous construction tasks Project and Work tracker in BrightWork.  Here you can add and/or edit any construction work that is not related to an existing BrightWork project.<br /><br /> "+
   "To display the new or updated data in this chart, ensure you have cleared any saved data by clicking the <i class='fas fa-trash-restore'></i> button, then click F5 refresh.</em>";
   LaunchMessageDialog("Open  BrightWork Project and Work Tracker", dlgText);
@@ -4394,8 +4499,8 @@ d3.select("#addNewTaskBtn").on("click", function(){
 
 
 d3.select('#getXMLDataBtn').on("click", function() {
-  var dlgText = "<a target='_blank' href='http://tscppm/projects/_layouts/15/BrightWork/ExportReport.aspx?pageUrl=http%3A%2F%2Ftscppm%2FProjects%2FBrightWork%2520Pages%2FProject%2520Ready%2520Matrix%2520Tasks%2Easpx&wpGUID=c7514c5e%2D11a7%2D4670%2D9967%2D305966e50d54&exportFormat=XML'>Click here</a> to grab the latest data as an XML file. "+
-  " Save this file over the existing XML file called <strong>'Project Ready Matrix Data.xml'</strong> at <a target='_blank' href='http://tscppm/data'>http://tscppm/data.'</a><br /><br /> " +
+  var dlgText = "<a target='_blank' href='http://"+bwroot+"/projects/_layouts/15/BrightWork/ExportReport.aspx?pageUrl=http%3A%2F%2F"+bwroot+"%2FProjects%2FBrightWork%2520Pages%2FProject%2520Ready%2520Matrix%2520Tasks%2Easpx&wpGUID=c7514c5e%2D11a7%2D4670%2D9967%2D305966e50d54&exportFormat=XML'>Click here</a> to grab the latest data as an XML file. "+
+  " Save this file over the existing XML file called <strong>'Project Ready Matrix Data.xml'</strong> at <a target='_blank' href='http://"+bwroot+"/data'>http://"+bwroot+"/data.'</a><br /><br /> " +
   "<em>NB: You will have to wait for the report to finish running, before being prompted to save it, this could take some time.<br /><br />" +
   "To display the updated data in this chart, ensure you have cleared any saved data by clicking the <i class='fas fa-trash-restore'></i> button, then click F5 refresh.</em>";
   LaunchMessageDialog("Get updated XML file", dlgText);
