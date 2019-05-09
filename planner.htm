@@ -55,14 +55,7 @@ g.tick {
 }
 
 
-.tooltip {
-/* position: absolute; */
-position: sticky;
-bottom: -50;
-left: 0%;
-height: 120px;
-/*  z-index: 1000; */
-}
+
 .axis {
 /* height: 100%; */
 height: 20px;
@@ -747,96 +740,112 @@ input[type="radio"] {
 }
 
 
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  font-size: small;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-
-  /* Position the tooltip */
-  position: absolute;
-  z-index: 1;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-}
-
-.aboutSpacer {
-  width: 100%;
-  /* height: 100px; */
-  display: block;
-}
-
-
-.hideMenu {
-  display: none;
-  visibility: hidden;
-
+.tooltiptext {
+  	visibility: hidden;
+  	width: 120px;
+  	background-color: black;
+  	font-size: small;
+  	color: #fff;
+  	text-align: center;
+  	border-radius: 6px;
+  	height: auto;
+  	line-height: 14px;
+  	padding: 3px;
+  	white-space: normal;
+  	/*  padding: 3px 0; */
+  	/* Position the tooltip */
+  	position: absolute;
+  	z-index: 1;
   }
-.hugLeft {
-  left -0px;
-  width: 0px;
-/*  transition: width 1s, left 1s; */
-  height: 20px;
-  border: none;
-  /*transition: none; */
-  box-shadow: none;
+  .tooltip:hover .tooltiptext {
+  	visibility: visible;
+  	/*display: table; */
+  	margin-left: -75px;
+  	/* margin-left: -50%; */
+  	margin-top: 50px;
+  	height: auto;
+  }
 
-}
-
-.hugLeftBtn {
-  padding-top: 3px;
-  padding-left:15px;
-  width: 30px;
-  left: -10px;
-  transition: width 0.5s, left 0.5s;
-  font-size: 20px;
-  height: 35px;
-
-}
-
-
-
-.hugLeft2 {
-  left 20px;
-  width: 0px;
-  margin-left: 20px;
-/*  transition: width 1s, left 1s; */
-  height: 20px;
-  border: none;
-  /*transition: none; */
-  box-shadow: none;
-
-}
-
-
-.hugLeftBtn2 {
-  position: absolute;
-  tooltip: "Show settings";
-  visibility: visible;
-  padding-top: 3px;
-  padding-left:15px;
-  width: 20px;
-  /*left: 10px; */
-  transition: width 0.5s, left 0.5s;
-  font-size: 15px;
-  height: 25px;
-
-}
-
+  .tooltip:hover .bump {
+    margin-left: -40px;
+  }
+  .tooltip span.tooltiptext:after {
+  	content: '';
+  	position: absolute;
+  	bottom: 100%;
+  	left: 50%;
+  	margin-left: -8px;
+  	width: 0;
+  	height: 0;
+  	border-bottom: 8px solid #000000;
+  	border-right: 8px solid transparent;
+  	border-left: 8px solid transparent;
+  }
+  .aboutSpacer {
+  	width: 100%;
+  	/* height: 100px; */
+  	display: inline-block;
+  }
+  .hideMenu {
+  	display: none;
+  	visibility: hidden;
+  }
+  .hugLeft {
+  	left -0px;
+  	width: 0px;
+  	max-height: 30px;
+  	/*  transition: width 1s, left 1s; */
+  	height: 20px;
+  	border: none;
+  	/*transition: none; */
+  	box-shadow: none;
+  }
+  .hugLeftBtn {
+  	padding-top: 3px;
+  	padding-left: 15px;
+  	width: 30px;
+  	left: -10px;
+  	transition: width 0.5s, left 0.5s;
+  	font-size: 20px;
+  	height: 35px;
+  }
+  .hugLeft2 {
+  	/*left 20px; */
+  	width: 0px;
+  	margin-left: 20px;
+  	/*  transition: width 1s, left 1s; */
+  	height: 20px;
+  	border: none;
+  	/*transition: none; */
+  	box-shadow: none;
+  }
+  .hugLeftBtn2 {
+  	position: absolute;
+  	visibility: visible;
+  	padding-top: 3px;
+  	padding-left: 15px;
+  	width: 20px;
+  	/*left: 10px; */
+  	left: 3px;
+  	top: 30px;
+  	transition: width 0.5s, left 0.5s;
+  	font-size: 15px;
+  	height: 25px;
+  }
+  .aboutInnerHeight {
+  	height: 60px;
+  	max-width: 600px;
+  }
 #axisClone{
   position: fixed;
   top: 25px;
 }
 
 
-#axisClone.axisWeek {
-  color: none;
+#axisClone .axisWeek {
+
+  fill: none;
+  width: 1px;
 }
 
 #axisClone text {
@@ -953,116 +962,90 @@ background-color: #FFFF !important}
 }
 
 
+#weekNum {
+  position: absolute;
+  font-size: large;
+  font-weight: bold;
+  color: DodgerBlue;
+  left: 10px;
+  /*background-color: white; */
+  text-shadow: 3px 3px yellow;
+}
+
+
+
 </style>
 <h3>Construction Planner-Vanilla Clone</h3>
 <div id="axisClone"></div>
 <div id="IEMessage">This chart will not function in Internet Explorer - if viewing in IE, please reopen it in Google Chrome</div>
 <div id='info'>
-  <div class="about">
-    <div id="aboutInner">
-  <div id="liButtonDiv">
-  <ul id="settingsButtons">
-        <li id="UnlockZoomBtn" title="Lock/unlock zoom"><i class="fa fa-arrows-alt"></i></li>
-        <li id="updateResourcesBtn" title="Deactivate, add and remove resources"><i class="fa fa-users"></i></li>
-      <li id="clearOldBtn" title="Remove all tasks from this chart which finish before today"><i class="fas fa-broom"></i></li>
-      <li id="collisionBtn" title="Shrink assignee bars and compact tasks"><i class="fas fa-compress"></i></li>
-      <li id="findBtn" title="Search chart for reference, words and phrases"><i class="fas fa-glasses"></i></li>
-      <li id="dataInfoLi">                  <span id="dataInfo"></span></li>
-      <li id="getDataBtn" title="Store current tasks and change status with this browser on this pc - recalled by F5 (refresh)"><i class="fas fa-save"></i></li>
-      <li id="clearDataBtn" title="Discard changes and revert to latest XML data from file (CANNOT BE UNDONE)"><i class="fas fa-trash-restore"></i></li>
-      <li id="addNewTaskBtn" title="Go to the miscellenous tasks tracker to add/update construction tasks not in BrightWork projects"><i class="fas fa-plus-square"></i></li>
-
-      <li id="updateChangedItemsBtn" title="Send all changes back to BrightWork tasks (CANNOT BE UNDONE)"><i class="fas fa-upload"></i></li>
-      <li id="getXMLDataBtn" title="Get updated XML data file from BrightWork report results"><i class="fas fa-download"></i></li>
-
-    </ul></div>
-    <div id="standardButtons">
-  <input type="button" id="UnlockZoomBtn" name="UnlockZoomBtn" locked="false" value="Lock Zoom/Pan" />
-  <input type="button" id="updateResourcesBtn" name="updateResourcesBtn" value="Update Resources"/>
-  <input type="button" id="clearOldBtn" name="clearOldBtn" value="Clear Finish < Today"/>
-
-  <input type="button" id="updateChangedItemsBtn" name="updateChangedItemsBtn" value="Update Changed Items"/>
-    <input type="button" id="collisionBtn" name="collisionBtn" value="Compact Chart"/>
-    <input type="button" id="findBtn" name="findBtn" value="Find project"/>
-  <div id="saveRevert">
-
-    <input type="button" id="getDataBtn" name="getDataBtn" value="Save" title="Click to store your current changes to be recalled on F5 refresh."/>
-    <input type="button" id="clearDataBtn" name="clearDataBtn" value="Revert" title="Click to revert to original data-Updated changes will not appear unless the data XML has been refreshed."/>
-
-    </div>
-</div>
-
-
-<div id="chartSettings">
-  <div class="overlayBtn2 tooltip" id="overlayBtn2"><i id="pointLeft2" class="fas fa-chevron-left"></i><i id="pointRight2" class="hidden fas fa-chevron-right"></i><span class="tooltiptext">Hide/show settings</span></div>
-
-
-
-  <input type="checkbox" name="MondayLock" id="MondayLock" checked='true' />Lock dragged Start to Monday ~
-  <input type="checkbox" name="FridayLock" id="FridayLock" checked='true' />Lock dragged Finish to Friday ~
-  <input type="checkbox" title="Check this to move bars without marking them for updating in BrightWork" name="dontMark" id="dontMark"  />Don't mark ~
-  <input type="checkbox" name="trainingProjects" id="trainingProjects" checked='true' />Use Training Projects ~
-
-
-<legend>
-        Descriptions:
-  </legend>
-
-    <span id="ThreeWayToggle">
-
-        <label class="selected">
-          Full
-          <input name="state" type="radio" value="Full" checked />
-        </label>
-        <label>
-          Short
-          <input name="state" type="radio" value="Short" />
-        </label>
-        <label class="warning">
-          Ref
-          <input name="state" type="radio" value="Ref" />
-        </label>
-    </span>
-&nbsp; ~ &nbsp;
-<div class='nobreak'>
-      Look
-      <div class='nobreak tooltip'>
-        <input id="yearsAheadTxt" name="yearsAheadTxt" size="3" type="text" value="2"> <span class="tooltiptext">enter a number of years, then click F5 to refresh the page to pick up more/less data <br />NB: to pick up tasks in additional years, clear saved data first</span>
-      </div>years ahead ~ Vertical scale:
-
-      <div class='nobreak tooltip'>
-        <input id="vertScaleTxt" name="vertScaleTxt" size="3" type="text" value="1"> <span class="tooltiptext">Enter an alternative scale to draw draw bars closer together or further apart. </span>
+	<div class="about">
+    <div class="tooltip">
+		<div id="weekNum">
+			00
       </div>
+    <span class="tooltiptext bump">This is the week number under the mouse cursor.  When dragging a bar, this is the week number at the left edge of the bar.</span>
+		</div>
+		<div id="aboutInner">
+			<div id="liButtonDiv">
+				<ul id="settingsButtons">
+					<li class="tooltip" id="UnlockZoomBtn" locked="false"><i class="fa fa-arrows-alt"></i><i class="fa fa-lock hidden"></i><span class="tooltiptext">Click to enable left-right pan (click-hold-drag) and zoom (scroll-wheel) of chart</span></li>
+					<li class="tooltip" id="updateResourcesBtn"><i class="fa fa-users"></i><span class="tooltiptext">Deactivate, add and remove resources</span></li>
+					<li class="tooltip" id="clearOldBtn"><i class="fas fa-broom"></i><span class="tooltiptext">Remove all tasks from this chart which finish before today</span></li>
+					<li class="tooltip" id="collisionBtn"><i class="fas fa-compress"></i><span class="tooltiptext">Change compact assignee bars and tasks setting (enter # max rows)</span></li>
+					<li class="tooltip" id="findBtn"><i class="fas fa-glasses"></i><span class="tooltiptext">Search chart for reference, words and phrases</span></li>
+					<li class="tooltip" id="dataInfoLi"><span id="dataInfo"></span><span class="tooltiptext" id="dataInfoToolTip">Info about data - read the hover text</span></li>
+					<li class="tooltip" id="getDataBtn"><i class="fas fa-save"></i><span class="tooltiptext">Save current tasks and change status with this browser on this pc - recalled by F5 (refresh)</span></li>
+					<li class="tooltip" id="clearDataBtn"><i class="fas fa-trash-restore"></i><span class="tooltiptext">Discard changes and saved data, and revert to latest XML data from file (CANNOT BE UNDONE)</span></li>
+					<li class="tooltip" id="addNewTaskBtn"><i class="fas fa-plus-square"></i><span class="tooltiptext">Go to the miscellenous tasks tracker to add/update construction tasks not in BrightWork projects</span></li>
+					<li class="tooltip" id="updateChangedItemsBtn"><i class="fas fa-upload"></i><span class="tooltiptext">Send all changes back to BrightWork tasks (CANNOT BE UNDONE)</span></li>
+					<li class="tooltip" id="getXMLDataBtn"><i class="fas fa-download"></i><span class="tooltiptext">Get updated XML data file from BrightWork report results</span></li>
+				</ul>
+			</div>
+			<div id="standardButtons">
+				<input id="UnlockZoomBtn" name="UnlockZoomBtn" type="button" value="Lock Zoom/Pan"> <input id="updateResourcesBtn" name="updateResourcesBtn" type="button" value="Update Resources"> <input id="clearOldBtn" name="clearOldBtn" type="button" value="Clear Finish &lt; Today"> <input id="updateChangedItemsBtn" name="updateChangedItemsBtn" type="button" value="Update Changed Items"> <input id="collisionBtn" name="collisionBtn" type="button" value="Compact Chart"> <input id="findBtn" name="findBtn" type="button" value="Find project">
+				<div id="saveRevert">
+					<input id="getDataBtn" name="getDataBtn" title="Click to store your current changes to be recalled on F5 refresh." type="button" value="Save"> <input id="clearDataBtn" name="clearDataBtn" title="Click to revert to original data-Updated changes will not appear unless the data XML has been refreshed." type="button" value="Revert">
+				</div>
+			</div>
+			<div id="chartSettings">
+				<div class="overlayBtn2 tooltip" id="overlayBtn2">
+					<i class="fas fa-chevron-left" id="pointLeft2"></i><i class="hidden fas fa-chevron-right" id="pointRight2"></i><span class="tooltiptext">Hide/show settings</span>
+				</div><input checked='true' id="MondayLock" name="MondayLock" type="checkbox">Lock dragged Start to Monday ~ <input checked='true' id="FridayLock" name="FridayLock" type="checkbox">Lock dragged Finish to Friday ~
+				<div class="nobreak tooltip">
+					<input id="dontMark" name="dontMark" type="checkbox"> <span class="tooltiptext">Check 'Don't mark' to move bars without marking them for updating in BrightWork</span>
+				</div>Don't mark ~ <input checked='true' id="trainingProjects" name="trainingProjects" type="checkbox">Use Training Projects ~ <legend>Descriptions:</legend> <span id="ThreeWayToggle"><label class="selected">Full <input name="state" type="radio" value="Full"></label> <label>Short <input name="state" type="radio" value="Short"></label> <label class="warning">Ref <input name="state" type="radio" value="Ref"></label></span> &nbsp; ~ &nbsp;
+				<div class='nobreak'>
+					Look
+					<div class='nobreak tooltip'>
+						<input id="yearsAheadTxt" name="yearsAheadTxt" size="3" type="text" value="2"> <span class="tooltiptext">enter a number of years, then click F5 to refresh the page to pick up more/less data <br />NB: to pick up tasks in additional years, clear saved data first</span>
+					</div>years ahead ~ Vertical scale:
+
+          <div class='nobreak tooltip'>
+						<input id="vertScaleTxt" name="vertScaleTxt" size="3" type="text" value="1"> <span class="tooltiptext">Enter an alternative scale to draw draw bars closer together or further apart. </span>
+					</div>
 
 
-    </div> ~
-  <a id="instructions" href="BrightWork - Construction Planner User Functions Explained.html" target="_blank">Click for instructions</a>
-
-
-
+				</div>
+         ~ <a href="/Help%20Wiki/Construction%20Planner.aspx" id="instructions" target="_blank">Click for instructions</a>
+			</div>
+		</div>
+		<div class="overlayBtn tooltip" id="overlayBtn">
+			<i class="fas fa-chevron-left" id="pointLeft"></i><i class="hidden fas fa-chevron-right" id="pointRight"></i><span class="tooltiptext">Hide/show function buttons</span>
+		</div>
+	</div>
+	<div class="aboutSpacer"></div>
+	<div class='key'>
+		Key (top right circle):
+		<div id='circleKeyGreen'></div><span class="addDef">Issued for Construction</span> ~
+		<div id='circleKeyAqua'></div>Design &gt;75% Complete ~
+		<div id='circleKeyOrange'></div>Design Started ~
+		<div id='circleKeySilver'></div>Design NOT started
+	</div>
+	<div id="axisClone"></div>
+	<div class=".slider-holder"></div>
+	<div class="spacer"></div>
 </div>
-</div>
-
-
-
-    <div class="overlayBtn" id="overlayBtn"><i id="pointLeft" class="fas fa-chevron-left"></i><i id="pointRight" class="hidden fas fa-chevron-right"></i></div>
-
-
-  </div>
-
-
-    <div class="aboutSpacer"></div>
-<div class='key'>Key (top right circle):
-  <div id='circleKeyGreen'> </div> <span class="addDef">Issued for Construction</span> ~
-  <div id='circleKeyAqua'> </div> Design >75% Complete ~
-  <div id='circleKeyOrange' > </div> Design Started ~
-  <div id='circleKeySilver' > </div> Design NOT started
-</div>
-
-
-
-<div class=".slider-holder"></div>
-<div class="spacer"></div></div>
 <div id='chartContainer'>
 <div class="chartAxisSpacer"></div>
 <div class="chart"></div>
