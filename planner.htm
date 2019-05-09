@@ -2725,6 +2725,10 @@ var dragHandler = d3.drag()
 
     } else {
 
+      const weekX = x.invert(d3.event.x-thisOffsetX);//,
+
+    d3.select("#weekNum").text(formatWeek(weekX));
+
     d3.select(this)
           .attr("x", d3.event.x-thisOffsetX)//restore without + deltaX if can't make ot work
           .attr("y", d3.event.y-thisOffsetY);// - deltaY); //restore without +deltaY if can't make ot work
@@ -5082,6 +5086,46 @@ function clearOldItems() {
   });
   calculateAndApplyHeight();
 }
+
+
+
+function setWeekMouseOver() {
+
+  d3.select("#chartContainer").on("mousemove", function () {
+  //d3.select(".axisWeekFloating").on("mousemove", function () {
+          //  const x0 = x.invert(d3.mouse(d3.event.currentTarget)[0]);//,
+
+  var visibleDomain = (xAxis.scale().domain());
+//           console.log(visibleDomain);
+//  var invisibleX = x(visibleDomain[0]);
+  //  console.log(invisibleX);
+
+          //  const x0 = x.invert((invisibleX+d3.event.x-bBoxLeft));//,
+
+          // --- X scale (nb: was const)
+          var zoomedX = d3.scaleTime()
+            .domain(visibleDomain)
+            .rangeRound([0, width]);
+
+    //      console.log(d3.event.x-bBoxLeft);
+
+        //var x0 = x.invert((d3.event.x-bBoxLeft+invisibleX));//,
+      //  var x0 = x.invert((d3.mouse("#chartContainer")[0]-bBoxLeft+invisibleX));//,
+    //  console.log(d3.event.currentTarget);
+    //  console.log(d3.mouse(d3.event.currentTarget)[0]);
+            var x0 = zoomedX.invert(d3.mouse(d3.event.currentTarget)[0]);//,
+    //    console.log(x0);
+        //  if (invisibleX != 0) {
+
+        //       x0 = zoomedX.invert((invisibleX+d3.event.x));//,
+        //  }
+                d3.select("#weekNum").text(formatWeek(x0));
+
+        });
+}
+
+setWeekMouseOver();
+
 
 d3.select("#yearsAheadTxt").on("change", function(d) {
   localStorage.setItem("YearsAhead",$("#yearsAheadTxt").val());
