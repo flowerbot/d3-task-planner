@@ -2,7 +2,9 @@
 <body>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<script src="NonSPAlerts.js"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />
+
 
 
 
@@ -550,6 +552,8 @@ cursor: help;
 
 .nobreak {
   white-space:nowrap;
+  display: inline-block;
+  height: auto;
 }
 
 #saveRevert {
@@ -849,6 +853,33 @@ input[type="radio"] {
 
 
 
+
+.glow {
+  /* font-size: 80px; */
+  /* color: #fff; */
+/*  text-align: center; */
+/*  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate; */
+/*  stroke: yellow;
+  stroke-width: 0.2; */
+  filter: url(#text-glow);
+  font-weight: bold;
+}
+/*
+@-webkit-keyframes glow {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+  }
+
+  to {
+    text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+  }
+}
+*/
+
+
+
 /* The Modal (background) */
 .modal {
   display: none; /* Hidden by default */
@@ -918,7 +949,9 @@ background-color: #FFFF !important}
   padding: 2px 16px;
   background-color: #5cb85c;
   color: white;
+
 }
+
 
 </style>
 <h3>Construction Planner-Vanilla Clone</h3>
@@ -991,7 +1024,18 @@ background-color: #FFFF !important}
         </label>
     </span>
 &nbsp; ~ &nbsp;
-  <span class='nobreak'>Look <input type="text" name="yearsAheadTxt" id="yearsAheadTxt" size="3" value=2  /> years ahead</span> ~
+<div class='nobreak'>
+      Look
+      <div class='nobreak tooltip'>
+        <input id="yearsAheadTxt" name="yearsAheadTxt" size="3" type="text" value="2"> <span class="tooltiptext">enter a number of years, then click F5 to refresh the page to pick up more/less data <br />NB: to pick up tasks in additional years, clear saved data first</span>
+      </div>years ahead ~ Vertical scale:
+
+      <div class='nobreak tooltip'>
+        <input id="vertScaleTxt" name="vertScaleTxt" size="3" type="text" value="1"> <span class="tooltiptext">Enter an alternative scale to draw draw bars closer together or further apart. </span>
+      </div>
+
+
+    </div> ~
   <a id="instructions" href="BrightWork - Construction Planner User Functions Explained.html" target="_blank">Click for instructions</a>
 
 
@@ -1064,7 +1108,18 @@ var pageX;
 
 var useSavedData= false;
 
+var compactHeight;
+var compMode = "checked";
+var compRows = 3;
+var compExcUnassigned = "checked";
+var compRowsUnassigned = 15;
 
+var barSpacer = 5;
+
+var textOffset = 1;
+var vertScale = 1;
+
+var defs;
 
 
 function runAfterEverythingElse() {
@@ -1110,6 +1165,19 @@ if (browser.name != "Chrome") {
 if (localStorage.getItem("YearsAhead") != null) {
   $("#yearsAheadTxt").val(localStorage.getItem("YearsAhead"));
 }
+
+
+
+if (localStorage.getItem("VerticalScale") != null) {
+  vertScale = parseFloat(localStorage.getItem("VerticalScale"));
+  $("#vertScaleTxt").val(localStorage.getItem("VerticalScale"));
+  if (vertScale < 1) {
+    textOffset = -(parseInt((1-vertScale)*10)/2);
+    console.log(textOffset);
+  }
+}
+
+
 
 function recallToggle() {
   if (localStorage.getItem("threeWayToggle") != null) {
@@ -1404,7 +1472,7 @@ const groupDragHandle = function(symbol) {
       .attr("height", GROUP_HANDLE_H)
       .attr('x', 0)
       .attr('y', function (d,i) {
-        return height*(i)+gpDim.height;
+        return (height*vertScale)*(i)+gpDim.height;
       })
       .attr('width', '100%')
       .attr("fill", "blue")
@@ -1431,7 +1499,11 @@ function drawChart() {
 //https://observablehq.com/@mbostock/clustered-bubbles-2 // better
 
 //const nodes = pack().leaves();
+compactChartByLocalStorage(false);
 
+//makeFilterDefs();
+
+var maxRows = compRows;
 
 //console.log(nodes);
 
@@ -1484,25 +1556,29 @@ var bindex=0;
     .attr("ry", 6)
     .attr('x', d => spanX(d))
    .attr('y', function (d, i) {
-     //space out the bars
+     var dindex = d3.select(this.parentNode).attr("bar-data-index");
 
-      if (dindex == 0) { // first one
-        dindex++;
-      } else {
-  if (i > 0) {
-    //console.log(d[i].DueDate, d[i-1].DueDate);
-//    console.log(d.FinishDateExpression);
-    try {
-    //  console.log(d[i-1].FinishDateExpression);
-    } catch (ex) {
-    //  console.log('previous data not found');
-    }
-  }
-    dindex++;
-      }
-    //  return height*(dindex-1);
-      return BAR_H*(dindex-1);
+         if(compMode != "checked") {
+       //   console.log("compMode (not checked):" + compMode);
+          //space out the bars
+          // get the localstorage values for compaction but don't apply them
+           return barSpacer+vertScale*(BAR_H+2)*dindex;
 
+         } else { // main if compode !=
+       //  console.log(d);
+           if (d.AssignedToName == "ZZ Not assigned") {
+           //    console.log("not assigned row")
+           if( compExcUnassigned == "checked") {
+               maxRows = parseInt(d3.select(this.parentNode.parentNode).attr("data-length"));
+             } else {
+               maxRows = compRowsUnassigned;
+             //  console.log("maxRows:" + maxRows);
+           //    console.log(d3.select(this.parentNode).data());
+             }
+             }
+             return barSpacer+vertScale*(BAR_H+2)*(dindex%maxRows);
+        }
+ //    return BAR_H*(dindex-1);
     })
     //.attr('width', d => spanW(d))
     .attr('width', d => spanW(d))
@@ -1519,7 +1595,7 @@ var bindex=0;
       .attr("rx", 6)
       .attr("ry", 6)
       .attr('width', d => spanW(d))
-      .attr('height', height)
+      .attr('height', height*vertScale)
     /*  .attr('fill',  d => d.color || '#ddf') */
     .attr('fill', function(d) {
       var color = "#E8E8E8";
@@ -1624,7 +1700,7 @@ svgB.selectAll('.bars').each(
      .attr('class','circHandle')
 
      //.attr('cy', 6)
-     .attr('cy', height )
+     .attr('cy', height*vertScale )
      .attr('y', 20)
       .attr('r', HANDLE_R)
       .on("mouseenter mouseleave", resizerHover)
@@ -1682,7 +1758,7 @@ svgB.selectAll('.bars').each(
       .append('text')
       .attr('class','removeText')
       .attr('x',-HANDLE_R+1)
-      .attr('y',height+HANDLE_R/2)
+      .attr('y',(height*vertScale)+HANDLE_R/2)
       /*.attr('height',0)
       .attr('width', 0) */
       .html('&#10008;'); // tick character
@@ -1690,8 +1766,8 @@ svgB.selectAll('.bars').each(
       .append('circle')
       .attr('cx', 0 )
       .attr('class','circRemove')
-      .attr('cy', height)
-      .attr('y', height)
+      .attr('cy', height*vertScale)
+      .attr('y', height*vertScale)
       .attr('r',HANDLE_R)
       .on("mouseenter mouseleave", finishHover)
       .on('click', function() {
@@ -1911,13 +1987,34 @@ d3.select('.chart').select('svg').append('svg')
       })
     //  .attr('height', 'auto')
      .attr('height', function(d, i){
-        return d.values.length*BAR_H;
+
+       var maxRows = d.values.length;
+     //  console.log("maxRows beg:" + maxRows);
+   //  console.log("compMode inside drawChart function:" + compMode);
+       if(compMode == "checked") {
+           if (d.key == "ZZ Not assigned") {
+               console.log("not assigned row");
+               if(compExcUnassigned != "checked") {
+               //  console.log("not excluding unassigned from compaction");
+               maxRows = parseInt(compRowsUnassigned);
+             //   console.log("compMode (not checked 2):" + compExcUnassigned);
+              }
+           } else { //assigned to someone
+               maxRows = compRows; // not not assigned
+           }
+           //  console.log((BAR_H+2)*(dindex%maxRows));
+               return barSpacer+vertScale*(BAR_H+2)*(maxRows);
+      } else {
+         return barSpacer+d.values.length*vertScale*(BAR_H+2); //disregard all compaction
+       }
+
+
     })
     .attr('x',"0")
     .attr('y', function(d, i) {
       if (i > 0)
       {
-        return symbolAssignees[i-1].values.length*BAR_H+1;
+        return symbolAssignees[i-1].values.length*vertScale*(BAR_H+1);
       } else {
         return 0;
       }
@@ -2553,7 +2650,7 @@ function calculateAndApplyHeight(extra) {
 
 
 xAxisWeekFloating.tickSize((bBoxHeight-infoDetails.height+(5*oldScale)));
-xAxisWeekFloating3.tickSize((bBoxHeight-infoDetails.height+(20*oldScale)));
+xAxisWeekFloating3.tickSize((bBoxHeight-infoDetails.height+(20*oldScale*vertScale)));
 
 
 console.log('recalculating and applying height');
@@ -2641,7 +2738,7 @@ var dragHandler = d3.drag()
 //if (d3.select(this).classed("AssignedGroup") == true || d3.select(this).classed("dragbottom") == true) {
   if (d3.select(this).classed("AssignedGroup") == true) { // dragbottom gone for now .. may not bring back
   //console.log("true dragbottom");
-      d3.select(this).attr("height", d3.max([BAR_H,d3.event.y+thisOffsetY]));
+      d3.select(this).attr("height", d3.max([BAR_H*vertScale,d3.event.y+thisOffsetY]));
 
     } else {
 
@@ -2684,16 +2781,23 @@ var dragHandler = d3.drag()
     console.log("yes this is dragbottom");
     //console.log("oldScale:" + oldScale)
     var trimmedHeight;
-    d3.select(this).attr("height", function(d) {
-      untrimmedHeight = parseInt(d3.select(this).attr("height"));
-      trimmedHeight = parseInt(untrimmedHeight -untrimmedHeight%(BAR_H/oldScale));
-      return trimmedHeight;
-    });
-    d3.select(this).select('.today').attr('y2', trimmedHeight);
-    var newDataLength = parseInt(trimmedHeight/BAR_H/oldScale);
-    d3.select(this).attr("data-length", newDataLength);
+        d3.select(this).attr("height", function(d) {
 
-    calculateAndApplyHeight(BAR_H);
+          untrimmedHeight = parseInt(d3.select(this).attr("height"));
+          //console.log("compMode inside height calc on drag:" + compMode);
+            if(compMode != "checked") {
+          trimmedHeight = parseInt(untrimmedHeight -untrimmedHeight%(BAR_H/oldScale/vertScale));
+          } else {
+            trimmedHeight = untrimmedHeight;
+          }
+          return trimmedHeight;
+        });
+        d3.select(this).select('.today').attr('y2', trimmedHeight);
+        var newDataLength = parseInt(trimmedHeight/BAR_H/(oldScale*vertScale));
+        d3.select(this).attr("data-length", newDataLength);
+
+        calculateAndApplyHeight(BAR_H*vertScale);
+        //d3.select(this).moveToFront();
     //d3.select(this).moveToFront();
 
    } else {
@@ -2761,11 +2865,11 @@ var dragHandler = d3.drag()
         console.log("class:" + d3.select(this).attr("class"));
     console.log("class:" + d3.select(this).attr("class"));
       var groupHeight = parseFloat(newParent.attr("height"));
-      var adjustedGroupHeight = groupHeight-(BAR_H+2)*oldScale;
-     console.log("groupHeight:" + groupHeight + ", adjusted:" +adjustedGroupHeight);
+      var adjustedGroupHeight = groupHeight-(BAR_H+2)*oldScale*vertScale;
+  //   console.log("groupHeight:" + groupHeight + ", adjusted:" +adjustedGroupHeight);
      var currY = d3.select(this).attr("y");
   //   console.log("currY:" + currY);
-    var newY = d3.min([parseFloat(groupHeight)-(BAR_H+2)*oldScale, currY-(BAR_H+2)*oldScale]);
+  var newY = d3.min([parseFloat(groupHeight)-(BAR_H+2)*oldScale*vertScale, currY-(BAR_H+2)*oldScale*vertScale]);
        newY = d3.max([0, newY]);
 
      return newY;
@@ -3132,6 +3236,166 @@ bars.on("click",  function(d, i) {
       }
     }
   }
+
+
+
+function updateResources() {
+  if(deactivateNames == true)  {
+    d3.selectAll(".labelText").classed("darker", false);
+  }
+
+  if(newName != "") {
+  //  d3.select("g.assignedGroupGp")  // 1 only??
+  newId = "assignedto-"+newName;
+
+  // BEGINNING OF CREATION
+  symbolAssignees.push({key: newName, values:[]});
+
+//  groupCtr = symbolAssignees.length-1;
+  groupCtr = symbolAssignees.length;
+//  console.log(symbolAssignees[groupCtr]);
+//  console.log(symbolAssignees);
+
+
+var newSection = d3.select(wrapper)
+//  allCharts
+.insert('g', ":first-child")
+.attr('class', 'assignedGroupGp new')
+.attr('id', newId)
+.datum({key: newName, values:[]})
+.enter();
+
+d3.select('.new').append('svg')
+.attr('height', BAR_H)
+.attr('class','AssignedGroup')
+
+.attr('assignedName', newName)
+//  .append('rect')
+.attr('height', BAR_H)
+.attr('x', 0)
+.attr('y', 0)
+.attr('width', '100%')
+/*  .attr('background-color', function(d,i) {
+
+return d3.rgb(colorScaleNewSection(i))
+} ) */
+.attr('style', function(d,i) {
+//  console.log(d3.rgb(colorScaleNewSection(i)));
+  newItemCtr++;
+return 'background-color: '  + d3.rgb(colorScaleNewSection(newItemCtr));
+})
+.attr('opacity', '0.7')
+.attr('data-length',1)
+.call(dragHandler)
+//  .call()
+;
+
+
+var today = new Date();
+var xNow = x(today)*oldScale+tempTrans[0];
+//  console.log("newSection classs:" +newSection.attr("class"));
+  d3.select('.new').select('.AssignedGroup').append("line").attr("class","today")
+  .attr("x1", xNow) //<<== change your code here
+//  d3.select('.chart').append("line").attr("class","today").attr("x1", xNow) //<<== change your code here
+  .attr("y1", 0)
+  .attr("x2", xNow) //<<== and here
+  .attr("y2", function(d) {
+//       console.log('y2 height:' + d3.select(this).attr('class'));
+  //  return d3.select('.new').select('.AssignedGroup').attr('height');
+      return d3.select(this.parentNode).attr('height');
+  })
+
+  .style("stroke-width", 2)
+  .style("stroke", "red")
+  .style("fill", "none");
+//newSection.append
+
+
+var newLabel =  d3.select('[assignedName="'+newName+'"]')
+.append('g')
+.attr("class", "labelGroup")
+.append('text')
+.text(newName)
+.attr('class','labelText')
+.attr('width', '100')
+.attr("y", 20+textOffset)
+.attr("font-size", 20)
+.attr("font-family", "sans-serif")
+.attr("font-weight", "bold")
+.attr('fill', 'silver')
+.attr('opacity', '0.9');
+
+newLabel.append('line')
+  .attr("class","divider")
+  .attr("x1", x(minX))
+  .attr("x2", x(maxX))
+  .attr("stroke", "silver")
+  .attr("stroke-width", 1)
+    .attr("opacity", 0.5);
+//    .call();
+
+    //above line not showing, why??
+//  newGroup = newSection.select('.AssignedGroup'); // get them afresh .. don't now if i need to do that
+//   dragHandler(newGroup);
+
+
+calculateAndApplyHeight(BAR_H);
+
+
+
+// END OF CREATION
+
+  };
+
+
+
+  var hiddenRes2 = [];
+
+  $(".resourceCheckbox:checked").each(function(d) {
+    cb = $(this);
+    hiddenRes2.push(cb.attr("resource"));
+  });
+
+ console.log(hiddenRes2);
+
+
+  d3.selectAll(".resourceCheckbox").each(function(d, i) {
+    console.log(i);
+  });
+
+var dataLength = 0;
+  /// deal with removals
+  d3.selectAll("g.assignedGroupGp")
+     .each(function(d,i){
+    //   console.log(d3.select(this).attr('class'));
+       if (d3.select(this).classed("Remove")){
+        // console.log(d3.select(this));
+      //   console.log("Remove class key:" + d.key);
+          dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
+         d3.select(this).remove();
+      //   makeFilterDefs();
+       }
+
+       if (d3.select(this).classed("hideGroup")){
+        // console.log(d3.select(this));
+      //   console.log("hide class key:" + d.key);
+          dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
+         d3.select(this).classed("hidden", true);
+      //   makeFilterDefs();
+       } else {
+         dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
+          d3.select(this).classed("hidden", false);
+        //  makeFilterDefs();
+       }
+
+     }); // end each
+  // }; //end if classed
+if (dataLength > 0) {
+
+calculateAndApplyHeight();
+
+}
+}
 
   function LaunchConfirmDialogAndHandleData(dlgTitle,dlgText, action) {
   // Get the modal
@@ -4236,6 +4500,7 @@ var r1, r2;
   //  .attr('position', 'relative')
     .attr('id','zoomOverlay')
       .attr('class', 'zoom')
+      .classed('hidden', true) //new
       //.attr("top", bBoxTop)
     .append('rect')
       .attr('fill', 'none')
@@ -4256,7 +4521,7 @@ var r1, r2;
 var panMeasure = 0;
 var oldScale = 1;
 
-var zoomable = true;
+var zoomable = false; //new, was true
 
 
 function getTranslation(transform) {
@@ -4359,8 +4624,25 @@ function zoomChart(transform) {
 
            groupBox.attr("height", function(d) {
         //   console.log(groupBox.attr("data-length"));
+              if(compMode != "checked") {
+              //    console.log("returning:" + parseInt(groupBox.attr("data-length"))*BAR_H  *transform.k);
+                  return parseInt(parseInt(groupBox.attr("data-length"))*(BAR_H*vertScale)  *transform.k);  //reinstate if not applying/undoing compaction
+                } else {
+                  var maxRows = compRows;
+                  if (d3.select(this).attr('assignedName') == "ZZ Not assigned") {
+                  //  maxRows = compRowsUnassigned;
 
-            return parseInt(groupBox.attr("data-length"))*BAR_H  *transform.k;
+                    if( compExcUnassigned == "checked") {
+                        maxRows = parseInt(groupBox.attr("data-length"));
+                     } else {
+                       maxRows = compRowsUnassigned;
+                    //    maxRows = parseInt(d3.select(this.parentNode.parentNode).attr("data-length"));
+                      //  console.log("maxRows:" + maxRows);
+                    //    console.log(d3.select(this.parentNode).data());
+                      }
+                  }
+                  return barSpacer+(BAR_H+2)*oldScale*vertScale*(maxRows);
+                }
             //  return parseInt(groupBox.attr("height"))  *transform.k;
            })
            groupBox.attr("y", function(d) {
@@ -4385,8 +4667,8 @@ function zoomChart(transform) {
     bBoxTop = wrapperDetails.top;//-infoDetails.top;
 
 
-    xAxisWeekFloating.tickSize((bBoxHeight-infoDetails.height+(5*oldScale)));
-    xAxisWeekFloating3.tickSize((bBoxHeight-infoDetails.height+(20*oldScale)));
+    xAxisWeekFloating.tickSize((bBoxHeight-infoDetails.height+(5*oldScale*vertScale)));
+    xAxisWeekFloating3.tickSize((bBoxHeight-infoDetails.height+(20*oldScale*vertScale)));
 
 
 
@@ -4613,6 +4895,7 @@ d3.select('#updateResourcesBtn').on("click", function() {
 
 var newItemCtr = -1;
 
+//function updateResourcesBtnClickContinued(bntEvent, gangArr) {
 function updateResourcesBtnClickContinued(bntEvent, gangArr) {
   var dlgText = "";
 
@@ -4624,7 +4907,8 @@ function updateResourcesBtnClickContinued(bntEvent, gangArr) {
 
         });
         dlgText = //"<div><span class='boxPrompt'>Deactivate All</span><input box id='deactivateNamesChk' type='checkbox' checked='false' /></div>" +
-        "<div><span class='boxPrompt'>Check names to remove from the Planner:</span></div>" + dlgText;
+        "<div style='float: right;'><input type='checkbox' class='chkHideRem' name='chkHideRem' onclick='javascript:alterHideRemGroup(this)' /><em>Remove from chart instead of hide</em></div>"+
+    "<div><span class='boxPrompt'>Check names to <span id='hideRem'>hide</span> from the Planner:</span></div>" + dlgText;
         dlgText = dlgText + "<span class='boxPrompt'>Add a name: </span><input box id='newResource' placeholder='A Full Username known to SP' size='30' onchange='javascript:addResource(this)' />";
         dlgText = dlgText += "<div><span class='gangList boxPrompt'>Gang names available:</span><ul class='gangList'><li> " + gangArr.join('</li><li>') +"</li></ul></div>";
         LaunchConfirmDialog("Update Resources",dlgText, function(result){
@@ -4780,21 +5064,37 @@ function clearOldItems() {
       d3.select(this).remove();
     }
   });
+
   //reset heights
   d3.selectAll("g.assignedGroupGp").each(function() {
-    console.log("num items for:" + d3.select(this).attr("id") + ":- " + d3.select(this).selectAll(".GBarGroup").size());
+  //  console.log("num items for:" + d3.select(this).attr("id") + ":- " + d3.select(this).selectAll(".GBarGroup").size());
     var numItems = d3.select(this).selectAll(".GBarGroup").size();
     d3.select(this).select(".AssignedGroup").attr("data-length",numItems);
+    var groupName = d3.select(this).select(".AssignedGroup").attr("assignedName");
+  //  console.log("groupName:" + groupName);
+    compactChartByLocalStorage(false);
+    var maxRows = compRows;
+  //  console.log("rows unassigned:" + compRowsUnassigned);
+    if(groupName == "ZZ Not assigned") {
+      maxRows = compRowsUnassigned;
+    }
     if (numItems == 0) { numItems = 1; };
   //  barCtr = -1;
     d3.select(this).selectAll(".barGroup")
     .attr('y', function(d, i) {
-
-        return i*BAR_H;
-
+      if(groupName != "ZZ Not assigned" || compExcUnassigned != "checked") {
+      return barSpacer+((vertScale*BAR_H)+2)*(i%maxRows); //compactRows
+    } else if (groupName == "ZZ Not assigned") {
+      return barSpacer+vertScale*(BAR_H+2)*i;
+      }
     })
-    var newHeight = height*numItems*oldScale;
-    d3.select(this).select(".AssignedGroup").attr("height", newHeight );
+    //var newHeight = height*numItems*oldScale;
+  //  var newHeight = (BAR_H*oldScale+2)*(maxRows);
+    d3.select(this).select(".AssignedGroup").attr("height", function(d,i) {
+        var newHeight = barSpacer+((BAR_H*(oldScale*vertScale))+2)*(maxRows);
+    return newHeight;
+    }
+      );
 
   });
   calculateAndApplyHeight();
@@ -4803,6 +5103,12 @@ function clearOldItems() {
 d3.select("#yearsAheadTxt").on("change", function(d) {
   localStorage.setItem("YearsAhead",$("#yearsAheadTxt").val());
 });
+
+
+d3.select("#vertScaleTxt").on("change", function(d) {
+  localStorage.setItem("VerticalScale",$("#vertScaleTxt").val());
+});
+
 //d3.select('input[name="group-stack"]:checked').node().value
   d3.select("#ThreeWayToggle").selectAll('input').on("change", function(d) {
 
@@ -5049,7 +5355,7 @@ function onPopUpCloseCallBackWithData(result, returnValue) {
          if(result== SP.UI.DialogResult.OK)
          {
            closePopupAndPassData();
-          //   SP.UI.Status.removeAllStatus(true);
+             SP.UI.Status.removeAllStatus(true);
           //   var sId = SP.UI.Status.addStatus("Rows compacted x " + returnValue[0]);
           //   SP.UI.Status.setStatusPriColor(sId, 'green');
 
@@ -5073,6 +5379,50 @@ function onPopUpCloseCallBackWithData(result, returnValue) {
 
 
 
+     function compactChartByLocalStorage(redraw) {
+
+         //   compRows = "3";
+         //   compExcUnassigned = "checked";
+         //   compRowsUnassigned = "15";
+           if(localStorage.getItem("CompactRows") != null) {
+             compRows = localStorage.getItem("CompactRows");
+           }
+
+           if(localStorage.getItem("CompactMode") != null) {
+             var compModeStatus = localStorage.getItem("CompactMode");
+             if(localStorage.getItem("CompactMode") == "false") {
+               compMode = "";
+             } else {
+               compMode = "checked";
+             };
+         //    console.log("compexcunassigned:" + compExcUnassigned);
+           //  if
+           }
+
+           if(localStorage.getItem("CompactExcUnassigned") != null) {
+             if(localStorage.getItem("CompactExcUnassigned") == "false") {
+               compExcUnassigned = "";
+             } else {
+               compExcUnassigned = "checked";
+             };
+            console.log("compexcunassigned:" + compExcUnassigned);
+           //  if
+           }
+
+
+           if(localStorage.getItem("CompactRowsUnassigned") != null) {
+             compRowsUnassigned = localStorage.getItem("CompactRowsUnassigned");
+           }
+
+         if(redraw == true) {
+           //console.log("compmode before function:" + compMode);
+           compactChart(compRows, compExcUnassigned, compRowsUnassigned, compModeStatus);
+         }
+
+
+     }
+
+
 
 function compactChart(compactRows, excludeUnassigned, compactRowsUnassigned) {
 
@@ -5084,46 +5434,88 @@ d3.selectAll(".AssignedGroup").each(function(d, i) {
       return;
     } else {
 //  console.log("hit it");
-      var previousObj;
-      var newHeight = BAR_H;
-      var newY = 0;
-      var hitadjusted = false;
-      var testCtr = -1;
-      var maxRows = compactRows;
+          var previousObj;
+          var newHeight = BAR_H*vertScale;
+          var newY = 0;
+          //    var hitadjusted = false;
+          //    var testCtr = -1;
+          var maxRows = compactRows;
 
-      if (d3.select(this).attr('assignedName') == "ZZ Not assigned") {
-        maxRows = compactRowsUnassigned;
-      }
-        newHeight = (BAR_H*oldScale+2)*(maxRows);
-      var size = d3.select(this).selectAll(".barGroup").size();
-    //  console.log("size:" + size);
-      d3.select(this).selectAll(".barGroup")
-      .each(function(d, i) {
+          if (d3.select(this).attr('assignedName') == "ZZ Not assigned") {
+            if(excludeUnassigned == true) {
+              maxRows = parseInt(d3.select(this).attr('data-length'));
+          } else {
+            maxRows = compactRowsUnassigned;
+          }
+          }
+            newHeight = barSpacer + (BAR_H+2)*oldScale*vertScale*maxRows;
+            compactHeight = newHeight;
+          var size = d3.select(this).selectAll(".barGroup").size();
 
-        testCtr = -1;
-      //  if ((i+1) % 2 == 0 )
-        //  if ((i+1) % compactRows != 0 )
-      //  {
-            //d3.select(this).attr("y", (BAR_H*(compactRows-(i+1)%compactRows)));
-            d3.select(this).attr("y", (BAR_H+2)*(i%maxRows));
-    //    } else {
+            if (compModeStatus == true || compModeStatus == "true") {
+              //  console.log("compModeStatus inside if:" + compModeStatus);
+                  //d3.select(this).attr("y", (BAR_H*(compactRows-(i+1)%compactRows)));
+              //    d3.select(this).attr("y", (BAR_H+2)*(i%maxRows));
+                  d3.select(this).select('.today').attr('y2', newHeight);
 
+                 d3.select(this)
+                  .attr("height", function (d,i) {
+                  return newHeight;
+                })
+                  .attr('y', function (d,i) {
+                    var gpDim =computeDimensions(d3.select(this));
+                     return newHeight+gpDim.height*vertScale;
+                  })
+              } else {
+                  d3.select(this).attr("y", vertScale*(BAR_H+2) * i);
+                  d3.select(this).select('.today').attr('y2', (BAR_H+2)*oldScale*vertScale*size);
 
-    //    d3.select(this).attr("y", 0);
-    //  }
+                 d3.select(this).attr("height",(BAR_H+2)*oldScale*vertScale*(size));
 
+            //  d3.select(this).attr("y", 0);
+            }
+
+            d3.select(this).selectAll(".barGroup")
+              .each(function(d, i) {
+
+              //  testCtr = -1;
+              //  if ((i+1) % 2 == 0 )
+                //  if ((i+1) % compactRows != 0 )
+              //  {
+              if (compModeStatus == true || compModeStatus == "true") {
+                //  console.log("compModeStatus inside if 2:" + compModeStatus);
+                    //d3.select(this).attr("y", (BAR_H*(compactRows-(i+1)%compactRows)));
+                    d3.select(this).attr("y", barSpacer+((vertScale*BAR_H)+2)*(i%maxRows));
+                //    d3.select(this).select('.today').attr('y2', newHeight);
+
+              //     d3.select(this).attr("height",newHeight)
+                //   .attr('y', function (d,i) {
+              //      var gpDim =computeDimensions(d3.select(this));
+              //       return newHeight+gpDim.height;
+              //     })
+                } else {
+                    d3.select(this).attr("y", barSpacer+((vertScale*BAR_H)+2) * i);
+                //    d3.select(this).select('.today').attr('y2', (BAR_H+2)*oldScale*size);
+
+                //   d3.select(this).attr("height",(BAR_H+2)*oldScale*size);
+
+            //    d3.select(this).attr("y", 0);
+              }
+        //0
+
+        //      })
 
       })
     //});
 
-
+/*
       d3.select(this).select('.today').attr('y2', newHeight);
      d3.select(this).attr("height",newHeight)
 
    .attr('y', function (d,i) {
     var gpDim =computeDimensions(d3.select(this));
      return newHeight+gpDim.height;
-   })
+   }) */
 
  } // end if not excluding unassigned
   })
@@ -5916,6 +6308,17 @@ function addResource(input) {
 }
 
 
+function alterHideRemGroup(checkbox) {
+
+    var checkedStatus = $(checkbox).is(':checked');
+    remGroupBool = checkedStatus;
+    console.log("remGroupBool:" + remGroupBool);
+    if(remGroupBool == true) {
+      $("#hideRem").text("REMOVE");
+    } else {
+      $("#hideRem").text("hide");
+    }
+}
 
 
 function alterResourceStatus(checkbox) {
