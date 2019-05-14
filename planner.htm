@@ -1,10 +1,11 @@
 <html>
+<head>
+  <title>Construction Planner - Vanilla Clone</title>
+</head>
 <body>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="NonSPAlerts.js"></script>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />
-
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
 
 
@@ -53,9 +54,16 @@ g.tick {
 /*  background-color: rgba(255,0,0,0.6); */
 /* position: absolute; */
 }
+/*
 
-
-
+.tooltip {
+position: absolute;
+position: sticky;
+bottom: -50;
+left: 0%;
+height: 120px;
+  z-index: 1000;
+} */
 .axis {
 /* height: 100%; */
 height: 20px;
@@ -139,7 +147,10 @@ height: 20px;
   color: lightgray;
     opacity: 0.3;
 }
-
+.axisWeekFloating g text {
+  	/* color: lightgray; */
+  	opacity: 0;
+  }
  .axisWeekFloating3 g {
   color: lightgray;
     opacity: 0.1;
@@ -180,7 +191,7 @@ path, line {
 }
 
 
-.axisWeekTopGrid >  .tick {
+.axisWeekTopGrid>.tick {
 /*  stroke: silver; */
 opacity: 0.3;
 pointer-events: none;
@@ -258,10 +269,15 @@ cursor: -webkit-grab;
   -ms-user-select: none;
   user-select: none;
 }
-
-.dateText {
-  fill: red;
-}
+.barsText, .dateText, .finDateText {
+  	/*  cursor: default; */
+  	cursor: grab;
+  	cursor: -webkit-grab;
+  }
+  .dateText {
+  /*	fill: red; */
+  fill: blue;
+  }
 
 .darker {
   opacity: 1;
@@ -286,6 +302,9 @@ cursor: -webkit-grab;
   color: red;
 }
 
+table.projectInfo {
+  	width: 100%;
+  }
 table.projectInfo tr th {
   text-align: right;
   padding-right: 10px;
@@ -431,7 +450,10 @@ cursor: help;
   color: blue;
   font-weight: 200;
 }
-
+.divider {
+  	border-top: 4px dotted silver;
+  	/*  border-top: 4mm ridge rgb(170, 50, 220, .6); */
+  }
 
 /* colors for text display */
 
@@ -459,7 +481,9 @@ cursor: help;
 .chartAxisSpacer {
   display:none;
 }
-
+.styleDefs{
+  height: 0px;
+}
 @media print {
 
   .chartAxisSpacer {
@@ -546,7 +570,6 @@ cursor: help;
 .nobreak {
   white-space:nowrap;
   display: inline-block;
-  height: auto;
 }
 
 #saveRevert {
@@ -649,7 +672,7 @@ input[type="radio"] {
   display:block;
   width: 100%;
 }
- #settingsButtons li {
+#settingsButtons li, #miscButtons li {
   float: left;
   list-style: none;
   text-align: center;
@@ -695,7 +718,7 @@ input[type="radio"] {
 
 
 /* Darker background on mouse-over */
-#settingsButtons li:hover {
+#settingsButtons li:hover, #miscButtons li:hover {
   background-color: RoyalBlue;
 }
 
@@ -740,6 +763,7 @@ input[type="radio"] {
 }
 
 
+/*.tooltip  */
 .tooltiptext {
   	visibility: hidden;
   	width: 120px;
@@ -757,7 +781,8 @@ input[type="radio"] {
   	position: absolute;
   	z-index: 1;
   }
-  .tooltip:hover .tooltiptext {
+
+.tooltip:hover .tooltiptext {
   	visibility: visible;
   	/*display: table; */
   	margin-left: -75px;
@@ -781,76 +806,91 @@ input[type="radio"] {
   	border-right: 8px solid transparent;
   	border-left: 8px solid transparent;
   }
-  .aboutSpacer {
-  	width: 100%;
-  	/* height: 100px; */
-  	display: inline-block;
+.aboutSpacer {
+  width: 100%;
+  /* height: 100px; */
+  display: block;
+}
+
+
+.hideMenu {
+  display: none;
+  visibility: hidden;
+
   }
-  .hideMenu {
-  	display: none;
-  	visibility: hidden;
-  }
-  .hugLeft {
-  	left -0px;
-  	width: 0px;
-  	max-height: 30px;
-  	/*  transition: width 1s, left 1s; */
-  	height: 20px;
-  	border: none;
-  	/*transition: none; */
-  	box-shadow: none;
-  }
-  .hugLeftBtn {
-  	padding-top: 3px;
-  	padding-left: 15px;
-  	width: 30px;
-  	left: -10px;
-  	transition: width 0.5s, left 0.5s;
-  	font-size: 20px;
-  	height: 35px;
-  }
-  .hugLeft2 {
-  	/*left 20px; */
-  	width: 0px;
-  	margin-left: 20px;
-  	/*  transition: width 1s, left 1s; */
-  	height: 20px;
-  	border: none;
-  	/*transition: none; */
-  	box-shadow: none;
-  }
-  .hugLeftBtn2 {
-  	position: absolute;
-  	visibility: visible;
-  	padding-top: 3px;
-  	padding-left: 15px;
-  	width: 20px;
-  	/*left: 10px; */
-  	left: 3px;
+.hugLeft {
+  left -0px;
+  width: 0px;
+    	max-height: 30px;
+/*  transition: width 1s, left 1s; */
+  height: 20px;
+  border: none;
+  /*transition: none; */
+  box-shadow: none;
+
+}
+
+.hugLeftBtn {
+  padding-top: 3px;
+  padding-left:15px;
+  width: 30px;
+  left: -10px;
+  transition: width 0.5s, left 0.5s;
+  font-size: 20px;
+  height: 35px;
+
+}
+
+
+
+.hugLeft2 {
+  /* left 20px; */
+  width: 0px;
+  margin-left: 20px;
+/*  transition: width 1s, left 1s; */
+  height: 20px;
+  border: none;
+  /*transition: none; */
+  box-shadow: none;
+
+}
+
+
+.hugLeftBtn2 {
+  position: absolute;
+  tooltip: "Show settings";
+  visibility: visible;
+  padding-top: 3px;
+  padding-left:15px;
+  width: 20px;
+  /*left: 10px; */
+  left: 3px;
   	top: 30px;
-  	transition: width 0.5s, left 0.5s;
-  	font-size: 15px;
-  	height: 25px;
-  }
-  .aboutInnerHeight {
+  transition: width 0.5s, left 0.5s;
+  font-size: 15px;
+  height: 25px;
+
+}
+
+.aboutInnerHeight {
   	height: 60px;
   	max-width: 600px;
   }
-#axisClone{
-  position: fixed;
-  top: 25px;
-}
+  #axisClone {
+  	position: fixed;
+  	top: 90px;
+  	/*fill-opacity: 0; */
+  }
+  #axisClone .axisWeek {
+  	/*  color: none; */
+  	/*  fill-opacity: 0; */
+  	fill: none;
+  	width: 1px;
+  }
+  #axisClone text {
+  	opacity: 0.5;
+  }
 
-
-#axisClone .axisWeek {
-
-  fill: none;
-  width: 1px;
-}
-
-#axisClone text {
-  opacity: 0.5;
-}
 
 #axisClone.axisWeek path.domain {
 /*  stroke: rgba(0,0,0,0); */
@@ -859,34 +899,28 @@ input[type="radio"] {
   position: fixed;
 } */
 
-
-
-
-
+#weekNum {
+  	position: absolute;
+  	font-size: large;
+  	font-weight: bold;
+  	color: DodgerBlue;
+  	left: 10px;
+    top: 40px;
+  	/*background-color: white; */
+  	text-shadow: 3px 3px yellow;
+}
 .glow {
-  /* font-size: 80px; */
-  /* color: #fff; */
-/*  text-align: center; */
-/*  -webkit-animation: glow 1s ease-in-out infinite alternate;
-  -moz-animation: glow 1s ease-in-out infinite alternate;
-  animation: glow 1s ease-in-out infinite alternate; */
-/*  stroke: yellow;
-  stroke-width: 0.2; */
-  filter: url(#text-glow);
-  font-weight: bold;
-}
-/*
-@-webkit-keyframes glow {
-  from {
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+    /* font-size: 80px; */
+    /* color: #fff; */
+  /*  text-align: center; */
+  /*  -webkit-animation: glow 1s ease-in-out infinite alternate;
+    -moz-animation: glow 1s ease-in-out infinite alternate;
+    animation: glow 1s ease-in-out infinite alternate; */
+  /*  stroke: yellow;
+    stroke-width: 0.2; */
+    filter: url(#text-glow);
+    font-weight: bold;
   }
-
-  to {
-    text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
-  }
-}
-*/
-
 
 
 /* The Modal (background) */
@@ -958,26 +992,14 @@ background-color: #FFFF !important}
   padding: 2px 16px;
   background-color: #5cb85c;
   color: white;
-
 }
-
-
-#weekNum {
-  position: absolute;
-  font-size: large;
-  font-weight: bold;
-  color: DodgerBlue;
-  left: 10px;
-  /*background-color: white; */
-  text-shadow: 3px 3px yellow;
-}
-
-
 
 </style>
 <h3>Construction Planner-Vanilla Clone</h3>
 <div id="axisClone"></div>
-<div id="IEMessage">This chart will not function in Internet Explorer - if viewing in IE, please reopen it in Google Chrome</div>
+<div id="IEMessage">
+	This chart will not function in Internet Explorer - if viewing in IE, please reopen it in Google Chrome
+</div>
 <div id='info'>
 	<div class="about">
     <div class="tooltip">
@@ -1026,8 +1048,7 @@ background-color: #FFFF !important}
 					</div>
 
 
-				</div>
-         ~ <a href="/Help%20Wiki/Construction%20Planner.aspx" id="instructions" target="_blank">Click for instructions</a>
+				</div> ~ <a href="/Help%20Wiki/Construction%20Planner.aspx" id="instructions" target="_blank">Click for instructions</a>
 			</div>
 		</div>
 		<div class="overlayBtn tooltip" id="overlayBtn">
@@ -1047,12 +1068,22 @@ background-color: #FFFF !important}
 	<div class="spacer"></div>
 </div>
 <div id='chartContainer'>
-<div class="chartAxisSpacer"></div>
-<div class="chart"></div>
+	<div class="chartAxisSpacer"></div>
+	<div class="chart"></div>
 </div>
 
 <script type="text/javascript">
 
+function cleanMe(UID) {
+//  console.log(UID);
+//  console.log(  d3.select("[UID='" + UID+"']"));
+  var barToScrub = d3.select("[UID='" + UID+"']").selectAll('rect');
+  //d3.select("[UID='" + UID+"']").selectAll('rect').classed('changed', false);
+  barToScrub.classed('changed', false);
+  barToScrub.classed('completed', false);
+  barToScrub.classed('moved', true);
+  d3.select("#scrubBtn").classed("hidden", true);
+}
 /*
   (function() {
      console.log('started f');
@@ -1066,6 +1097,7 @@ background-color: #FFFF !important}
 
 // data
 var trainingProjects;
+var remGroupBool = false;
 
 if (localStorage.getItem("trainingProjects") == null) {
 
@@ -1086,9 +1118,6 @@ var bwroot = "rootsite";
 var XMLFileName = "Project Ready Matrix Data.xml"
 
 var newName = "";
-
-var pageX;
-
 var useSavedData= false;
 
 var compactHeight;
@@ -1105,40 +1134,70 @@ var vertScale = 1;
 var defs;
 
 
-function runAfterEverythingElse() {
-/* sliders */
 
-$("link[rel='shortcut icon']").attr("href","http://"+bwroot+"siteassets/scripts/prettygantt/favicon.ico");
+/*!
+ * Dynamically changing favicons with JavaScript
+ * Works in all A-grade browsers except Safari and Internet Explorer
+ * Demo: http://mathiasbynens.be/demo/dynamic-favicons
+ */
 
-$("link[rel='shortcut icon']").attr("href","favicon.ico");
+// HTML5™, baby! http://mathiasbynens.be/notes/document-head
+document.head = document.head || document.getElementsByTagName('head')[0];
 
-var aboutHeight = parseFloat($(".about").height())+8;
-$(".aboutSpacer").css('height', aboutHeight+'px');
-
-
-
-
-var browser=get_browser();
-
-if (browser.name != "Chrome") {
-  alert("Incompatible browser detected ("+ browser.name+") - please reopen this chart in Chrome for full functionality.");
-
+function changeFavicon(src) {
+ var link = document.createElement('link'),
+     oldLink = document.getElementById('dynamic-favicon');
+ link.id = 'dynamic-favicon';
+ link.rel = 'shortcut icon';
+ link.href = src;
+ if (oldLink) {
+  document.head.removeChild(oldLink);
+ }
+ document.head.appendChild(link);
 }
+
+function runAfterEverythingElse() {
+
+
+changeFavicon("favicon.ico");
+
+//console.log(vertScale);
+
+
+  //$("link[rel='shortcut icon']").attr("href","http://tscppm/siteassets/scripts/prettygantt/favicon.ico");
+
+  var aboutHeight = $(".about").height();
+  $(".aboutSpacer").css('height', aboutHeight+'px');
+
+
+
+
+
+
+  var browser=get_browser();
+
+  if (browser.name != "Chrome") {
+    alert("Incompatible browser detected ("+ browser.name+") - please reopen this chart in Chrome for full functionality.");
+
+  }
 
 
 
 // if viewing in IE, code doesn't even get this far:
   $("#IEMessage").remove();
-  //$("#s4-workspace").scroll(function() { // when the page is scrolled run this
-  $(document).scroll(function() { // when the page is scrolled run this
-      console.log($(this).scrollTop());
-      if($(this).scrollTop() >= 300) { // if you're NOT at the top
+
+  $("#s4-workspace").scroll(function() { // when the page is scrolled run this
+    //  console.log($(this).scrollTop());
+      if($(this).scrollTop() >= 50) { // if you're NOT at the top
           $("#axisClone").fadeIn("fast"); // fade in
-          $(".about").css("top","0px");
+            $("#axisClone").css("top","90px"); // fade in
+          $(".about").css("top","90px");
       } else { // else
-          $("#axisClone").fadeOut("fast"); // fade out
+          //$("#axisClone").fadeOut("fast"); // fade out
             $(".about").css("top","auto");
-              $("#axisClone").hide(); // fade out
+            $("#axisClone").css("top", "240px");
+              $("#axisClone").fadeIn("fast");
+            //  $("#axisClone").hide(); // fade out
       }
   });
 
@@ -1148,8 +1207,6 @@ if (browser.name != "Chrome") {
 if (localStorage.getItem("YearsAhead") != null) {
   $("#yearsAheadTxt").val(localStorage.getItem("YearsAhead"));
 }
-
-
 
 if (localStorage.getItem("VerticalScale") != null) {
   vertScale = parseFloat(localStorage.getItem("VerticalScale"));
@@ -1161,15 +1218,18 @@ if (localStorage.getItem("VerticalScale") != null) {
 }
 
 
-
 function recallToggle() {
+  var checkedValue = "Short";
   if (localStorage.getItem("threeWayToggle") != null) {
+      checkedValue = localStorage.getItem("threeWayToggle");
+  }
     //  d3.select(this.parentNode.parentNode).selectAll('label').classed('selected', false);
     //  d3.select(this.parentNode.parentNode).selectAll('label').classed('selected', false);
-    d3.select("#ThreeWayToggle").selectAll('input').each(function(d) {
+      d3.select("#ThreeWayToggle").selectAll('input').each(function(d) {
       d3.select(this.parentNode).classed('selected', false);
-       var checkedValue = localStorage.getItem("threeWayToggle");
-       var selectedValue = this.value;
+    //   var checkedValue = localStorage.getItem("threeWayToggle");
+      var selectedValue = this.value;
+
       if (checkedValue === selectedValue) {
         //  console.log("selected:" + selectedValue + ", checked:" + checkedValue);
         d3.select(this.parentNode).classed('selected', true);
@@ -1178,13 +1238,14 @@ function recallToggle() {
       //  d3.select(this).node().dispatch("change");
 
   //    this.on("change")();
-      }
-    })
+        }
+  //  }
+  //  )
 
             //d3.select("#ThreeWayToggle").selectAll('input').node().dispatch("change");
 
   //  d3.select("#ThreeWayToggle").selectAll('input').dispatch("change");
-  }
+    })
 
 
 }
@@ -1204,6 +1265,8 @@ jQuery(".addDef").click(function() {
   var url = "/SitePages/ViewGlossary.aspx?Term="+term;
     OpenDialog(url);
   });
+
+
 
 //////
 //get currentUser up front because it can't be done fast enough during updates
@@ -1230,29 +1293,29 @@ var currentUser;
 //   alert("error");
  }
 
-
 */
 
-$(document).mousemove(function(event) {
-  pageX = event.pageX;
+/*
+  $(document).mousemove(function(event) {
+    pageX = event.pageX;
 
-})
-
+  })
+*/
 
 
 
   var wrapper = document.querySelector('.chart');
   const width = wrapper.clientWidth;
-//  var width = wrapper.clientWidth;
+  //  var width = wrapper.clientWidth;
   const parser = d3.isoParse;
-//  var parser = d3.isoParse;
+  //  var parser = d3.isoParse;
   // stuff for resizing bars
 
-const height = 35; //25 // BAR ITSELF
-var GROUP_HANDLE_H = 6;
-var BAR_H = 40; //30 // BAR INC HANDLES ETC
-var BAR_INDENT = 3;
-var BAR_FIN_OFFSET = 8;
+  const height = 35; //25 // BAR ITSELF
+  var GROUP_HANDLE_H = 6;
+  var BAR_H = 40; //30 // BAR INC HANDLES ETC
+  var BAR_INDENT = 3;
+  var BAR_FIN_OFFSET = 8;
 
   var MAP_WIDTH = clWidth;
   var MAP_HEIGHT = clHeight;
@@ -1264,17 +1327,17 @@ var BAR_FIN_OFFSET = 8;
   var MIN_TRANSLATE_Y = -MAX_TRANSLATE_Y;
 
   var MIN_RECT_WIDTH = 100;
-   var MIN_RECT_HEIGHT = 100;
+  var MIN_RECT_HEIGHT = 100;
 
 
-    var HANDLE_R = 5;
-    var HANDLE_R_ACTIVE = 12;
+  var HANDLE_R = 5;
+  var HANDLE_R_ACTIVE = 12;
 
-    var WARNING_DAYS = 10;
+  var WARNING_DAYS = 10;
 
-    var activeNameGroupId = "";
+  var activeNameGroupId = "";
 
-
+   compactHeight = (BAR_H+2)*3;
 
 
 
@@ -1287,16 +1350,16 @@ if (localStorage.getItem("chartData") == null) {
       .entries(MATRIXDATA); */
 
 //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve
-  //    var timeStampPromise = Promise.resolve(getTimeLastModifiedMx(XMLFileName));
-  //    timeStampPromise.then(function(data){
-  //      console.log(data);
+    //  var timeStampPromise = Promise.resolve(getTimeLastModifiedMx(XMLFileName));
+    //  timeStampPromise.then(function(data){
+      //  console.log(data);
         try {
-    //    var prettyDate = new Date(data.d.TimeLastModified).toLocaleString();
-        $("#dataInfo").html("<img class='fileicon' src='Xml file.svg' title='Using XML file data dated:" + XXX+"' />");
+     //   var prettyDate = new Date(data.d.TimeLastModified).toLocaleString();
+     $("#dataInfo").html("<img class='fileicon' src='Xml file.svg' title='Using XML file data dated:" + XXX+"' />");
       } catch(ex) {
         $("#dataInfo").html("<img class='fileicon' src='Xml file.svg' title='Using XML file, data date not known' />");
-      }
-    //  });
+       }
+     // });
 
 
 
@@ -1311,8 +1374,8 @@ window.MATRIXDATA = JSON.parse(localStorage.getItem("chartData"));
     .entries(MATRIXDATA); */
   //  console
   var dataDate = localStorage.getItem("chartDataDate");
-$("#dataInfo").html("<img class='fileicon' src='googleIcon.png' title='Using data saved in local storage on "+dataDate+"' />");
-
+$("#dataInfo").html("<img class='fileicon' src='googleIcon.png' />");
+$("#dataInfoToolTip").html("Using data saved in local storage on "+dataDate);
   var flattenedData = [];
 /*
   symbolAssignees.forEach(function(assignee, i) {
@@ -1326,10 +1389,23 @@ $("#dataInfo").html("<img class='fileicon' src='googleIcon.png' title='Using dat
     //  })
   }) ;
   window.MATRIXDATA = flattenedData;
-//  console.log(MATRIXDATA);
+  console.log(flattenedData);
 }
 
+// section below is to enable the 'first' group to stay without being removed
+// will eventually hide this from everything - however can't use 'hide', must use height: 0
 
+var now = new Date();
+
+var tempToday = "("+now.getFullYear()+","+(now.getMonth()+1)+","+now.getDate()+")";
+
+window.MATRIXDATA.unshift({"AssignedToName":"00-Must be unhidden to keep highlighting active",
+"OwnerName":"00",
+"AssignedToAndStartDate":"0000",
+"DeliveryProgramService":{"#text":"00"},
+"newStartDateScript":tempToday,
+"UniqueReference": {"#text":"00"},
+"projectTitle":"null" });
 
 var symbolAssignees = d3.nest()
   .key(d => d.AssignedToName).sortKeys(d3.ascending)
@@ -1446,6 +1522,264 @@ svgL.append('line')
 }
 
 
+//const svgDefs = function(symbol) {
+  const svgDefs = function(obj) {
+//allCharts.append("defs");
+
+  const defs = d3.select(this.parentNode).selectAll('.AssignedGroup').append('defs');
+//  const defs = d3.select(this.parentNode).selectAll('.barGroup').append("defs");
+ //defs = d3.select(obj).append('svg').attr("class","styleDefs").append("defs");
+  // create filter with id #drop-shadow
+  // height=130% so that the shadow is not clipped
+  var filter = defs.append("filter")
+      .attr("id", "yellow-drop-shadow")
+      .attr("height", "110%");
+
+
+
+  // SourceAlpha refers to opacity of graphic that this filter will be applied to
+  // convolve that with a Gaussian with standard deviation 3 and store result
+  // in blur
+  filter.append("feGaussianBlur")
+      .attr("in", "SourceAlpha")
+      .attr("stdDeviation", 5)
+      .attr("result", "blur");
+
+  // translate output of Gaussian blur to the right and downwards with 2px
+  // store result in offsetBlur
+//  var feOffset =
+  filter.append("feOffset")
+      .attr("in", "blur")
+      .attr("dx", 5)
+      .attr("dy", 5)
+      .attr("result", "offsetBlur");
+
+
+      filter.append('feFlood')
+      .attr("in", "offsetBlur")
+      .attr("flood-color","yellow")
+      .attr("flood-opacity","1")
+      .attr("result", "offsetColor");
+
+      filter.append("feComposite")
+          .attr("in", "offsetColor")
+          .attr("in2", "offsetBlur")
+          .attr("operator", "in")
+          .attr("result", "offsetBlur");
+
+      // overlay original SourceGraphic over translated blurred opacity by using
+      // feMerge filter. Order of specifying inputs is important!
+      var feMerge = filter.append("feMerge");
+
+      feMerge.append("feMergeNode")
+          .attr("in", "offsetBlur")
+      feMerge.append("feMergeNode")
+          .attr("in", "SourceGraphic");
+
+
+      var filter2 = defs.append("filter")
+              .attr("id", "red-drop-shadow")
+              .attr("height", "150%");
+
+          filter2.append("feGaussianBlur")
+              .attr("in", "SourceAlpha")
+              .attr("stdDeviation", 3)
+              .attr("result", "blur");
+
+          // translate output of Gaussian blur to the right and downwards with 2px
+          // store result in offsetBlur
+        //  var feOffset =
+          filter2.append("feOffset")
+              .attr("in", "blur")
+              .attr("dx", 3)
+              .attr("dy", 3)
+              .attr("result", "offsetBlur");
+
+
+              filter2.append('feFlood')
+              .attr("in", "offsetBlur")
+              .attr("flood-color","red")
+              .attr("flood-opacity","1")
+              .attr("result", "offsetColor");
+
+              filter2.append("feComposite")
+                  .attr("in", "offsetColor")
+                  .attr("in2", "offsetBlur")
+                  .attr("operator", "in")
+                  .attr("result", "offsetBlur");
+
+
+
+              // overlay original SourceGraphic over translated blurred opacity by using
+              // feMerge filter. Order of specifying inputs is important!
+              var feMerge2 = filter2.append("feMerge");
+
+              feMerge2.append("feMergeNode")
+                  .attr("in", "offsetBlur")
+              feMerge2.append("feMergeNode")
+                  .attr("in", "SourceGraphic");
+
+
+
+
+                  var filter3 = defs.append("filter")
+                          .attr("id", "blue-drop-shadow")
+                          .attr("height", "150%");
+                        //  .attr("x",-5);
+
+                      filter3.append("feGaussianBlur")
+                          .attr("in", "SourceAlpha")
+                          .attr("stdDeviation", 5)
+                          .attr("result", "blur");
+
+                      // translate output of Gaussian blur to the right and downwards with 2px
+                      // store result in offsetBlur
+                    //  var feOffset =
+                      filter3.append("feOffset")
+                          .attr("in", "blur")
+                          .attr("dx", 5)
+                          .attr("dy", 5)
+                          .attr("result", "offsetBlur");
+
+
+                        filter3.append('feFlood')
+                          .attr("in", "offsetBlur")
+                          .attr("flood-color","aqua")
+                          .attr("flood-opacity","1")
+                          .attr("result", "offsetColor");
+
+                        filter3.append("feComposite")
+                            .attr("in", "offsetColor")
+                            .attr("in2", "offsetBlur")
+                            .attr("operator", "in")
+                            .attr("result", "offsetBlur");
+
+
+
+
+
+                          // overlay original SourceGraphic over translated blurred opacity by using
+                          // feMerge filter. Order of specifying inputs is important!
+                          var feMerge3 = filter3.append("feMerge");
+
+                          feMerge3.append("feMergeNode")
+                              .attr("in", "offsetBlur")
+                          feMerge3.append("feMergeNode")
+                              .attr("in", "SourceGraphic");
+
+
+
+
+//filter which is supposed to add a yellow text glow to the glow class
+// see this https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feComposite
+
+                          var filter4 = defs.append("filter")
+                                    .attr("id", "text-glow")
+                                    .attr("x", "-5%")
+                                    .attr("y", "-5%")
+                                    .attr("width", "250%")
+                                    .attr("height", "250%");
+
+                                filter4.append("feGaussianBlur")
+                                  .attr("in", "SourceGraphic")
+                                  .attr("stdDeviation", "3")
+                                  .attr("result", "textBlur");
+
+                                filter4.append("feOffset")
+                                    .attr("in", "textBlur")
+                                    .attr("dx", 2)
+                                    .attr("dy", 2)
+                                    .attr("result", "textOffsetBlur");
+
+                              filter4.append('feFlood')
+                                .attr("in", "textOffsetBlur")
+                                .attr("flood-color","aqua")
+                                .attr("flood-opacity", "1")
+                                .attr("result", "textBlurFlood");
+
+                                filter4.append("feComposite")
+                                    .attr("in2", "textOffsetBlur")
+                                    .attr("in1", "textBlurFlood")
+                                    .attr("operator", "in")
+                                    .attr("result", "textBlurComp");
+
+
+                                    filter4.append("feGaussianBlur")
+                                      .attr("in", "textBlurComp")
+                                      .attr("stdDeviation", "2")
+                                      .attr("result", "textBlur2");
+
+                                      filter4.append("feOffset")
+                                          .attr("in", "textBlur2")
+                                          .attr("dx", 2)
+                                          .attr("dy", 2)
+                                          .attr("result", "textOffsetBlur2");
+
+                                    filter4.append('feFlood')
+                                      .attr("in", "textOffsetBlur2")
+                                      .attr("flood-color","aqua")
+                                      .attr("flood-opacity", "1")
+                                      .attr("result", "textBlurFlood2");
+
+                                      filter4.append("feComposite")
+                                          .attr("in2", "textOffsetBlur2")
+                                          .attr("in1", "textBlurFlood2")
+                                          .attr("operator", "in")
+                                          .attr("result", "textBlurComp2");
+
+
+                            /*    filter4.append("feGaussianBlur")
+                                  .attr("in", "textBlur5")
+                                  .attr("stdDeviation", "3")
+                                  .attr("result", "textBlur10"); */
+
+
+
+
+                      /*        filter4.append("feColorMatrix")
+                                  .attr("result","yellowBlur")
+                                  .attr("in", "textOffsetBlur")
+                                  .attr("type","matrix")
+                                  .attr("values", "1 0 0 0 0"+
+                                                  "-0.2 1.0 0.3 0.1 0"+
+                                                  "-0.1 0 1 0 0"+
+                                                  "0 0 0 1 0");
+*/
+
+
+                                //  .attr("flood-opacity","0.7")
+                                //  .attr("result", "yellowBlur");
+
+
+
+                           var feMerge4 = filter4.append("feMerge");
+                           feMerge4.append("feMergeNode")
+                               .attr("in", "textBlurComp2");
+
+                           feMerge4.append("feMergeNode")
+                               .attr("in", "textBlurComp");
+                          /* feMerge4.append("feMergeNode")
+                               .attr("in", "textBlur5");  */
+                            feMerge4.append("feMergeNode")
+                              .attr("in", "SourceGraphic");
+
+
+
+                        var filter5 = defs.append("filter")
+                                  .attr("id", "text-shadow")
+                                  .attr("height", "150%");
+
+                            filter5.append("feDropShadow")
+                              .attr("dx", "4")
+                              .attr("dy", "8")
+                              .attr("stdDeviation", "4");
+
+
+return defs;
+
+}
+
+
 
 const groupDragHandle = function(symbol) {
   var gpDim =computeDimensions(d3.select(this.parentNode).select('.AssignedGroup'));
@@ -1455,6 +1789,7 @@ const groupDragHandle = function(symbol) {
       .attr("height", GROUP_HANDLE_H)
       .attr('x', 0)
       .attr('y', function (d,i) {
+        //maybe not
         return (height*vertScale)*(i)+gpDim.height;
       })
       .attr('width', '100%')
@@ -1482,154 +1817,147 @@ function drawChart() {
 //https://observablehq.com/@mbostock/clustered-bubbles-2 // better
 
 //const nodes = pack().leaves();
-compactChartByLocalStorage(false);
+// false just sets the variables without redrawing the chart, drawing happening later in this function
+  compactChartByLocalStorage(false);
 
 //makeFilterDefs();
 
-var maxRows = compRows;
-
+  var maxRows = compRows;
 //console.log(nodes);
 
-console.log('redrawing the chart')
+  console.log('redrawing the chart')
 //console.log(symbol);
-var chart =  function(symbol) {
+  var chart =  function(symbol) {
   var svgB = d3.select(this);
 
+//var cataCtr = 0;
 
-var dindex=0;
-var bindex=0;
+  var dindex=0;
+  var bindex=0;
+
    svgB.selectAll('rect')
     .data(symbol)
-
     .enter()
     .append('g')
     .attr('class', 'projectBar')
   //  .attr('dataIndex',function(a,k){ return k;})
     .data(symbol.values)
-
     .enter()
-
     .selectAll('rect')
-
-   .data(function(d,i) {
+    .data(function(d,i) {
       return d.values
     })
-
     .enter()
-
-    .append('g')
-    .attr('class', 'GBarGroup')
-    //    .attr('x', d => spanX(d)) //adding x to the group so maybe it will help me later
-  //  .attr('bar-data-index', function(d,i) {return i;})
+      .append('g')
+      .attr('class', 'GBarGroup')
+      .attr('UID', function(d) {
+        return d.UID;
+      })
       .attr('bar-data-index', function() {
         return bindex++;
       })
+      .attr("startDate", function(d) {
+        //console.log(d.StartDateExpression["#text"])
+        if(d.hasOwnProperty("newStartDateScript")) {
+            return d.newStartDate;
+          } else {
+            return d.StartDateExpression["#text"];
+          }
+      })
+      .append('svg')
+        .attr("rx", 6)
+        .attr("ry", 6)
+        .attr('x', d => spanX(d))
+        .attr('y', function (d, i) {
+            var dindex = d3.select(this.parentNode).attr("bar-data-index");
 
-    .attr("startDate", function(d) {
-      //console.log(d.StartDateExpression["#text"])
-      if(d.hasOwnProperty("newStartDateScript")) {
+            if(compMode != "checked") {
+          //   console.log("compMode (not checked):" + compMode);
+             //space out the bars
+             // get the localstorage values for compaction but don't apply them
+              return barSpacer+vertScale*(BAR_H+2)*dindex;
 
-          return d.newStartDate;
-        } else {
-          return d.StartDateExpression["#text"]
-        }
-    })
-    .append('svg')
-     .attr("rx", 6)
-    .attr("ry", 6)
-    .attr('x', d => spanX(d))
-   .attr('y', function (d, i) {
-     var dindex = d3.select(this.parentNode).attr("bar-data-index");
-
-         if(compMode != "checked") {
-       //   console.log("compMode (not checked):" + compMode);
-          //space out the bars
-          // get the localstorage values for compaction but don't apply them
-           return barSpacer+vertScale*(BAR_H+2)*dindex;
-
-         } else { // main if compode !=
-       //  console.log(d);
-           if (d.AssignedToName == "ZZ Not assigned") {
-           //    console.log("not assigned row")
-           if( compExcUnassigned == "checked") {
-               maxRows = parseInt(d3.select(this.parentNode.parentNode).attr("data-length"));
-             } else {
-               maxRows = compRowsUnassigned;
-             //  console.log("maxRows:" + maxRows);
-           //    console.log(d3.select(this.parentNode).data());
-             }
-             }
-             return barSpacer+vertScale*(BAR_H+2)*(dindex%maxRows);
-        }
- //    return BAR_H*(dindex-1);
-    })
-    //.attr('width', d => spanW(d))
-    .attr('width', d => spanW(d))
-//    .attr('height', height)
-//  .attr('height', (d, i) => 25*i)
-
-    .attr('class','barGroup')
-      .on("mouseenter mouseleave", groupHover)
-      .call(d3.drag())
-    .append('rect')
-
-      .attr("class", "bars")
-  //    .attr("overflow", "visible")
-      .attr("rx", 6)
-      .attr("ry", 6)
+            } else { // main if compode !=
+          //  console.log(d);
+              if (d.AssignedToName == "ZZ Not assigned") {
+              //    console.log("not assigned row")
+              if( compExcUnassigned == "checked") {
+                  maxRows = parseInt(d3.select(this.parentNode.parentNode).attr("data-length"));
+                } else {
+                  maxRows = parseInt(compRowsUnassigned);
+                //  console.log("maxRows:" + maxRows);
+              //    console.log(d3.select(this.parentNode).data());
+                }
+                }
+                return barSpacer+vertScale*(BAR_H+2)*(dindex%maxRows);
+    //    return BAR_H*(dindex-1);
+          } //end else if
+      })
       .attr('width', d => spanW(d))
-      .attr('height', height*vertScale)
-    /*  .attr('fill',  d => d.color || '#ddf') */
-    .attr('fill', function(d) {
-      var color = "#E8E8E8";
-      for (var i = 0; i < symbolServices.length; i++) {
-  //  if (d.DeliveryProgramService["#text"] == MATRIXDATA[i].UniqueReference["#text"]) {
-  if (d.DeliveryProgramService["#text"] == symbolServices[i].key) {
-      return d3.rgb(colorScale(i));
-    }
-    };
-    return color; // only returns if scale item not found
-    } )
-     .attr('stroke', function(d) {
-  //     for (var i = 0; i < MATRIXDATA.length; i++) {
-      var color = "silver";
-       for (var i = 0; i < symbolServices.length; i++) {
-         if (d.DeliveryProgramService["#text"] == symbolServices[i].key) {
-  //   if (d.UniqueReference["#text"] == MATRIXDATA[i].UniqueReference["#text"]) {
-       return d3.rgb(colorScale(i)).darker(0.7);
-     }
-     };
-     return color;
-     })
-   .on("mousedown.zoom", null);
+  //    .attr('height', height)
+  //  .attr('height', (d, i) => 25*i)
+      .attr('class','barGroup')
+        .on("mouseenter mouseleave", groupHover)
+        .call(d3.drag())
+      .append('rect')
+        .attr("class", "bars")
+    //    .attr("overflow", "visible")
+        .attr("rx", 6)
+        .attr("ry", 6)
+        .attr('width', d => spanW(d))
+        .attr('height', height*vertScale)
+      /*  .attr('fill',  d => d.color || '#ddf') */
+        .attr('fill', function(d) {
+          var color = "#E8E8E8";
+          for (var i = 0; i < symbolServices.length; i++) {
+    //  if (d.DeliveryProgramService["#text"] == MATRIXDATA[i].UniqueReference["#text"]) {
+            if (d.DeliveryProgramService["#text"] == symbolServices[i].key) {
+                return d3.rgb(colorScale(i));
+              }
+            };
+
+            return color; // only returns if scale item not found
+        })
+       .attr('stroke', function(d) {
+    //     for (var i = 0; i < MATRIXDATA.length; i++) {
+        var color = "silver";
+         for (var i = 0; i < symbolServices.length; i++) {
+           if (d.DeliveryProgramService["#text"] == symbolServices[i].key) {
+    //   if (d.UniqueReference["#text"] == MATRIXDATA[i].UniqueReference["#text"]) {
+          return d3.rgb(colorScale(i)).darker(0.7);
+          }
+        };
+       return color;
+       })
+     .on("mousedown.zoom", null);
 
 
-svgB.selectAll('.bars').each(
-  function(d) {
-  //  console.log(d);
-    var assToName = d.AssignedToName;
-    var origAssTo = "";
-    try { origAssTo = d.AssignedTo["#text"].split("#")[1]; } catch (ex) {
-      // no value3
-    //  console.log(ex);
-      origAssTo = "ZZ Not assigned"
-     };
-    if(d.hasOwnProperty("newStartDateScript") || d.AssignedToName != origAssTo){
+  svgB.selectAll('.bars').each(
+    function(d) {
+    //  console.log(d);
+      var assToName = d.AssignedToName;
+      var origAssTo = "";
+      try { origAssTo = d.AssignedTo["#text"].split("#")[1]; } catch (ex) {
+        // no value3
+      //  console.log(ex);
+        origAssTo = "ZZ Not assigned"
+       };
+      if(d.hasOwnProperty("newStartDateScript") || d.AssignedToName != origAssTo){
 
-      //var markStatus = d3.select("#dontMark").property("checked");
-      if (d3.select("#dontMark").property("checked") == true)
-      {
-        d3.select(this).classed('moved',true);
-        d3.select(this).classed('changed',false);
-      //   d3.select(this).classed('changed',true);
-      } else {
-     d3.select(this).classed('moved',false);
-      d3.select(this).classed('changed',true);
+        //var markStatus = d3.select("#dontMark").property("checked");
+        if (d3.select("#dontMark").property("checked") == true)
+        {
+          d3.select(this).classed('moved',true);
+          d3.select(this).classed('changed',false);
+        //   d3.select(this).classed('changed',true);
+        } else {
+       d3.select(this).classed('moved',false);
+        d3.select(this).classed('changed',true);
+      }
+      }
+  //    console.log("startdates:" + d.newStartDateScript);
     }
-    }
-//    console.log("startdates:" + d.newStartDateScript);
-  }
-);
+  );
 
    svgB.selectAll('.barGroup')
    .append('text')
@@ -1660,7 +1988,7 @@ svgB.selectAll('.bars').each(
      .attr("rx", 6)
      .attr("ry", 6)
      .attr("x", BAR_INDENT)
-     .attr('y', 12)
+     .attr('y', 12+textOffset)
      .attr("font-size", 10)
      .attr("font-family", "sans-serif")
      .attr('width', width)
@@ -1677,26 +2005,26 @@ svgB.selectAll('.bars').each(
  });
 
 
-     svgB.selectAll('.barGroup')
-     .append('circle')
-     .attr('cx',  d => spanW(d))
-     .attr('class','circHandle')
+  svgB.selectAll('.barGroup')
+       .append('circle')
+       .attr('cx',  d => spanW(d))
+       .attr('class','circHandle')
 
-     //.attr('cy', 6)
-     .attr('cy', height*vertScale )
-     .attr('y', 20)
-      .attr('r', HANDLE_R)
-      .on("mouseenter mouseleave", resizerHover)
-      .on('click', function() {
-        alert('resize handle clicked')
-      })
-      .on('drag', rectResizing)
-     .attr('fill', 'pink')
-     .attr('opacity','0.5');
+       //.attr('cy', 6)
+       .attr('cy', height*vertScale )
+       .attr('y', 20)
+        .attr('r', HANDLE_R)
+        .on("mouseenter mouseleave", resizerHover)
+        .on('click', function() {
+          alert('resize handle clicked')
+        })
+        .on('drag', rectResizing)
+       .attr('fill', 'pink')
+       .attr('opacity','0.5');
 //     .call(d3.drag());
 
 
-      svgB.selectAll('.barGroup')
+  svgB.selectAll('.barGroup')
       .append('text')
       .attr('class','completedText')
       .attr('x',-HANDLE_R+1)
@@ -1711,33 +2039,30 @@ svgB.selectAll('.bars').each(
       .attr('r',HANDLE_R)
       .on("mouseenter mouseleave", finishHover)
       .on('click', function() {
-        d3.event.stopPropagation();
+          d3.event.stopPropagation();
 
-        var resp = confirm("Click OK mark this construction job as Completed.\n\nCompleted items have a green border\n\nClick the 'Update Changed Items' button to send all changes to BrightWork.\n\nNB: Completed items ignore mark/don't mark status.");
+          var resp = confirm("Click OK mark this construction job as Completed.\n\nCompleted items have a green border\n\nClick the 'Update Changed Items' button to send all changes to BrightWork.\n\nNB: Completed items ignore mark/don't mark status.");
 
-        if (resp == 1) {
+          if (resp == 1) {
 
         //alert('coming soon:finish clicked');
       //  var closeBar = $(this).closest("g.GBarGroup");  //WORKS
           var closeBar = d3.select(this.parentNode);  //WORKS
-        console.log("closeBar data ...: ");
-            var closeData = closeBar.data();
+          //  console.log("closeBar data ...: ");
+          var closeData = closeBar.data();
           //  var closeData = d3.select(closeBar).data();
-            console.log(closeData);
+          //  console.log(closeData);
             closeData[0].newCompletion = "1";
 
-              d3.select(this.parentNode).select('rect').classed("changed", true); // to pick it up in the update part of the code
+            d3.select(this.parentNode).select('rect').classed("changed", true); // to pick it up in the update part of the code
             d3.select(this.parentNode).select('rect').classed("completed", true);  // to show it as green not red
           //closeBar.classed("changed", true);
         } //end resp =1
-
       })
       .attr("fill","#dda0dd")
       .attr("opacity",0.5);
 
-
-
-      svgB.selectAll('.barGroup')
+    svgB.selectAll('.barGroup')
       .append('text')
       .attr('class','removeText')
       .attr('x',-HANDLE_R+1)
@@ -1745,7 +2070,8 @@ svgB.selectAll('.bars').each(
       /*.attr('height',0)
       .attr('width', 0) */
       .html('&#10008;'); // tick character
-      svgB.selectAll('.barGroup')
+
+    svgB.selectAll('.barGroup')
       .append('circle')
       .attr('cx', 0 )
       .attr('class','circRemove')
@@ -1770,16 +2096,16 @@ svgB.selectAll('.bars').each(
 
 
 
+    svgB.selectAll('.barGroup')
+       .append('circle')
+       .attr('cx',  d => spanW(d))
+       .attr('class','circInfo')
+       .attr('cy', 0 )
+       .attr('y', 20)
+       .attr('r', HANDLE_R)
+        .on("mouseenter mouseleave", infoHover)
+        .on('click', function() {
 
-     svgB.selectAll('.barGroup')
-     .append('circle')
-     .attr('cx',  d => spanW(d))
-     .attr('class','circInfo')
-     .attr('cy', 0 )
-     .attr('y', 20)
-      .attr('r', HANDLE_R)
-      .on("mouseenter mouseleave", infoHover)
-      .on('click', function() {
         d3.event.stopPropagation();
         var theData = d3.select(this.parentNode).datum();
 
@@ -1787,36 +2113,38 @@ svgB.selectAll('.bars').each(
         newFinish = "";
         newDurationText="";
 
-      if (theData.hasOwnProperty("newStartDate")) {
-        newStart = " (changed to: "+ theData.newStartDate+")"
-      };
+        if (theData.hasOwnProperty("newStartDate")) {
+          newStart = " (changed to: "+ theData.newStartDate+")"
+        };
 
-      if (theData.hasOwnProperty("newFinishDate")) {
-        newFinish = " (changed to: "+ theData.newFinishDate+")"
-      };
+        if (theData.hasOwnProperty("newFinishDate")) {
+          newFinish = " (changed to: "+ theData.newFinishDate+")"
+        };
 
-      if (theData.hasOwnProperty("newDuration")) {
-        newDurationText = " (changed to: "+ theData.newDuration+")"
-      };
+        if (theData.hasOwnProperty("newDuration")) {
+          newDurationText = " (changed to: "+ theData.newDuration+")"
+        };
 
 
-        console.log("newfinish:" + theData.newFinishDate);
+      //  console.log("newfinish:" + theData.newFinishDate);
         delete theData["#text"];
-      var thetitle = theData.UniqueReference["#text"];
-      var brieflink;
-      if (thetitle != null) {
-          brieflink =  "<a href='http://tscps/support/design/Lists/Design%20Briefs/Brief%20Details.aspx?FilterField1=ProjectLookup&FilterValue1="+thetitle+"' target='_blank'>related design brief(s)</a>";
 
-        } else {
-          brieflink =  "<a href='http://tscps/support/design/Lists/Design%20Briefs/Brief%20Details.aspx' target='_blank'>all design briefs (no Reference recorded for this task)</a>";
+        var thetitle = theData.UniqueReference["#text"];
+        var brieflink;
+        if (thetitle != null) {
+            brieflink =  "<a href='http://tscps/support/design/Lists/Design%20Briefs/Brief%20Details.aspx?FilterField1=ProjectLookup&FilterValue1="+thetitle+"' target='_blank'>related design brief(s)</a>";
 
-        }
+          } else {
+            brieflink =  "<a href='http://tscps/support/design/Lists/Design%20Briefs/Brief%20Details.aspx' target='_blank'>all design briefs (no Reference recorded for this task)</a>";
+
+          }
         var startWarning = 0;
         var customerReqDateWarning;
         var custreqWarningClass = "";
         var startWarningClass = "";
 
         customerReqDateWarning = theData.CustomerReqDateWarning;
+
         if(customerReqDateWarning < WARNING_DAYS) {
           custreqWarningClass = " class=\"warning\" ";
         }
@@ -1829,46 +2157,59 @@ svgB.selectAll('.bars').each(
           startWarningClass = " class=\"warning\" ";
         }
 
+///MAKE POPUP FORM
+var showMe = "hidden";
+if (d3.select(this.parentNode).select('rect').classed("changed")) {
+  showMe = "";
+}
+  var cData = "";
+  if (theData.Body["#cdata-section"] != undefined) cData = theData.Body["#cdata-section"];
+  var theBody =  "<tr><th nowrap>Task description:</th><td><span class='taskName'>" +
+                  theData.Title["#text"] +
+                  "</span>: <br />" +
+                            cData +
+                            "</td></tr>";
 
-var cData = "";
-if (theData.Body["#cdata-section"] != undefined) cData = theData.Body["#cdata-section"];
-var theBody =  "<tr><th>Description:</th><td><span class='taskName'>" +
-                theData.Title["#text"] +
-                "</span>: <br />" +
-                          cData +
-                          "</td></tr>";
-
-        var theString =
-        "<table class='projectInfo'>" +
-        "<tr><th>Project:</th><td>" +
-        theData.projectTitle + "</td></tr>" +
-        "<tr"+
-          startWarningClass+">" +
-                  "<th>Start:</th><td>" +
-        convertSPDateOnly(theData.StartDateExpression["#text"])+newStart + "</td></tr>" +
-  "<tr"+
-    custreqWarningClass+">" +
-  "<th>Finish:</th><td>" +
-        convertSPDateOnly(theData.FinishDateExpression["#text"])+newFinish + "</td></tr>" +
-        "<tr><th>Duration:</th><td>" +
-              theData.EstDurationAtCompletion["#text"] + newDurationText + "</td></tr>" +
-              "<tr"+
-                custreqWarningClass+">" +
-              "<th nowrap>Cust Req Date:</th><td>" +
-        theData.CustomerReqDate + " ("+theData.CustomerReqDateWarning+")</td></tr>" +
-        "<tr><th>Design status:</th><td>" +
-              theData.DesignStatus+ "</td></tr>" +
-              "<tr><th>Approval status:</th><td>" +
-                    theData.ApprovalStatus+ "</td></tr>" +
-                              "<tr><th>Assigned to:</th><td>" +
-        theData.AssignedToName + "</td></tr>" +
-                theBody +
-                        "<tr><th>Links:</th><td><ul>" +
-        "<li><a href='"+theData.ItemHref["#text"]+"' target='_blank'>construction task item</a></li>" +
-        "<li>"+ brieflink + "</li>"+
-                 "</ul></td></tr>" +
-        "</table>";
-        ;
+          var theString =
+          "<table class='projectInfo'>" +
+          "<tr><th>Project:</th><td>" +
+          theData.projectTitle + "</td></tr>" +
+          "<tr"+
+            custreqWarningClass+">" +
+          "<th nowrap>Cust Req Date:</th><td>" +
+    theData.CustomerReqDate + " ("+theData.CustomerReqDateWarning+")</td></tr>" +
+    "<tr><th>Design status:</th><td>" +
+          theData.DesignStatus+ "</td></tr>" +
+          "<tr><th>Approval status:</th><td>" +
+                theData.ApprovalStatus+ "</td></tr>" +
+                "<tr><td class='taskName divider' colspan='2'></td></tr>" +
+                  theBody +
+          "<tr"+
+            startWarningClass+">" +
+                    "<th>Start:</th><td>" +
+          convertSPDateOnly(theData.StartDateExpression["#text"])+newStart + "</td></tr>" +
+    "<tr"+
+      custreqWarningClass+">" +
+    "<th>Finish:</th><td>" +
+          convertSPDateOnly(theData.FinishDateExpression["#text"])+newFinish + "</td></tr>" +
+          "<tr><th>Duration:</th><td>" +
+                theData.EstDurationAtCompletion["#text"] + newDurationText + "</td></tr>" +
+                                  "<tr><th>Assigned to:</th><td>" +
+          theData.AssignedToName + "</td></tr>" +
+                          "<tr><th>Owner:</th><td>" +
+                  theData.OwnerName + "</td></tr>" +
+                        "<tr><td class='taskName divider' colspan='2'></td></tr>" +
+                          "<tr><th>Links:</th><td><ul>" +
+          "<li><a href='"+theData.ItemHref["#text"]+"' target='_blank'>construction task item</a></li>" +
+          "<li>"+ brieflink + "</li>"+
+                   "</ul></td></tr>" +
+                   "<tr><td colspan='2'>"+
+                     "<ul id='miscButtons'>"+
+                     "<li id='scrubBtn' class='tooltip "+showMe+"' onclick='cleanMe(\""+theData.UID+"\")'><i class='fas fa-shower'></i><span class='tooltiptext'>Scrub changes from this task - click this button so changes will not be sent to BrightWork</span></li>"+
+                     "</ul>"+
+                     "</td></tr>"+
+          "</table>";
+        //;
 
         //NB: bELOW COMES FROM SPAlerts.js which is embedded as a SP ScriptLink on this site
         LaunchMessageDialog(thetitle,theString, null);
@@ -1899,37 +2240,29 @@ var theBody =  "<tr><th>Description:</th><td><span class='taskName'>" +
      .attr('opacity','0.4');
       //   .call(d3.drag()); //this is only circinfo, don't want to be able to drag this corner
 
-  return svgB;
-};
+    return svgB;
+  };
 
 
-
-
-
-
-function length(obj) {
-    return Object.keys(obj).length;
-}
-
-
-
-
-
-
-
-
+//FUNCTION INSIDE drawCharts;
+  function length(obj) {
+      return Object.keys(obj).length;
+  }
 
 
   // --- add all charts
 
-
 //const
 // allCharts = d3.select(wrapper).selectAll('.AssignedGroup')
 //spacer for header
+//makeFilterDefs();
 d3.select('.chart').select('svg').append('svg')
 .attr('height', weekLabelHeight);
 
   allCharts = d3.select(wrapper)
+  /*  .selectAll('svg')
+    .append('svg')
+    .attr('class','svgWrapper') */
     .selectAll('g')
       .data(symbolAssignees)
       .enter()
@@ -1939,7 +2272,6 @@ d3.select('.chart').select('svg').append('svg')
         return "assignedto-"+d.key;
       })
      .append('svg')
-      .attr('width', '100%')
       .attr('class','AssignedGroup')
       .on("click", function(d) {
           //  d3.event.stopPropagation();
@@ -1962,7 +2294,7 @@ d3.select('.chart').select('svg').append('svg')
          });
 //} // end of checking the class
 
-      } )
+      })
   //    .on('mouseover', function() { return d3.select(this).lower();})
       .attr('assignedName', function(d) {
     //    console.log(d);
@@ -1970,28 +2302,35 @@ d3.select('.chart').select('svg').append('svg')
       })
     //  .attr('height', 'auto')
      .attr('height', function(d, i){
+    //   console.log(compactHeight);
+  //  console.log("preheight:");
+  //  console.log(d);
+      var maxRows = d.values.length;
+    //  console.log("maxRows beg:" + maxRows);
+  //  console.log("compMode inside drawChart function:" + compMode);
+    if (d.key.startsWith("00-")) {
+      return 0;
+    } else {
+        if(compMode == "checked") {
+            if (d.key == "ZZ Not assigned") {
+                console.log("not assigned row");
+            //    console.log("compMode (not checked 2):" + compExcUnassigned);
+                if(compExcUnassigned != "checked") {
+                  console.log("not excluding unassigned from compaction");
+                maxRows = parseInt(compRowsUnassigned);
 
-       var maxRows = d.values.length;
-     //  console.log("maxRows beg:" + maxRows);
-   //  console.log("compMode inside drawChart function:" + compMode);
-       if(compMode == "checked") {
-           if (d.key == "ZZ Not assigned") {
-               console.log("not assigned row");
-               if(compExcUnassigned != "checked") {
-               //  console.log("not excluding unassigned from compaction");
-               maxRows = parseInt(compRowsUnassigned);
-             //   console.log("compMode (not checked 2):" + compExcUnassigned);
-              }
-           } else { //assigned to someone
-               maxRows = compRows; // not not assigned
-           }
-           //  console.log((BAR_H+2)*(dindex%maxRows));
-               return barSpacer+vertScale*(BAR_H+2)*(maxRows);
-      } else {
-         return barSpacer+d.values.length*vertScale*(BAR_H+2); //disregard all compaction
-       }
+               }
+            } else { //assigned to someone
+                maxRows = compRows; // not not assigned
+              //  console.log("maxrows:" + compRows);
+            }
+            //  console.log((BAR_H+2)*(dindex%maxRows));
+                return barSpacer+vertScale*(BAR_H+2)*(maxRows);
+       } else {
 
-
+          return barSpacer+d.values.length*vertScale*(BAR_H+2); //disregard all compaction
+        }
+    } // end of not starts with "00-"
     })
     .attr('x',"0")
     .attr('y', function(d, i) {
@@ -2015,7 +2354,13 @@ d3.select('.chart').select('svg').append('svg')
       }
       })
       .each(chart)
-      .each(label);
+      .each(label)
+      .each(svgDefs);
+
+  //    allCharts.insert('g').append('svg');
+    /*  .each(function (d,i) {
+        makeFilterDefs(d.key);
+      }); */
 
 
 
@@ -2029,143 +2374,23 @@ d3.select('.chart').select('svg').append('svg')
           // read more about SVG filter effects here: http://www.w3.org/TR/SVG/filters.html
 
           // filters go in defs element
-          var defs = allCharts.append("defs");
-
-          // create filter with id #drop-shadow
-          // height=130% so that the shadow is not clipped
-          var filter = defs.append("filter")
-              .attr("id", "yellow-drop-shadow")
-              .attr("height", "150%");
-
-
-
-          // SourceAlpha refers to opacity of graphic that this filter will be applied to
-          // convolve that with a Gaussian with standard deviation 3 and store result
-          // in blur
-          filter.append("feGaussianBlur")
-              .attr("in", "SourceAlpha")
-              .attr("stdDeviation", 5)
-              .attr("result", "blur");
-
-          // translate output of Gaussian blur to the right and downwards with 2px
-          // store result in offsetBlur
-        //  var feOffset =
-          filter.append("feOffset")
-              .attr("in", "blur")
-              .attr("dx", 5)
-              .attr("dy", 5)
-              .attr("result", "offsetBlur");
-
-
-              filter.append('feFlood')
-              .attr("in", "offsetBlur")
-              .attr("flood-color","yellow")
-              .attr("flood-opacity","1")
-              .attr("result", "offsetColor");
-
-              filter.append("feComposite")
-                  .attr("in", "offsetColor")
-                  .attr("in2", "offsetBlur")
-                  .attr("operator", "in")
-                  .attr("result", "offsetBlur");
-
-              // overlay original SourceGraphic over translated blurred opacity by using
-              // feMerge filter. Order of specifying inputs is important!
-              var feMerge = filter.append("feMerge");
-
-              feMerge.append("feMergeNode")
-                  .attr("in", "offsetBlur")
-              feMerge.append("feMergeNode")
-                  .attr("in", "SourceGraphic");
-
-
-              var filter2 = defs.append("filter")
-                      .attr("id", "red-drop-shadow")
-                      .attr("height", "150%");
-
-                  filter2.append("feGaussianBlur")
-                      .attr("in", "SourceAlpha")
-                      .attr("stdDeviation", 5)
-                      .attr("result", "blur");
-
-                  // translate output of Gaussian blur to the right and downwards with 2px
-                  // store result in offsetBlur
-                //  var feOffset =
-                  filter2.append("feOffset")
-                      .attr("in", "blur")
-                      .attr("dx", 5)
-                      .attr("dy", 5)
-                      .attr("result", "offsetBlur");
-
-
-                      filter2.append('feFlood')
-                      .attr("in", "offsetBlur")
-                      .attr("flood-color","red")
-                      .attr("flood-opacity","1")
-                      .attr("result", "offsetColor");
-
-                      filter2.append("feComposite")
-                          .attr("in", "offsetColor")
-                          .attr("in2", "offsetBlur")
-                          .attr("operator", "in")
-                          .attr("result", "offsetBlur");
-
-
-
-                      // overlay original SourceGraphic over translated blurred opacity by using
-                      // feMerge filter. Order of specifying inputs is important!
-                      var feMerge2 = filter2.append("feMerge");
-
-                      feMerge2.append("feMergeNode")
-                          .attr("in", "offsetBlur")
-                      feMerge2.append("feMergeNode")
-                          .attr("in", "SourceGraphic");
 
 
 
 
-                          var filter3 = defs.append("filter")
-                                  .attr("id", "blue-drop-shadow")
-                                  .attr("height", "150%");
-                                //  .attr("x",-5);
-
-                              filter3.append("feGaussianBlur")
-                                  .attr("in", "SourceAlpha")
-                                  .attr("stdDeviation", 5)
-                                  .attr("result", "blur");
-
-                              // translate output of Gaussian blur to the right and downwards with 2px
-                              // store result in offsetBlur
-                            //  var feOffset =
-                              filter3.append("feOffset")
-                                  .attr("in", "blur")
-                                  .attr("dx", 5)
-                                  .attr("dy", 5)
-                                  .attr("result", "offsetBlur");
-
-
-                                  filter3.append('feFlood')
-                                  .attr("in", "offsetBlur")
-                                  .attr("flood-color","aqua")
-                                  .attr("flood-opacity","1")
-                                  .attr("result", "offsetColor");
-
-                                  filter3.append("feComposite")
-                                      .attr("in", "offsetColor")
-                                      .attr("in2", "offsetBlur")
-                                      .attr("operator", "in")
-                                      .attr("result", "offsetBlur");
 
 
 
-                                  // overlay original SourceGraphic over translated blurred opacity by using
-                                  // feMerge filter. Order of specifying inputs is important!
-                                  var feMerge3 = filter3.append("feMerge");
 
-                                  feMerge3.append("feMergeNode")
-                                      .attr("in", "offsetBlur")
-                                  feMerge3.append("feMergeNode")
-                                      .attr("in", "SourceGraphic");
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2174,7 +2399,8 @@ d3.select('.chart').select('svg').append('svg')
 
         allCharts.on("mouseover", function(d) {
       //    console.log('moused over');
-            var closeBar = this.closest("g.GBarGroup");
+          //  var closeBar = this.closest("g.GBarGroup"); //only works in Chrome
+          var closeBar = d3.select(this.parentNode);
           //  console.log(closeBar);
           //  d3.selectAll("path").sort(function (a, b) { // select the parent and sort the path's
             d3.select("g.GBarGroup").sort(function (a, b) { // select the parent and sort the path's
@@ -2191,17 +2417,295 @@ d3.select('.chart').select('svg').append('svg')
 
         var root = d3.hierarchy(symbolAssignees);
         const nodes = root.links();
-        console.log(root.leaves());
+      //  console.log(root.leaves());
 
 
         recallToggle();
+  //      compactChartByLocalStorage();
+
+  //  makeFilterDefs();
+
+    //d3.select(".chart").append('svg').attr("class","styleDefs").each(svgDefs);
+
 
 } //END DRAWCHART
 
 var allCharts;
 
 
+
+
 drawChart();
+
+//compactChartByLocalStorage();
+
+function makeFilterDefs() {
+  return svgDefs;
+};
+
+
+function makeFilterDefsX(symbol) {
+
+  //d3.select('.chart').selectAll("defs").remove();
+  //allCharts.selectAll("defs").remove();
+  // defs =d3.select(this).append('svg').attr("class","styleDefs").append("defs");
+  //    defs =d3.select(obj).select('svg').append("defs");
+  //d3.selectAll("[refOnly='"+retValue+"' i]").
+  // defs =d3.selectAll("[assignedName*='"+key+"']").append("defs").attr("class","styleDefs"); //.append("defs");
+//  defs = d3.select('.GBarGroup').selectAll('svg').append("defs");
+
+       defs = d3.select(allCharts).append("defs");
+
+//defs = d3.select(".chart").selectAll('svg').append("defs");
+
+  // create filter with id #drop-shadow
+  // height=130% so that the shadow is not clipped
+  var filter = defs.append("filter")
+      .attr("id", "yellow-drop-shadow")
+      .attr("height", "110%");
+
+
+
+  // SourceAlpha refers to opacity of graphic that this filter will be applied to
+  // convolve that with a Gaussian with standard deviation 3 and store result
+  // in blur
+  filter.append("feGaussianBlur")
+      .attr("in", "SourceAlpha")
+      .attr("stdDeviation", 5)
+      .attr("result", "blur");
+
+  // translate output of Gaussian blur to the right and downwards with 2px
+  // store result in offsetBlur
+//  var feOffset =
+  filter.append("feOffset")
+      .attr("in", "blur")
+      .attr("dx", 5)
+      .attr("dy", 5)
+      .attr("result", "offsetBlur");
+
+
+      filter.append('feFlood')
+      .attr("in", "offsetBlur")
+      .attr("flood-color","yellow")
+      .attr("flood-opacity","1")
+      .attr("result", "offsetColor");
+
+      filter.append("feComposite")
+          .attr("in", "offsetColor")
+          .attr("in2", "offsetBlur")
+          .attr("operator", "in")
+          .attr("result", "offsetBlur");
+
+      // overlay original SourceGraphic over translated blurred opacity by using
+      // feMerge filter. Order of specifying inputs is important!
+      var feMerge = filter.append("feMerge");
+
+      feMerge.append("feMergeNode")
+          .attr("in", "offsetBlur")
+      feMerge.append("feMergeNode")
+          .attr("in", "SourceGraphic");
+
+
+      var filter2 = defs.append("filter")
+              .attr("id", "red-drop-shadow")
+              .attr("height", "150%");
+
+          filter2.append("feGaussianBlur")
+              .attr("in", "SourceAlpha")
+              .attr("stdDeviation", 5)
+              .attr("result", "redBlur");
+
+          // translate output of Gaussian blur to the right and downwards with 2px
+          // store result in offsetBlur
+        //  var feOffset =
+          filter2.append("feOffset")
+              .attr("in", "redBlur")
+              .attr("dx", 5)
+              .attr("dy", 5)
+              .attr("result", "offsetRedBlur");
+
+
+              filter2.append('feFlood')
+              .attr("in", "offsetRedBlur")
+              .attr("flood-color","red")
+              .attr("flood-opacity","1")
+              .attr("result", "offsetRedColor");
+
+              filter2.append("feComposite")
+                  .attr("in", "offsetRedColor")
+                  .attr("in2", "offsetRedBlur")
+                  .attr("operator", "in")
+                  .attr("result", "offsetRedBlur");
+
+
+
+              // overlay original SourceGraphic over translated blurred opacity by using
+              // feMerge filter. Order of specifying inputs is important!
+              var feMerge2 = filter2.append("feMerge");
+
+              feMerge2.append("feMergeNode")
+                  .attr("in", "offsetRedBlur")
+              feMerge2.append("feMergeNode")
+                  .attr("in", "SourceGraphic");
+
+
+
+
+                  var filter3 = defs.append("filter")
+                          .attr("id", "blue-drop-shadow")
+                          .attr("height", "150%");
+
+                        //  .attr("x",-5);
+
+                      filter3.append("feGaussianBlur")
+                          .attr("in", "SourceAlpha")
+                          .attr("stdDeviation", 5)
+                          .attr("result", "blurBlue");
+
+                      // translate output of Gaussian blur to the right and downwards with 2px
+                      // store result in offsetBlur
+                    //  var feOffset =
+                      filter3.append("feOffset")
+                          .attr("in", "blurBlue")
+                          .attr("dx", 5)
+                          .attr("dy", 5)
+                          .attr("result", "offsetBlurBlue");
+
+
+                        filter3.append('feFlood')
+                          .attr("in", "offsetBlurBlue")
+                          .attr("flood-color","aqua")
+                          .attr("flood-opacity","1")
+                          .attr("result", "offsetColorBlue");
+
+                        filter3.append("feComposite")
+                            .attr("in", "offsetColorBlue")
+                            .attr("in2", "offsetBlurBlue")
+                            .attr("operator", "in")
+                            .attr("result", "offsetBlurBlue");
+
+
+
+
+
+                          // overlay original SourceGraphic over translated blurred opacity by using
+                          // feMerge filter. Order of specifying inputs is important!
+                          var feMerge3 = filter3.append("feMerge");
+
+                          feMerge3.append("feMergeNode")
+                              .attr("in", "offsetBlurBlue")
+                          feMerge3.append("feMergeNode")
+                              .attr("in", "SourceGraphic");
+
+
+
+
+//filter which is supposed to add a yellow text glow to the glow class
+// see this https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feComposite
+
+                          var filter4 = defs.append("filter")
+                                    .attr("id", "text-glow")
+                                    .attr("x", "-5%")
+                                    .attr("y", "-5%")
+                                    .attr("width", "250%")
+                                    .attr("height", "250%");
+
+                                filter4.append("feGaussianBlur")
+                                  .attr("in", "SourceGraphic")
+                                  .attr("stdDeviation", "3")
+                                  .attr("result", "textBlur");
+
+                                filter4.append("feOffset")
+                                    .attr("in", "textBlur")
+                                    .attr("dx", 2)
+                                    .attr("dy", 2)
+                                    .attr("result", "textOffsetBlur");
+
+                              filter4.append('feFlood')
+                                .attr("in", "textOffsetBlur")
+                                .attr("flood-color","aqua")
+                                .attr("flood-opacity", "1")
+                                .attr("result", "textBlurFlood");
+
+                                filter4.append("feComposite")
+                                    .attr("in2", "textOffsetBlur")
+                                    .attr("in1", "textBlurFlood")
+                                    .attr("operator", "in")
+                                    .attr("result", "textBlurComp");
+
+
+                                    filter4.append("feGaussianBlur")
+                                      .attr("in", "textBlurComp")
+                                      .attr("stdDeviation", "2")
+                                      .attr("result", "textBlur2");
+
+                                      filter4.append("feOffset")
+                                          .attr("in", "textBlur2")
+                                          .attr("dx", 2)
+                                          .attr("dy", 2)
+                                          .attr("result", "textOffsetBlur2");
+
+                                    filter4.append('feFlood')
+                                      .attr("in", "textOffsetBlur2")
+                                      .attr("flood-color","aqua")
+                                      .attr("flood-opacity", "1")
+                                      .attr("result", "textBlurFlood2");
+
+                                      filter4.append("feComposite")
+                                          .attr("in2", "textOffsetBlur2")
+                                          .attr("in1", "textBlurFlood2")
+                                          .attr("operator", "in")
+                                          .attr("result", "textBlurComp2");
+
+
+                            /*    filter4.append("feGaussianBlur")
+                                  .attr("in", "textBlur5")
+                                  .attr("stdDeviation", "3")
+                                  .attr("result", "textBlur10"); */
+
+
+
+
+                      /*        filter4.append("feColorMatrix")
+                                  .attr("result","yellowBlur")
+                                  .attr("in", "textOffsetBlur")
+                                  .attr("type","matrix")
+                                  .attr("values", "1 0 0 0 0"+
+                                                  "-0.2 1.0 0.3 0.1 0"+
+                                                  "-0.1 0 1 0 0"+
+                                                  "0 0 0 1 0");
+*/
+
+
+                                //  .attr("flood-opacity","0.7")
+                                //  .attr("result", "yellowBlur");
+
+
+
+                           var feMerge4 = filter4.append("feMerge");
+                           feMerge4.append("feMergeNode")
+                               .attr("in", "textBlurComp2");
+
+                           feMerge4.append("feMergeNode")
+                               .attr("in", "textBlurComp");
+                          /* feMerge4.append("feMergeNode")
+                               .attr("in", "textBlur5");  */
+                            feMerge4.append("feMergeNode")
+                              .attr("in", "SourceGraphic");
+
+
+
+                        var filter5 = defs.append("filter")
+                                  .attr("id", "text-shadow")
+                                  .attr("height", "150%");
+
+                            filter5.append("feDropShadow")
+                              .attr("dx", "4")
+                              .attr("dy", "8")
+                              .attr("stdDeviation", "4");
+
+
+}
 
 
 
@@ -2244,6 +2748,167 @@ function dragended() {
 
 
 
+function updateResources() {
+
+  if(deactivateNames == true)  {
+    d3.selectAll(".labelText").classed("darker", false);
+  }
+
+  if(newName != "") {
+  //  d3.select("g.assignedGroupGp")  // 1 only??
+  newId = "assignedto-"+newName;
+
+  // BEGINNING OF CREATION
+  symbolAssignees.push({key: newName, values:[]});
+
+//  groupCtr = symbolAssignees.length-1;
+  groupCtr = symbolAssignees.length;
+//  console.log(symbolAssignees[groupCtr]);
+//  console.log(symbolAssignees);
+
+
+var newSection = d3.select(wrapper)
+//  allCharts
+.insert('g', ":first-child")
+.attr('class', 'assignedGroupGp new')
+.attr('id', newId)
+.datum({key: newName, values:[]})
+.enter();
+
+d3.select('.new').append('svg')
+.attr('height', BAR_H)
+.attr('class','AssignedGroup')
+
+.attr('assignedName', newName)
+//  .append('rect')
+.attr('height', BAR_H)
+.attr('x', 0)
+.attr('y', 0)
+.attr('width', '100%')
+/*  .attr('background-color', function(d,i) {
+
+return d3.rgb(colorScaleNewSection(i))
+} ) */
+.attr('style', function(d,i) {
+//  console.log(d3.rgb(colorScaleNewSection(i)));
+  newItemCtr++;
+return 'background-color: '  + d3.rgb(colorScaleNewSection(newItemCtr));
+})
+.attr('opacity', '0.7')
+.attr('data-length',1)
+.call(dragHandler)
+//  .call()
+;
+
+
+var today = new Date();
+var xNow = x(today)*oldScale+tempTrans[0];
+//  console.log("newSection classs:" +newSection.attr("class"));
+  d3.select('.new').select('.AssignedGroup').append("line").attr("class","today")
+  .attr("x1", xNow) //<<== change your code here
+//  d3.select('.chart').append("line").attr("class","today").attr("x1", xNow) //<<== change your code here
+  .attr("y1", 0)
+  .attr("x2", xNow) //<<== and here
+  .attr("y2", function(d) {
+//       console.log('y2 height:' + d3.select(this).attr('class'));
+  //  return d3.select('.new').select('.AssignedGroup').attr('height');
+      return d3.select(this.parentNode).attr('height');
+  })
+
+  .style("stroke-width", 2)
+  .style("stroke", "red")
+  .style("fill", "none");
+//newSection.append
+
+
+var newLabel =  d3.select('[assignedName="'+newName+'"]')
+.append('g')
+.attr("class", "labelGroup")
+.append('text')
+.text(newName)
+.attr('class','labelText')
+.attr('width', '100')
+.attr("y", 20+textOffset)
+.attr("font-size", 20)
+.attr("font-family", "sans-serif")
+.attr("font-weight", "bold")
+.attr('fill', 'silver')
+.attr('opacity', '0.9');
+
+newLabel.append('line')
+  .attr("class","divider")
+  .attr("x1", x(minX))
+  .attr("x2", x(maxX))
+  .attr("stroke", "silver")
+  .attr("stroke-width", 1)
+    .attr("opacity", 0.5);
+//    .call();
+
+    //above line not showing, why??
+//  newGroup = newSection.select('.AssignedGroup'); // get them afresh .. don't now if i need to do that
+//   dragHandler(newGroup);
+
+
+calculateAndApplyHeight(BAR_H);
+
+
+
+// END OF CREATION
+
+  };
+
+
+
+  var hiddenRes2 = [];
+
+  $(".resourceCheckbox:checked").each(function(d) {
+    cb = $(this);
+    hiddenRes2.push(cb.attr("resource"));
+  });
+
+ console.log(hiddenRes2);
+
+
+  d3.selectAll(".resourceCheckbox").each(function(d, i) {
+    console.log(i);
+  });
+
+var dataLength = 0;
+  /// deal with removals
+  d3.selectAll("g.assignedGroupGp")
+     .each(function(d,i){
+    //   console.log(d3.select(this).attr('class'));
+       if (d3.select(this).classed("Remove")){
+        // console.log(d3.select(this));
+      //   console.log("Remove class key:" + d.key);
+          dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
+         d3.select(this).remove();
+      //   makeFilterDefs();
+       }
+
+       if (d3.select(this).classed("hideGroup")){
+        // console.log(d3.select(this));
+      //   console.log("hide class key:" + d.key);
+          dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
+         d3.select(this).classed("hidden", true);
+      //   makeFilterDefs();
+       } else {
+         dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
+          d3.select(this).classed("hidden", false);
+        //  makeFilterDefs();
+       }
+
+     }); // end each
+  // }; //end if classed
+if (dataLength > 0) {
+
+calculateAndApplyHeight();
+
+}
+
+
+       //} //end if result
+} //end updateresources
 
 
 
@@ -2421,6 +3086,7 @@ var clWidth = wrapper.clientWidth;
 //var clHeight2 = wrapper.attr("height");
 var bBoxHeight = wrapper.getBoundingClientRect().height;
 var bBoxTop = wrapper.getBoundingClientRect().top;
+var bBoxLeft = wrapper.getBoundingClientRect().left;
 //console.log(wrapper.getBoundingClientRect());
 var yearFormat = d3.timeFormat("%Y");
 var weekFormat = d3.timeFormat('%y-%W');
@@ -2447,8 +3113,8 @@ var formatMillisecond = d3.timeFormat(".%L"),
 //    formatWeek = d3.timeFormat("%b %d"),
   //  formatWeek = d3.timeFormat("%y-%W"),
     formatWeek = d3.timeFormat("%W"),
-    formatMonth = d3.timeFormat("%y-%W"),
-    //formatMonth = d3.timeFormat("%B"),
+  //  formatMonth = d3.timeFormat("%y-%W"),
+  //  formatMonth = d3.timeFormat("%b"),
     formatYear = d3.timeFormat("%Y");
 
 // Define filter conditions
@@ -2457,8 +3123,9 @@ function multiFormat(date) {
     : d3.timeMinute(date) < date ? formatSecond
     : d3.timeHour(date) < date ? formatMinute
     : d3.timeDay(date) < date ? formatHour
-    : d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek)
-    : d3.timeYear(date) < date ? formatMonth
+  //  : d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek)
+  //  : d3.timeMonth(date) < date ? formatWeek
+    : d3.timeYear(date) < date ? formatWeek
     : formatYear)(date);
 }
 
@@ -2477,14 +3144,14 @@ var wHeight = window.innerHeight;
 // https://stackoverflow.com/questions/20010864/d3-axis-labels-become-too-fine-grained-when-zoomed-in
 
 function preventTooSmallWeekIntervals(period) {
-    console.log(period);
+  //  console.log(period);
     //    var tickSeconds = (new Date(xAxisWeek.ticks()[1]) - new Date(xAxisWeek.ticks()[0])) / 1000;
         var tickSeconds = (period[1] - period[0]) / 1000;
         var tickDays = tickSeconds/60/60/24;
         var maxDays = 770;
 
-        console.log(tickSeconds);
-        console.log(tickDays);
+    //    console.log(tickSeconds);
+  //      console.log(tickDays);
         //var minSecondsPerInterval = period.seconds;
         //console.log(minSecondsPerInterval);
 
@@ -2527,7 +3194,8 @@ var xAxisYear = d3.axisBottom(x)
 
   var xAxisWeek = d3.axisBottom(x)
         //  .ticks(d3.fridayOfYear)
-        .ticks(d3.timeWeek)
+        //.ticks(d3.timeWeek)
+        .ticks(d3.timeWeek.filter(d=>d3.timeWeek.count(0, d) % 2 === 1))
           .tickFormat(multiFormat);
                   /*    .tickFormat(function(d) {
                         getFiscalWeekNumber(d3.time.week(day));
@@ -2540,7 +3208,8 @@ var weekLabelHeight = 0;
 var xAxisWeekFloating = d3.axisTop(x)
 //.ticks(d3.timeWeek)
 // nb % 2 means display every second week
-.ticks(d3.timeWeek.filter(d=>d3.timeWeek.count(0, d) % 2 === 0))
+//.ticks(d3.timeWeek.filter(d=>d3.timeWeek.count(0, d) % 1 === 0))
+.ticks(d3.timeWeek)
 .tickSize(clHeight - weekLabelHeight)
 .tickFormat(weekOnlyFormat);
 
@@ -2548,6 +3217,7 @@ var xAxisWeekFloating3 = d3.axisTop(x)
 //.ticks(d3.timeWeek)
 // nb % 2 means display every second week
 .ticks(d3.timeWeek.filter(d=>d3.timeWeek.count(0, d) % 2 === 1))
+//.ticks(d3.timeWeek)
 //.tickSize(clHeight - weekLabelHeight)
 .tickSize(bBoxHeight+20)
 .tickFormat(weekOnlyFormat);
@@ -2579,7 +3249,8 @@ var globalXWeekFloating3 = axisCont //d3.select('.chart.axisContainer')
 .attr('class', 'axisWeekFloating3')
 .call(xAxisWeekFloating3);
 
-globalXWeekFloating3.selectAll("text").remove();
+globalXWeekFloating3.selectAll("text").classed("hidden", true);
+//globalXWeekFloating3.selectAll("text").remove();  //removes the text but i want to reference it for 'mouseover' so going to hide it instead
 
 /*
 var globalXWeekFloating2 = axisCont //d3.select('.chart.axisContainer')
@@ -2695,7 +3366,7 @@ var dragHandler = d3.drag()
 
 
           thisDimensions = computeDimensions(currentParent);
-          console.log(thisDimensions);
+        //  console.log(thisDimensions);
           thisOffsetX = d3.event.x - thisDimensions.x-HANDLE_R;
           thisOffsetY = d3.event.y - thisDimensions.y-HANDLE_R;
 
@@ -2725,9 +3396,10 @@ var dragHandler = d3.drag()
 
     } else {
 
+
       const weekX = x.invert(d3.event.x-thisOffsetX);//,
 
-    d3.select("#weekNum").text(formatWeek(weekX));
+          d3.select("#weekNum").text(formatWeek(weekX));
 
     d3.select(this)
           .attr("x", d3.event.x-thisOffsetX)//restore without + deltaX if can't make ot work
@@ -2745,15 +3417,15 @@ var dragHandler = d3.drag()
 //   passThruToGroup(deltaX, deltaY);
 
 
-//   d3.select(this)
-//   .moveToFront()
+   d3.select(this)
+   .moveToFront()
 
 
 
 
   //if (d3.select(this).classed("AssignedGroup") == true || d3.select(this).classed("dragbottom") == true) {
   if (d3.select(this).classed("AssignedGroup") == true) {   // || d3.select(this).classed("dragbottom") == true) {
-
+    //activating resource name, and resizing the bar
     d3.selectAll('.labelGroup').select('text').classed("darker", false);
     d3.select(this).select('.labelGroup').select('text').classed("darker", true);
 
@@ -2768,23 +3440,22 @@ var dragHandler = d3.drag()
     console.log("yes this is dragbottom");
     //console.log("oldScale:" + oldScale)
     var trimmedHeight;
-        d3.select(this).attr("height", function(d) {
+    d3.select(this).attr("height", function(d) {
 
-          untrimmedHeight = parseInt(d3.select(this).attr("height"));
-          //console.log("compMode inside height calc on drag:" + compMode);
-            if(compMode != "checked") {
-          trimmedHeight = parseInt(untrimmedHeight -untrimmedHeight%(BAR_H/oldScale/vertScale));
-          } else {
-            trimmedHeight = untrimmedHeight;
-          }
-          return trimmedHeight;
-        });
-        d3.select(this).select('.today').attr('y2', trimmedHeight);
-        var newDataLength = parseInt(trimmedHeight/BAR_H/(oldScale*vertScale));
-        d3.select(this).attr("data-length", newDataLength);
+      untrimmedHeight = parseInt(d3.select(this).attr("height"));
+      //console.log("compMode inside height calc on drag:" + compMode);
+        if(compMode != "checked") {
+      trimmedHeight = parseInt(untrimmedHeight -untrimmedHeight%(BAR_H/oldScale/vertScale));
+      } else {
+        trimmedHeight = untrimmedHeight;
+      }
+      return trimmedHeight;
+    });
+    d3.select(this).select('.today').attr('y2', trimmedHeight);
+    var newDataLength = parseInt(trimmedHeight/BAR_H/(oldScale*vertScale));
+    d3.select(this).attr("data-length", newDataLength);
 
-        calculateAndApplyHeight(BAR_H*vertScale);
-        //d3.select(this).moveToFront();
+    calculateAndApplyHeight(BAR_H*vertScale);
     //d3.select(this).moveToFront();
 
    } else {
@@ -2793,15 +3464,15 @@ var dragHandler = d3.drag()
 
   //    d3.select(this).select('rect').classed("changed", true);
 
-  if (d3.select("#dontMark").property("checked") == true)
-  {
-    d3.select(this).select('rect').classed('moved',true);
-    d3.select(this).select('rect').classed('changed',false);
-  //   d3.select(this).classed('changed',true);
-  } else {
- d3.select(this).select('rect').classed('moved',false);
-  d3.select(this).select('rect').classed('changed',true);
-}
+      if (d3.select("#dontMark").property("checked") == true)
+      {
+        d3.select(this).select('rect').classed('moved',true);
+        d3.select(this).select('rect').classed('changed',false);
+      //   d3.select(this).classed('changed',true);
+      } else {
+        d3.select(this).select('rect').classed('moved',false);
+        d3.select(this).select('rect').classed('changed',true);
+      }
       //   d3.selectAll(groups.parentNode).moveToBack();
       d3.select(this).moveToFront();
 
@@ -2822,12 +3493,12 @@ var dragHandler = d3.drag()
       console.log("closeBar data ...: ");
       console.log(d3.select(closeBar).data()); */
       var closeData = closeBar.data();
-      console.log("closeDatax:")
-      console.log(closeData);
+    //  console.log("closeDatax:")
+    //  console.log(closeData);
 
   // THE BIT THAT MOVES MY BAR INTO THE CORRECT GROUP SO I CAN KEEP SELECTING IT AFTER I'VE CHANGED THE NAME ON IT
   if (activeNameGroupId != "") {
-    console.log("actGroupID:" + activeNameGroupId);
+    //console.log("actGroupID:" + activeNameGroupId);
   //  d3.select(closeBar).select(".barGroup").attr("y", 0);
    //$("[id='"+activeNameGroupId+"']").find(".AssignedGroup").prepend(closeBar);
   //    d3.select("[id='"+activeNameGroupId+"']").select(".AssignedGroup").append(closeBar);
@@ -2849,14 +3520,14 @@ var dragHandler = d3.drag()
 //    $("[id='"+activeNameGroupId+"']").find(".AssignedGroup").prepend(closeBar);
    //d3.select(closeBar).attr("y",function(d){
       closeBar.select("svg").attr("y",function(d){
-        console.log("class:" + d3.select(this).attr("class"));
-    console.log("class:" + d3.select(this).attr("class"));
+      //  console.log("class:" + d3.select(this).attr("class"));
+  //  console.log("class:" + d3.select(this).attr("class"));
       var groupHeight = parseFloat(newParent.attr("height"));
       var adjustedGroupHeight = groupHeight-(BAR_H+2)*oldScale*vertScale;
   //   console.log("groupHeight:" + groupHeight + ", adjusted:" +adjustedGroupHeight);
      var currY = d3.select(this).attr("y");
   //   console.log("currY:" + currY);
-  var newY = d3.min([parseFloat(groupHeight)-(BAR_H+2)*oldScale*vertScale, currY-(BAR_H+2)*oldScale*vertScale]);
+    var newY = d3.min([parseFloat(groupHeight)-(BAR_H+2)*oldScale*vertScale, currY-(BAR_H+2)*oldScale*vertScale]);
        newY = d3.max([0, newY]);
 
      return newY;
@@ -2937,7 +3608,7 @@ console.log(xAxis.scale().range());
 //**************************************************//
 
   var custReqDate = closeData[0].CustomerReqDate;
-  console.log("customerReqDate:" + custReqDate);
+  //console.log("customerReqDate:" + custReqDate);
   var dateWarning = calcBusinessDays(new Date(scriptFinishDate), parser(custReqDate), holidays);
   var startWarning = calcBusinessDays(new Date(parser(closeData[0].originalStartDate)), new Date(scriptDate), holidays);
 
@@ -2953,13 +3624,17 @@ console.log(xAxis.scale().range());
 
     //d3.select(closeBar).selectAll('rect')
     closeBar.selectAll('rect')
-        .style("filter", "url(#blue-drop-shadow)");
+        .style("filter", "url(#blue-drop-shadow)"); /*
+          .style("-webkit-filter", "url(#blue-drop-shadow)"); */
   }
   else if (dateWarning < 1) {
   //  d3.select(closeBar).selectAll('rect').classed("warning", true);
   //  d3.select(closeBar).selectAll('rect')
     closeBar.selectAll('rect')
         .style("filter", "url(#red-drop-shadow)");
+    /*    .style("-webkit-filter", "url(#red-drop-shadow)");
+; */
+
 
   }
     else if (dateWarning >= 1 && dateWarning < WARNING_DAYS) {
@@ -3006,7 +3681,7 @@ var newDuration = calcBusinessDays(new Date(scriptDate), new Date(scriptFinishDa
 closeBar.select('svg')
       .insert("text")
       .attr('x', BAR_INDENT)
-      .attr('y', 22)
+      .attr('y', 22+textOffset)
       .attr("font-size", 9)
       .attr("font-family", "sans-serif")
       .attr('width', width)
@@ -3022,7 +3697,7 @@ closeBar.select('svg')
     tempFinText =   closeBar.select('svg')
             .insert("text")
             .attr("x", BAR_INDENT)
-            .attr('y', BAR_H-BAR_FIN_OFFSET)
+            .attr('y', BAR_H-BAR_FIN_OFFSET+textOffset)
             .attr("font-size", 9)
             .attr("font-family", "sans-serif")
             .attr('width', width)
@@ -3030,7 +3705,7 @@ closeBar.select('svg')
         //    .text("fin:" + newFinish + " / dur:" + newDuration);
           .text("fin:" + formattedFinishDate + " / dur:" + newDuration);
 
-tempFinText.moveToBack();
+//tempFinText.moveToFront();
 
 
     console.log("oldname: "+ oldName + "; assigned Name:" + newName);
@@ -3062,21 +3737,25 @@ tempFinText.moveToBack();
 
 
     //  document.querySelector("[longTitle*='"+newText+"' i]").scrollIntoView();
+    // skip this if edge
+  //  console.log(navigator.appVersion);  // couldn't do it
+    //  if(navigator.appVersion.indexOf("Edge") != -1){
+
+          const checkElement = async selector => {
+
+          while ( document.querySelector(selector) === null) {
+
+              await new Promise( resolve =>  requestAnimationFrame(resolve) )
+          }
+          //  console.log(selector);
+          return document.querySelector(selector).scrollIntoView({behavior: "smooth", block: "center"}); };
 
 
-      const checkElement = async selector => {
-
-      while ( document.querySelector(selector) === null) {
-
-          await new Promise( resolve =>  requestAnimationFrame(resolve) )
-      }
-        console.log(selector);
-      return document.querySelector(selector).scrollIntoView(); };
-
-
-    //  checkElement("[refOnly*='"+uniqueRef+"' i]");
-      checkElement("[longTitle='"+longTitle+"']");
-
+        //  checkElement("[refOnly*='"+uniqueRef+"' i]");
+          checkElement("[longTitle='"+longTitle+"']");
+    //  }  else {
+    //    console.log("cant do the 'wait to scroll into view' function in MS Edge");
+    //  }
 
       // MAYBE ADD A CHECKBOX TO TOGGLE THIS OPTION ON/OFF
       d3.selectAll('.labelGroup').select('text').classed("darker", false);
@@ -3132,6 +3811,7 @@ bars.on("click",  function(d, i) {
     var wholeNode = d3.select(this.parentNode);
     var thisBar = d3.select(this);
   });
+
 
 
   function LaunchMessageDialog(dlgTitle,dlgText,action) {
@@ -3224,166 +3904,6 @@ bars.on("click",  function(d, i) {
     }
   }
 
-
-
-function updateResources() {
-  if(deactivateNames == true)  {
-    d3.selectAll(".labelText").classed("darker", false);
-  }
-
-  if(newName != "") {
-  //  d3.select("g.assignedGroupGp")  // 1 only??
-  newId = "assignedto-"+newName;
-
-  // BEGINNING OF CREATION
-  symbolAssignees.push({key: newName, values:[]});
-
-//  groupCtr = symbolAssignees.length-1;
-  groupCtr = symbolAssignees.length;
-//  console.log(symbolAssignees[groupCtr]);
-//  console.log(symbolAssignees);
-
-
-var newSection = d3.select(wrapper)
-//  allCharts
-.insert('g', ":first-child")
-.attr('class', 'assignedGroupGp new')
-.attr('id', newId)
-.datum({key: newName, values:[]})
-.enter();
-
-d3.select('.new').append('svg')
-.attr('height', BAR_H)
-.attr('class','AssignedGroup')
-
-.attr('assignedName', newName)
-//  .append('rect')
-.attr('height', BAR_H)
-.attr('x', 0)
-.attr('y', 0)
-.attr('width', '100%')
-/*  .attr('background-color', function(d,i) {
-
-return d3.rgb(colorScaleNewSection(i))
-} ) */
-.attr('style', function(d,i) {
-//  console.log(d3.rgb(colorScaleNewSection(i)));
-  newItemCtr++;
-return 'background-color: '  + d3.rgb(colorScaleNewSection(newItemCtr));
-})
-.attr('opacity', '0.7')
-.attr('data-length',1)
-.call(dragHandler)
-//  .call()
-;
-
-
-var today = new Date();
-var xNow = x(today)*oldScale+tempTrans[0];
-//  console.log("newSection classs:" +newSection.attr("class"));
-  d3.select('.new').select('.AssignedGroup').append("line").attr("class","today")
-  .attr("x1", xNow) //<<== change your code here
-//  d3.select('.chart').append("line").attr("class","today").attr("x1", xNow) //<<== change your code here
-  .attr("y1", 0)
-  .attr("x2", xNow) //<<== and here
-  .attr("y2", function(d) {
-//       console.log('y2 height:' + d3.select(this).attr('class'));
-  //  return d3.select('.new').select('.AssignedGroup').attr('height');
-      return d3.select(this.parentNode).attr('height');
-  })
-
-  .style("stroke-width", 2)
-  .style("stroke", "red")
-  .style("fill", "none");
-//newSection.append
-
-
-var newLabel =  d3.select('[assignedName="'+newName+'"]')
-.append('g')
-.attr("class", "labelGroup")
-.append('text')
-.text(newName)
-.attr('class','labelText')
-.attr('width', '100')
-.attr("y", 20+textOffset)
-.attr("font-size", 20)
-.attr("font-family", "sans-serif")
-.attr("font-weight", "bold")
-.attr('fill', 'silver')
-.attr('opacity', '0.9');
-
-newLabel.append('line')
-  .attr("class","divider")
-  .attr("x1", x(minX))
-  .attr("x2", x(maxX))
-  .attr("stroke", "silver")
-  .attr("stroke-width", 1)
-    .attr("opacity", 0.5);
-//    .call();
-
-    //above line not showing, why??
-//  newGroup = newSection.select('.AssignedGroup'); // get them afresh .. don't now if i need to do that
-//   dragHandler(newGroup);
-
-
-calculateAndApplyHeight(BAR_H);
-
-
-
-// END OF CREATION
-
-  };
-
-
-
-  var hiddenRes2 = [];
-
-  $(".resourceCheckbox:checked").each(function(d) {
-    cb = $(this);
-    hiddenRes2.push(cb.attr("resource"));
-  });
-
- console.log(hiddenRes2);
-
-
-  d3.selectAll(".resourceCheckbox").each(function(d, i) {
-    console.log(i);
-  });
-
-var dataLength = 0;
-  /// deal with removals
-  d3.selectAll("g.assignedGroupGp")
-     .each(function(d,i){
-    //   console.log(d3.select(this).attr('class'));
-       if (d3.select(this).classed("Remove")){
-        // console.log(d3.select(this));
-      //   console.log("Remove class key:" + d.key);
-          dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
-         d3.select(this).remove();
-      //   makeFilterDefs();
-       }
-
-       if (d3.select(this).classed("hideGroup")){
-        // console.log(d3.select(this));
-      //   console.log("hide class key:" + d.key);
-          dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
-         d3.select(this).classed("hidden", true);
-      //   makeFilterDefs();
-       } else {
-         dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
-          d3.select(this).classed("hidden", false);
-        //  makeFilterDefs();
-       }
-
-     }); // end each
-  // }; //end if classed
-if (dataLength > 0) {
-
-calculateAndApplyHeight();
-
-}
-}
-
   function LaunchConfirmDialogAndHandleData(dlgTitle,dlgText, action) {
   // Get the modal
 
@@ -3406,12 +3926,19 @@ calculateAndApplyHeight();
     modal.style.display = "none";
     if (dlgTitle == "Compact this chart") {
 
-      var popData = [];
-      popData[0] = $("#numRows").val();
-      popData[1] = $("#excludeUnassigned").prop("checked");
-      popData[2] = $("#numRowsUnassigned").val();
+  //    var popData = [];
+  //    popData[0] = $("#numRows").val();
+  //    popData[1] = $("#excludeUnassigned").prop("checked");
+  //    popData[2] = $("#numRowsUnassigned").val();
 
-      compactChart(parseInt(popData[0]), popData[1], parseInt(popData[2]));
+  localStorage.setItem("CompactRows", $("#numRows").val());
+  localStorage.setItem("CompactExcUnassigned", $("#excludeUnassigned").prop("checked"));
+  localStorage.setItem("CompactRowsUnassigned", $("#numRowsUnassigned").val());
+  localStorage.setItem("CompactMode",  $("#enableCompactMode").prop("checked"));
+
+compactChartByLocalStorage(true);
+
+    //  compactChart(parseInt(popData[0]), popData[1], parseInt(popData[2]));
 
     //  onPopUpCloseCallBackWithData(Sp.UI.DialogResult.OK, popData);
       //call a function
@@ -3485,7 +4012,7 @@ calculateAndApplyHeight();
     //var obj=obj;
 
     console.log("new name:" + newNameKey + "; old name:" + oldName);
-    console.log("ProjectKey:" + ProjectKey);
+    //console.log("ProjectKey:" + ProjectKey);
   //  var obj = object;
 
       var tempObj = {};
@@ -3501,9 +4028,9 @@ calculateAndApplyHeight();
           // for each name, look for the project
            newArray = entry.values;  // why is this not active? do i not need it?
           $.each(newArray, function(k, proj) {
-            console.log(proj.key +" - " + ProjectKey);
+          //  console.log(proj.key +" - " + ProjectKey);
             if (proj.key == ProjectKey) {
-              console.log(proj);
+            //  console.log(proj);
               tempObj = proj;
             //  try {
                 //proj. //removed
@@ -3512,7 +4039,7 @@ calculateAndApplyHeight();
                 tempObj.values = [proj.values[0]];
               //  delete proj.values[0];
                 delete obj[i].newArray[k];//.values[0];
-                console.log(obj[i].key);
+              //  console.log(obj[i].key);
             //    obj[i].values.push(tempObj);
               //  tempObj = {};
           //    console.log("found");
@@ -3567,7 +4094,7 @@ function nearestMonday(date) { //1=Monday //5=Friday
    }
 
   // console.log("returned date:" + m);
-   console.log("returned monday:" + m + "; original monday" + new Date(date));
+//   console.log("returned monday:" + m + "; original monday" + new Date(date));
 
    return m;
 
@@ -3591,7 +4118,7 @@ function nearestFriday(date) { //1=Monday //5=Friday
    }
 
   // console.log("returned date:" + m);
-   console.log("returned friday:" + f + "; original date:" + new Date(date));
+//   console.log("returned friday:" + f + "; original date:" + new Date(date));
 
    return f;
 
@@ -3606,8 +4133,10 @@ function getChangedItems() {
     var itemCount = d3.selectAll(".changed").size();
 
   d3.selectAll("g.GBarGroup").each(function (d,i) {
-    if(d.hasOwnProperty("newStartDate") || d.hasOwnProperty("newFinishDate") || d.hasOwnProperty("newCompletion")) {
-    console.log(d);
+  //  if(d.hasOwnProperty("newStartDate") || d.hasOwnProperty("newFinishDate") || d.hasOwnProperty("newCompletion")) {
+    if(d3.select(this).select('rect').classed("changed")) {
+  //  if(d3.selectAll())
+  //  console.log(d);
     var webUrl = d.WebHref["#text"];
     var listName = d.ListName["#text"];
 //  var listName = "ProjectTaskList";
@@ -3631,7 +4160,7 @@ function getChangedItems() {
 
   //  var itemProps = {};
         var url = webUrl;// + "/_api/web/lists/getbytitle('" + listName + "')/items?$filter=ID eq " + itemId + "";
-        console.log("url: " + url);
+  //      console.log("url: " + url);
 
 
         var itemType =  GetItemTypeForListName(listInternalName);
@@ -3708,7 +4237,7 @@ function getChangedItems() {
                   } else {
                     if (assToName.startsWith("Gang-"))
                     {
-                      console.log(getGroupId(assToName, webUrl));
+                    //  console.log(getGroupId(assToName, webUrl));
                       var grpPromise = Promise.resolve(getGroupId(assToName, webUrl));
                       grpPromise.then(function(groupObj){
                         itemProps["AssignedToId"] = {"results":[groupObj.d.results[0].Id]};
@@ -3719,9 +4248,9 @@ function getChangedItems() {
                     } else {
                       var userPromise = Promise.resolve(getUserId(assToName, webUrl));
                      userPromise.then(function(userObj){
-                      console.log("assignedToId:")
-                      console.log(userObj.d.results[0].Id);
-                      console.log(userObj);
+                    //  console.log("assignedToId:")
+                    //  console.log(userObj.d.results[0].Id);
+                    //  console.log(userObj);
                       itemProps["AssignedToId"] = {"results":[userObj.d.results[0].Id]};
                       updateListItem(url, listName, listGuid, listInternalName, itemId, itemProps, itemCount, "Construction Planner");
 
@@ -3765,7 +4294,7 @@ function getUserId(displayName, web){
   var requestUri = web +
   "/_api/web/siteusers?$select=*&$filter=Title eq '"+displayName+"'";
 
-  console.log(requestUri);
+  //console.log(requestUri);
 
 	//			  "/_api/web/siteusers?$select=LoginName&$filter=Title eq '"+displayName+"'";
 
@@ -3812,7 +4341,7 @@ function getGroupId(displayName, web){
   var requestUri = web +
   "/_api/web/sitegroups?$select=*&$filter=Title eq '"+displayName+"'";
 
-  console.log(requestUri);
+  //console.log(requestUri);
 
 	//			  "/_api/web/siteusers?$select=LoginName&$filter=Title eq '"+displayName+"'";
 
@@ -3889,18 +4418,18 @@ function getFormDigest(webUrl) {
 
 function updateListItem(webUrl,listName, listGuid, listInternalName, itemID, itemProperties, numitems, calltype)
 {
-  console.log("itemCount:" + numitems);
+  //console.log("itemCount:" + numitems);
 
-      console.log("updateListItem("+webUrl+","+ listName +","+ itemID +","  + itemProperties +","+ numitems +"," + calltype +")");
+    //  console.log("updateListItem("+webUrl+","+ listName +","+ itemID +","  + itemProperties +","+ numitems +"," + calltype +")");
 //  console.log("calltype at updateListItem:" + calltype);
-console.log(itemProperties);
+//console.log(itemProperties);
   var thisUrl = webUrl;
   var thisId = itemID;
   var thisUrlList = thisUrl + "/Lists/" + listInternalName; //so annoying
   var itemData = JSON.stringify(itemProperties);
   var formFolder = "";
 
-  console.log(JSON.stringify(itemProperties));
+  //console.log(JSON.stringify(itemProperties));
 
   // make a path for document libraries
   if (itemData.indexOf("ListItem") < 0)
@@ -4118,7 +4647,7 @@ var relBarDim;
     console.log("parentX:" + d3.select(this.parentNode).attr("x"));
     console.log("circ cx:" + d3.select(this).attr("cx"));
 */
-    console.log(newX);
+  //  console.log(newX);
 
    var newFinish = dateFormat(x.invert(newX));
    var scriptFinishDate = scriptDateFormat(x.invert(newX));
@@ -4143,7 +4672,7 @@ var relBarDim;
         if (closeData[0].hasOwnProperty("newStartDateScript"))
         {
 
-          console.log("newSDScript:" + new Date(closeData[0].newStartDateScript) +  ", new scriptFinishDate:" + new Date(scriptFinishDate));
+      //    console.log("newSDScript:" + new Date(closeData[0].newStartDateScript) +  ", new scriptFinishDate:" + new Date(scriptFinishDate));
           newDuration = calcBusinessDays(new Date(closeData[0].newStartDateScript), new Date(scriptFinishDate), holidays);
         } else {
 
@@ -4153,28 +4682,30 @@ var relBarDim;
             newDuration = calcBusinessDays(new Date(parser(convertSPDateOnly(d.StartDateExpression["#text"]))), new Date(scriptFinishDate), holidays);
 
           } else { */
-          console.log("start expression date:" + new Date(parser(convertSPDateOnly(d.StartDateExpression["#text"]))) +  ", new scriptFinishDate:" + new Date(scriptFinishDate));
+        //  console.log("start expression date:" + new Date(parser(convertSPDateOnly(d.StartDateExpression["#text"]))) +  ", new scriptFinishDate:" + new Date(scriptFinishDate));
           newDuration = calcBusinessDays(new Date(parser(convertSPDateOnly(d.StartDateExpression["#text"]))), new Date(scriptFinishDate), holidays);
         /*  } */
 
         }
 
-        console.log("newDuration:" + newDuration);
+    //    console.log("newDuration:" + newDuration);
         closeData[0].newDuration = parseInt(newDuration);
 
 
 
         d3.select(closeBar).selectAll(".finDateText").remove();
-          d3.select(closeBar).select('svg')
+        //var finText =
+        d3.select(closeBar).select('svg')
               .append("text")
               .attr("x", BAR_INDENT)
-              .attr('y', BAR_H-BAR_FIN_OFFSET)
+              .attr('y', BAR_H-BAR_FIN_OFFSET+textOffset)
               .attr("font-size", 9)
               .attr("font-family", "sans-serif")
               .attr('width', width)
               .attr("class","finDateText")
               .text("fin:" + newFinish + " / dur:" + newDuration);
 
+    //        finText.moveToFront();
 
 /*
           d3.select(closeBar).selectAll(".durationText").remove();
@@ -4307,6 +4838,8 @@ function rectResizeStartEnd() {
 
 
   function intersectRect(r1, r2) {
+  //  console.log(r1);
+  //  console.log(r2);
       var r1 = r1.getBoundingClientRect();    //BOUNDING BOX OF THE FIRST OBJECT
       var r2 = r2.getBoundingClientRect();    //BOUNDING BOX OF THE SECOND OBJECT
 
@@ -4319,7 +4852,8 @@ function rectResizeStartEnd() {
 
 function intersectRect2(rec1, rec2) {
 
-  //console.log(rec1.class)
+//  console.log(rec1);
+//  console.log(rec2);
 
 var r1, r2;
     if (rec1 instanceof SVGElement) { // check if node is svg element
@@ -4455,7 +4989,9 @@ var r1, r2;
     .attr("y1", 0).attr("x2", xNow) //<<== and here
 /*    .attr("y2", bBoxHeight) */
     .attr("y2", function(d) {
-      console.log('y2 height:' + d3.select(this.parentNode).attr('class'));
+    //  console.log('y2 heightclass:' + d3.select(this.parentNode).attr('class'));
+    //  console.log(d3.select(this.parentNode));
+    //  console.log('y2 height:' + d3.select(this.parentNode).attr('height'));
       return d3.select(this.parentNode).attr('height');
     })
 
@@ -4486,21 +5022,29 @@ var r1, r2;
     .append('svg')
   //  .attr('position', 'relative')
     .attr('id','zoomOverlay')
-      .attr('class', 'zoom')
-      .classed('hidden', true) //new
+    //.attr('class', 'zoom')
+
       //.attr("top", bBoxTop)
+    //  .classed('zoom', false)
+    .classed('hidden', true)
     .append('rect')
       .attr('fill', 'none')
 //        .attr('width', width)
       .attr('width', '100%')
     //  .attr('height', wrapper.getBoundingClientRect().bottom);
     .attr('height', bBoxHeight+bBoxTop)
+
     //.attr("top", bBoxTop)
 //    .attr("transform-origin", "0,20,-50")
 
     ;
 
 
+//d3.select("#UnlockZoomBtn").attr("locked", "false");
+//d3.select("#UnlockZoomBtn").attr("value", "Lock Zoom/Pan").attr("locked","false");
+zoomable=false;
+//d3.select('#zoomOverlay').classed('zoom', false);
+//d3.select('#zoomOverlay').classed('hidden', true);
 
 
 //see  http://jsfiddle.net/armensg/8Agje/3/
@@ -4508,7 +5052,8 @@ var r1, r2;
 var panMeasure = 0;
 var oldScale = 1;
 
-var zoomable = false; //new, was true
+
+var zoomable = true;
 
 
 function getTranslation(transform) {
@@ -4542,18 +5087,23 @@ var catchAllZoom =   catchAll.call(d3.zoom()
     .on("start", function() {
 
         const { transform } = d3.event;
-    //  console.log("zoom started");
+      console.log("zoom started");
+      //console.log('started zoom')
 
     })
     .on("end", function() {
       const { transform } = d3.event;
       console.log("zoom ended");
+  //    setWeekMouseOver();
+    if (compMode == "checked") {
+      compactChartByLocalStorage(true);
+      }
 
     })
     .on("zoom", function() {
       if (zoomable == true)
       {
-        //console.log("zooming")
+        console.log("zooming zoomable true")
         const { transform } = d3.event;
 
         zoomChart(transform);
@@ -4566,15 +5116,17 @@ var catchAllZoom =   catchAll.call(d3.zoom()
 
   }));
 
-  var parentBox;
+var parentBox;
 var tempTrans = [0, 0];
-function zoomChart(transform) {
-  tempTrans = getTranslation(transform);
 
+function zoomChart(transform) {
+  console.log('zooming chart');
+  tempTrans = getTranslation(transform);
+compactChartByLocalStorage(false); //just get the values from localstorage (why don't i already have them?)
   //console.log(t)
 
    tempTrans[1] = 0;
-    console.log(tempTrans);
+  //  console.log(tempTrans);
 
       d3.select('.chart').selectAll('g')
         /*  .attr("transform-origin", "0,20,-50") */
@@ -4610,8 +5162,10 @@ function zoomChart(transform) {
           var groupBox = d3.select(this.parentNode.parentNode);
 
            groupBox.attr("height", function(d) {
-        //   console.log(groupBox.attr("data-length"));
-              if(compMode != "checked") {
+          // console.log(groupBox.attr("data-length"));
+        //   console.log("compMode:" + compMode);
+
+                if(compMode != "checked") {
               //    console.log("returning:" + parseInt(groupBox.attr("data-length"))*BAR_H  *transform.k);
                   return parseInt(parseInt(groupBox.attr("data-length"))*(BAR_H*vertScale)  *transform.k);  //reinstate if not applying/undoing compaction
                 } else {
@@ -4630,12 +5184,11 @@ function zoomChart(transform) {
                   }
                   return barSpacer+(BAR_H+2)*oldScale*vertScale*(maxRows);
                 }
-            //  return parseInt(groupBox.attr("height"))  *transform.k;
            })
            groupBox.attr("y", function(d) {
       //     console.log(groupBox.attr("data-length"));
-            return parseInt(groupBox.attr("data-length")-1)*BAR_H;
-          //  return parseInt(groupBox.attr("height")-1)*transform.k;
+          //  return parseInt(groupBox.attr("data-length")-1)*BAR_H; //reinstate if not applying/undoing compaction
+
            })
         }
       );
@@ -4664,8 +5217,9 @@ function zoomChart(transform) {
     $("#axisClone").html("");
     $(".axisWeek").clone().appendTo("#axisClone");
   //globalXWeekFloating2.call(xAxisWeekFloating2.scale(transform.rescaleX(x)));
-    globalXWeekFloating3.call(xAxisWeekFloating3.scale(transform.rescaleX(x)));
     globalXWeekFloating.call(xAxisWeekFloating.scale(transform.rescaleX(x)));
+    globalXWeekFloating3.call(xAxisWeekFloating3.scale(transform.rescaleX(x)));
+
 
     xAxis.scale(transform.rescaleX(x));
 
@@ -4704,72 +5258,90 @@ function zoomChart(transform) {
       }
     });
 
+
+
     d3.select("#overlayBtn2").on("click", function(){
-      console.log("Overlay 2 clicked;")
+//      console.log("Overlay 2 clicked;")
       if(d3.select("#chartSettings").classed("hideMenu")) {
         d3.select("#chartSettings").classed("hideMenu", false);
-        d3.select("#chartSettings").classed("hugLeft2", false);
+    //    d3.select("#chartSettings").classed("hugLeft2", false);
           d3.select("#overlayBtn2").classed("hugLeftBtn2", false);
-
-          d3.select("#pointLeft2").classed("hidden", false);
+        d3.select("#aboutInner").classed("aboutInnerHeight", false);
+  d3.select(".about").classed("aboutInnerHeight", false);
+         d3.select("#pointLeft2").classed("hidden", false);
           d3.select("#pointRight2").classed("hidden", true);
 
 
       } else {
         d3.select("#chartSettings").classed("hideMenu", true);
-        d3.select("#chartSettings").classed("hugLeft2", true);
+      //  d3.select("#chartSettings").classed("hugLeft2", true);
           d3.select("#overlayBtn2").classed("hugLeftBtn2", true);
-
-          d3.select("#pointLeft2").classed("hidden", true);
-          d3.select("#pointRight2").classed("hidden", false);
+            d3.select(".about").classed("aboutInnerHeight", true);
+        d3.select("#aboutInner").classed("aboutInnerHeight", true);
+         d3.select("#pointLeft2").classed("hidden", true);
+         d3.select("#pointRight2").classed("hidden", false);
       }
     });
 // ZOOMING ISN'T WORKING PROPERLY
 // LOOK AT THIS:  https://bl.ocks.org/SevenChan07/3fbb45be891cc3fda3bf139e4853535b
-    d3.select("#UnlockZoomBtn").on("click", function() {
-
+    d3.select("#UnlockZoomBtn").on("click", function(d) {
+    //  console.log(d3.select(this).attr("locked"));
+      var isLocked = d3.select(this).attr("locked");
+    //  console.log("isLocked:" + isLocked);
     d3.event.stopPropagation();
   //alert("button clicked");
 // nb don't have to worry about true/false cos button is unclickable, under zoom box, when unlocked
-    d3.select("#UnlockZoomBtn").attr("value", "Lock Zoom/Pan").attr("locked","false");
+//  if(isLocked == null || isLocked =="true" || isLocked == "null")  {
+ //TODO: ZOOMOVERLAY FIX 1 ^^
+    if(isLocked =="false")  {
+  //      console.log("got to null and/or false");
+      d3.select("#UnlockZoomBtn").attr("value", "Lock Zoom/Pan").attr("locked","true");
+      d3.select(this).select('span.tooltiptext').text("Dragging and resizing of bars enabled - click to re-enable zoom/pan");
+      /*$("#instructions").text("Use scrollwheel to zoom width, hold click and drag to pan. Click the Zoom/Pan button to lock/unlock the viewport."); */
+      d3.select(this).select(".fa-lock").classed("hidden", false);
+      d3.select(this).select(".fa-arrows-alt").classed("hidden", true);
 
-  /*$("#instructions").text("Use scrollwheel to zoom width, hold click and drag to pan. Click the Zoom/Pan button to lock/unlock the viewport."); */
+      zoomable=true;
+      d3.select('#zoomOverlay').classed('zoom', true);
+      d3.select('#zoomOverlay').classed('hidden', false);
 
+      catchAllZoom =   catchAll.call(d3.zoom()
+          .scaleExtent([0.05, 20])
+          .on("zoom", function() {
+              const { transform } = d3.event;
 
-    zoomable=true;
-    d3.select('#zoomOverlay').classed('zoom', true);
-    d3.select('#zoomOverlay').classed('hidden', false);
-
-    catchAllZoom =   catchAll.call(d3.zoom()
-        .scaleExtent([0.05, 20])
-        .on("zoom", function() {
-            const { transform } = d3.event;
-
-    zoomChart(transform);
-
-
-      //    var today = new Date();
-
-            //style("stroke-width", 2).style("stroke", "red").style("fill", "none");
+      zoomChart(transform);
 
 
     }));
+  } else { // not locked
+    //  console.log("got to true");
+      d3.select("#UnlockZoomBtn").attr("value", "Unlock Zoom/Pan").attr("locked","false");
+      d3.select(this).select(".fa-lock").classed("hidden", true);
+      d3.select(this).select(".fa-arrows-alt").classed("hidden", false);
+              d3.select(this).select('span.tooltiptext').text("Lock current zoom and pan in place again, to re-enable dragging and resizing of bars");
 
+    zoomable = false;
+
+    d3.select('#zoomOverlay').classed('zoom', false);
+    d3.select('#zoomOverlay').classed('hidden', true);
+  }
 });
 
 
 d3.select("#addNewTaskBtn").on("click", function(){
 
-  var dlgText = "<a target='_blank' href='http://"+bwroot+"/Projects/built/materials/cop/BrightWork%20Pages/Selected%20Project%20Open%20Work.aspx?project=2#InplviewHash6e3a3cd7-2060-40e0-9477-74bc78f3dac9=CascDelWarnMessage%3D1-FilterField1%3DbwProjectItemID-FilterValue1%3DMiscellaneous%2520Jobs'>Click here</a> ...<br /><br />"+
+  var dlgText = "<a target='_blank' href='http://tscppm/Projects/built/materials/cop/BrightWork%20Pages/Selected%20Project%20Open%20Work.aspx?project=2#InplviewHash6e3a3cd7-2060-40e0-9477-74bc78f3dac9=CascDelWarnMessage%3D1-FilterField1%3DbwProjectItemID-FilterValue1%3DMiscellaneous%2520Jobs'>Click here</a> ...<br /><br />"+
   " to open the miscellaneous construction tasks Project and Work tracker in BrightWork.  Here you can add and/or edit any construction work that is not related to an existing BrightWork project.<br /><br /> "+
-  "To display the new or updated data in this chart, ensure you have cleared any saved data by clicking the <i class='fas fa-trash-restore'></i> button, then click F5 refresh.</em>";
+  "To display the new or updated data in this chart, ensure you have cleared any saved data by clicking the <i class='fas fa-trash-restore'></i> button, then click F5 refresh.</em><br /><br />" +
+  "<em><a target='_blank' href='http://tscppm/Projects/BrightWork%20Pages/Project%20Ready%20Matrix%20Data%20-%20Nigel.aspx'>Click to view</a> a copy of the source data report for current projects (excludes training projects)</em>";
   LaunchMessageDialog("Open  BrightWork Project and Work Tracker", dlgText);
 });
 
 
 d3.select('#getXMLDataBtn').on("click", function() {
-  var dlgText = "<a target='_blank' href='http://"+bwroot+"/projects/_layouts/15/BrightWork/ExportReport.aspx?pageUrl=http%3A%2F%2F"+bwroot+"%2FProjects%2FBrightWork%2520Pages%2FProject%2520Ready%2520Matrix%2520Tasks%2Easpx&wpGUID=c7514c5e%2D11a7%2D4670%2D9967%2D305966e50d54&exportFormat=XML'>Click here</a> to grab the latest data as an XML file. "+
-  " Save this file over the existing XML file called <strong>'Project Ready Matrix Data.xml'</strong> at <a target='_blank' href='http://"+bwroot+"/data'>http://"+bwroot+"/data.'</a><br /><br /> " +
+  var dlgText = "<a target='_blank' href='http://tscppm/projects/_layouts/15/BrightWork/ExportReport.aspx?pageUrl=http%3A%2F%2Ftscppm%2FProjects%2FBrightWork%2520Pages%2FProject%2520Ready%2520Matrix%2520Tasks%2Easpx&wpGUID=c7514c5e%2D11a7%2D4670%2D9967%2D305966e50d54&exportFormat=XML'>Click here</a> to grab the latest data as an XML file. "+
+  " Save this file over the existing XML file called <strong>'Project Ready Matrix Data.xml'</strong> at <a target='_blank' href='http://tscppm/data'>http://tscppm/data.'</a><br /><br /> " +
   "<em>NB: You will have to wait for the report to finish running, before being prompted to save it, this could take some time.<br /><br />" +
   "To display the updated data in this chart, ensure you have cleared any saved data by clicking the <i class='fas fa-trash-restore'></i> button, then click F5 refresh.</em>";
   LaunchMessageDialog("Get updated XML file", dlgText);
@@ -4793,12 +5365,12 @@ d3.select('#updateChangedItemsBtn').on("click", function() {
 
 
 d3.select("#trainingProjects").on("click", function(){
-  console.log('traning projects clicked');
-  console.log(d3.select("#trainingProjects").attr('checked'));
+  //console.log('traning projects clicked');
+  //console.log(d3.select("#trainingProjects").attr('checked'));
   //var trainCheck = d3.select("#trainingProjects").attr('checked');
     var trainCheck = d3.select("#trainingProjects").property('checked');
   if (trainCheck != true) {
-    console.log("training projects: no")
+  //  console.log("training projects: no")
     trainingProjects = false;
     localStorage.setItem("trainingProjects","false");
     d3.select('.chart').selectAll('*').remove();
@@ -4872,51 +5444,80 @@ function getGangList(btnEvent) {
 d3.select('#updateResourcesBtn').on("click", function() {
     newName = "";
   activeNameGroupId = "";
-  //getGangList(this);
+ // getGangList(this);
 
-  gangArr = ["Someone Else1", "Someone Else2"];
+ gangArr = ["Someone Else1", "Someone Else2"];
 
-  updateResourcesBtnClickContinued(this, gangArr);
+updateResourcesBtnClickContinued(this, gangArr);
 
 }); //end on click
 
 var newItemCtr = -1;
 
-//function updateResourcesBtnClickContinued(bntEvent, gangArr) {
 function updateResourcesBtnClickContinued(bntEvent, gangArr) {
   var dlgText = "";
+
+  remGroupBool = false;
 
   d3.selectAll(".labelText").classed("darker", false);
   //  d3.select(".AssignedGroup").attr("pointer-events",null); //restore pointer events
 
         d3.selectAll('g.assignedGroupGp').each(function(d,i) {
-          dlgText += "<input type='checkbox' class='resourceCheckbox' name='remResource' resource='"+d.key+"' id='"+d.key.replace(/\s/g, '')+" checked='false' onclick='javascript:alterResourceStatus(this)'/>  "+d.key +"<br />";
 
+          if(!d.key.startsWith("00-")) {
+
+          var hiddenCheck = "";
+          if(localStorage.getItem("HiddenResources") != null) {
+            var storedNames = JSON.parse(localStorage.getItem("HiddenResources"));
+          //  console.log(storedNames);
+            console.log(d.key);
+          //  if(storedNames.length > 0) {
+            if(storedNames.includes(d.key)) {
+        //    if(d3.select(this).classed("hideGroup") == true) {
+              hiddenCheck = " checked ";
+              d3.select(this).classed('hideGroup', true);
+          //    console.log('found a hidden item');
+            } else {
+
+            }
+        }
+      //  }
+        dlgText += "<input type='checkbox' class='resourceCheckbox' name='remResource' resource='"+
+                  //  d.key+"' id='"+d.key.replace(/\s/g, '')+"' checked='"+hiddenCheck+"' "+
+                    d.key+"' id='"+d.key.replace(/\s/g, '') +"'" + hiddenCheck + // " "+
+                    " onclick='alterResourceStatus(this)'/>  "+
+                    d.key +"<br />";
+            } //end not 00-
         });
         dlgText = //"<div><span class='boxPrompt'>Deactivate All</span><input box id='deactivateNamesChk' type='checkbox' checked='false' /></div>" +
         "<div style='float: right;'><input type='checkbox' class='chkHideRem' name='chkHideRem' onclick='javascript:alterHideRemGroup(this)' /><em>Remove from chart instead of hide</em></div>"+
-    "<div><span class='boxPrompt'>Check names to <span id='hideRem'>hide</span> from the Planner:</span></div>" + dlgText;
+        "<div><span class='boxPrompt'>Check names to <span id='hideRem'>hide</span> from the Planner:</span></div>" + dlgText;
         dlgText = dlgText + "<span class='boxPrompt'>Add a name: </span><input box id='newResource' placeholder='A Full Username known to SP' size='30' onchange='javascript:addResource(this)' />";
         dlgText = dlgText += "<div><span class='gangList boxPrompt'>Gang names available:</span><ul class='gangList'><li> " + gangArr.join('</li><li>') +"</li></ul></div>";
         LaunchConfirmDialog("Update Resources",dlgText, function(result){
-             if (result == true) {
+          if (result == true) {
                 //deal with new person
-                console.log("newName:" + newName);
+            //    console.log("newName:" + newName);
+          //    d3.selectAll(".resourceCheckbox:checked").on("click")();
+              //.each(function(d) {
+              //  d3.selectAll(this).on("click")();
+          //    });
+        //    console.log(result);
             if(deactivateNames == true)  {
               d3.selectAll(".labelText").classed("darker", false);
-
             }
+
             if(newName != "") {
             //  d3.select("g.assignedGroupGp")  // 1 only??
             newId = "assignedto-"+newName;
 
-  // BEGINNING OF CREATION
-  symbolAssignees.push({key: newName, values:[]});
+            // BEGINNING OF CREATION
+            symbolAssignees.push({key: newName, values:[]});
 
-//  groupCtr = symbolAssignees.length-1;
-  groupCtr = symbolAssignees.length;
-//  console.log(symbolAssignees[groupCtr]);
-//  console.log(symbolAssignees);
+          //  groupCtr = symbolAssignees.length-1;
+            groupCtr = symbolAssignees.length;
+          //  console.log(symbolAssignees[groupCtr]);
+          //  console.log(symbolAssignees);
 
 
         var newSection = d3.select(wrapper)
@@ -4942,7 +5543,7 @@ function updateResourcesBtnClickContinued(bntEvent, gangArr) {
           return d3.rgb(colorScaleNewSection(i))
         } ) */
           .attr('style', function(d,i) {
-            console.log(d3.rgb(colorScaleNewSection(i)));
+          //  console.log(d3.rgb(colorScaleNewSection(i)));
             newItemCtr++;
           return 'background-color: '  + d3.rgb(colorScaleNewSection(newItemCtr));
         })
@@ -4980,7 +5581,7 @@ function updateResourcesBtnClickContinued(bntEvent, gangArr) {
         .text(newName)
         .attr('class','labelText')
         .attr('width', '100')
-        .attr("y", 20)
+        .attr("y", 20+textOffset)
         .attr("font-size", 20)
         .attr("font-family", "sans-serif")
           .attr("font-weight", "bold")
@@ -5004,10 +5605,26 @@ function updateResourcesBtnClickContinued(bntEvent, gangArr) {
       calculateAndApplyHeight(BAR_H);
 
 
-
+  // END OF CREATION
   // END OF CREATION
 
             };
+
+
+
+            var hiddenRes2 = [];
+
+            $(".resourceCheckbox:checked").each(function(d) {
+              cb = $(this);
+              hiddenRes2.push(cb.attr("resource"));
+            });
+
+           console.log(hiddenRes2);
+
+
+            d3.selectAll(".resourceCheckbox").each(function(d, i) {
+              console.log(i);
+            });
 
 var dataLength = 0;
             /// deal with removals
@@ -5016,9 +5633,22 @@ var dataLength = 0;
               //   console.log(d3.select(this).attr('class'));
                  if (d3.select(this).classed("Remove")){
                   // console.log(d3.select(this));
-                   console.log(d.key);
+                //   console.log("Remove class key:" + d.key);
                     dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
                    d3.select(this).remove();
+                //   makeFilterDefs();
+                 }
+
+                 if (d3.select(this).classed("hideGroup")){
+                  // console.log(d3.select(this));
+                //   console.log("hide class key:" + d.key);
+                    dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
+                   d3.select(this).classed("hidden", true);
+                //   makeFilterDefs();
+                 } else {
+                   dataLength = dataLength + parseInt(d3.select(this).select(".AssignedGroup").attr("data-length"));
+                    d3.select(this).classed("hidden", false);
+                  //  makeFilterDefs();
                  }
 
                }); // end each
@@ -5051,7 +5681,6 @@ function clearOldItems() {
       d3.select(this).remove();
     }
   });
-
   //reset heights
   d3.selectAll("g.assignedGroupGp").each(function() {
   //  console.log("num items for:" + d3.select(this).attr("id") + ":- " + d3.select(this).selectAll(".GBarGroup").size());
@@ -5086,7 +5715,6 @@ function clearOldItems() {
   });
   calculateAndApplyHeight();
 }
-
 
 
 function setWeekMouseOver() {
@@ -5126,11 +5754,9 @@ function setWeekMouseOver() {
 
 setWeekMouseOver();
 
-
 d3.select("#yearsAheadTxt").on("change", function(d) {
   localStorage.setItem("YearsAhead",$("#yearsAheadTxt").val());
 });
-
 
 d3.select("#vertScaleTxt").on("change", function(d) {
   localStorage.setItem("VerticalScale",$("#vertScaleTxt").val());
@@ -5140,17 +5766,17 @@ d3.select("#vertScaleTxt").on("change", function(d) {
   d3.select("#ThreeWayToggle").selectAll('input').on("change", function(d) {
 
 
-    console.log('clicked');
+  //  console.log('clicked');
     d3.select(this.parentNode.parentNode).selectAll('label').classed('selected', false);
   //  console.log(d3.select(this);
     var selectedValue = this.value;
-    console.log();
+  //  console.log();
     localStorage.setItem("threeWayToggle", selectedValue);
         d3.select("#ThreeWayToggle").selectAll('input').each(function(d) {
           var checkedValue = this.value;
 
           if (checkedValue === selectedValue) {
-              console.log("selected:" + selectedValue + ", checked:" + checkedValue);
+        //      console.log("selected:" + selectedValue + ", checked:" + checkedValue);
             d3.select(this.parentNode).classed('selected', true);
 
           }
@@ -5213,17 +5839,21 @@ d3.select("#deactivateNamesChk").on("click", function(){
 
 
 d3.select("#findBtn").on("click", function() {
+    d3.selectAll(".barsText").classed("highlight",false);
+    d3.selectAll(".glow").classed("glow",false);
+
   var nameText = "";
   if (newName == "") {
-    nameText = "<span class='notice'><em>(none selected)<br />CLICK ON A CHART SECTION TO ACTIVATE A NAME BEFORE CLICKING A BAR TO MOVE IT</em></span>";
+    nameText = "<span class='notice'><em>(no Resource name currently active)<br />CLICK ON A CHART RESOURCE GROUP TO ACTIVATE A RESOURCE NAME BEFORE SEARCHING, THEN CLICK ON THE FOUND BAR TO MOVE IT TO THE NEW RESOURCE</em></span>";
   } else {
-    nameText = "click the highlighted bar to move it to the current active resource: <strong>" + newName + "</strong>";
+    nameText = "click the highlighted (found) bar to move it to the current active resource: <strong>" + newName + "</strong>";
   }
   var findTitle = "Find a project";
   var findText = "Enter the project reference or description phrase:  <input type='text' id='findRef' /> "+
   "<div>" + nameText + "</div>"+
   "<div class='ms-dnd-dlg-buttonDiv'>"+
- " <input id=\"btnClientOk2\" type=\"button\" value=\"OK\" onclick=\"closePopupAndPassData2()\" /></div>";
+ //" <input id=\"btnClientOk2\" type=\"button\" value=\"OK\" onclick=\"closePopupAndPassData2()\" />"+
+ "</div>";
   hideOKButton = true;
     LaunchConfirmDialogAndHandleData(findTitle,findText, onPopUpCloseCallBackWithData2, hideOKButton); //enddlg
 });
@@ -5236,100 +5866,155 @@ function onPopUpCloseCallBackWithData2(result, returnValue) {
          if(result== true)
          {
         //   closePopupAndPassData2();
-           console.log("returned value:" + returnValue[0]);
-           var retLowerCase = returnValue[0].toLowerCase();
-           var retValue = returnValue[0];
-           var resultCtr = 0;
-           var currentItem = 0;
-           var resp = true;
-           var conf = true;
-      //     var myNode = d3.select("[refOnly='"+returnValue[0]+"']");
-            d3.selectAll(".barsText").classed("highlight",false);
-      try {
+        var retLowerCase = returnValue[0].toLowerCase();
+    var retValue = returnValue[0];
+    var resultCtr = 0;
+    var currentItem = 0;
+    var resp = true;
+    var conf = true;
+ //   var found = false;
+//     var myNode = d3.select("[refOnly='"+returnValue[0]+"']");
+     d3.selectAll(".barsText").classed("highlight",false);
+     resultCtr = d3.selectAll("[refOnly='"+retValue+"' i]").size();
+     console.log("ResultCtr ref:" + resultCtr);
+
+//  d3.selectAll("[longTitle*='"+retValue+"' i]").classed("glow",false);
+//    d3.selectAll("[refOnly='"+retValue+"' i]").classed("glow", false);
+
+   d3.selectAll(".glow").classed("glow",false);
+
+     if (resultCtr > 0) {
+       try {
 
 
-        //  console.log(d3.select("[refOnly='"+returnValue[0]+"'i]").attr("class"));
 
-          d3.selectAll("[refOnly='"+retValue+"' i]").classed("highlight",true);
-          resultCtr = d3.selectAll("[refOnly='"+retValue+"' i]").size();
-        var thisObjParent = d3.selectAll("[refOnly='"+retValue+"' i]").parentNode.parentNode;
-        console.log($(thisObjParent).html());
-        thisObjParent.parentNode.appendChild(thisObjParent);
-      //  thisObj.parentNode().parentNode().moveToFront();
-          document.querySelector("[refOnly='"+retValue+"' i]").scrollIntoView();
-          currentItem=1;
-            while (currentItem <= resultCtr && conf == true) {
-              console.log(currentItem);
-            //  var conf = false;
-              if (resultCtr > 1) {
-               conf = confirm("Found " + resultCtr + " tasks.\\n\\nCurrently viewing result "+ currentItem +", continue?");
+     //    d3.selectAll("[longTitle*='"+retValue+"' i]").classed("glow",false);
+       //    d3.selectAll("[refOnly='"+retValue+"' i]").classed("glow", false);
+         //  console.log(d3.select("[refOnly='"+returnValue[0]+"'i]").attr("class"));
+
+         d3.selectAll("[refOnly='"+retValue+"' i]").classed("highlight",true);
+
+       //    d3.selectAll("[longTitle*='"+returnValue[0]+"' i]").select(this.parentNode.parentNode).moveToFront();
+             var conf = true;
+             d3.selectAll("[refOnly='"+retValue+"' i]").each(function(d, i) {
+
+               //    currentItem=1;
+                 if(conf == true) {
+                                       }
+                       if(currentItem != resultCtr) {
+
+                   //  while (currentItem <= resultCtr && conf == true ) {
+                       //console.log(i);
+                       var theText = d3.select(this).text();
+                     //  console.log("thetext:" + theText);
+
+                     if (resultCtr > 1 && conf == true)
+                     {
+
+
+                        conf = confirm("Found reference on " + resultCtr + " tasks.\n\nCurrently viewing result "+ parseInt(currentItem+1) +" ("+theText+"), continue?");
+                     }
+
+                   //    currentItem++;
+                       if (conf == true || resultCtr == 1)
+                       {
+
+                     //    d3.selectAll("[longTitle*='"+retValue+"' i]").classed("glow",false);
+                     //    d3.selectAll("[refOnly='"+retValue+"' i]").classed("glow", false);
+                           d3.selectAll(".glow").classed("glow",false);
+                         d3.select(this).classed("glow", true);
+                         document.querySelectorAll("[refOnly='"+retValue+"' i]")[i].scrollIntoView({behavior: "smooth", block: "center"});
+
+                         //    d3.selectAll("[refOnly='"+retValue+"' i]").classed("highlight",true);
+                       //      d3.selectAll("[refOnly='"+retValue+"' i]").select(this.parentNode.parentNode).moveToFront();
+                           //  document.querySelector("[refOnly='"+retValue+"' i]").scrollIntoView({behavior: "smooth", block: "center"});
+                             currentItem++;
+                       } else {
+                         currentItem = resultCtr;
+                         return;
+                       }
+
+                 //    if(currentItem == resultCtr) { return; };
+                     }
+             })
+
+
+           } catch (ex) {
+
+           }
+   }   else {  // end if result ctr > 0
+
+
+   try {
+ //    d3.selectAll("[longTitle*='"+retValue+"' i]").classed("glow",false);
+   //    d3.selectAll("[refOnly='"+retValue+"' i]").classed("glow", false);
+         d3.selectAll(".glow").classed("glow",false);
+       d3.selectAll("[longTitle*='"+retValue+"' i]").classed("highlight",true);
+       resultCtr = d3.selectAll("[longTitle*='"+retValue+"' i]").size();
+     //    d3.selectAll("[longTitle*='"+returnValue[0]+"' i]").select(this.parentNode.parentNode).moveToFront();
+     var conf = true;
+     d3.selectAll("[longTitle*='"+retValue+"' i]").each(function(d, i) {
+
+
+
+       //    currentItem=1;
+         if(conf == true) {
+             document.querySelectorAll("[longTitle*='"+retValue+"' i]")[i].scrollIntoView({behavior: "smooth", block: "center"});
+           }
+               if(currentItem != resultCtr) {
+
+           //  while (currentItem <= resultCtr && conf == true ) {
+               //console.log(i);
+               var theText = d3.select(this).text();
+             //  console.log("thetext:" + theText);
+
+             if (resultCtr > 1 && conf == true)
+             {
+             //  d3.selectAll("[longTitle*='"+retValue+"' i]").classed("glow",false);
+             //  d3.selectAll("[refOnly='"+retValue+"' i]").classed("glow", false);
+           //  d3.selectAll("[longTitle*='"+retValue+"' i]").classed("glow",false);
+           //    d3.selectAll("[refOnly='"+retValue+"' i]").classed("glow", false);
+
+                 d3.selectAll(".glow").classed("glow",false);
+                 d3.select(this).classed("glow", true);
+                conf = confirm("Found description text on " + resultCtr + " tasks.\n\nCurrently viewing result "+ parseInt(currentItem+1) +" ("+theText+"), continue?");
              }
-            //  LaunchConfirmDialog("Update Resources",dlgText, function(result){
-            //       if (result == true) {
-            //  console.log("conf:" + conf);
-            if (conf == true || resultCtr == 1)
-              {
-                    d3.selectAll("[refOnly*='"+retValue+"' i]").classed("highlight",true);
-                  //    d3.selectAll("[refOnly='"+returnValue[currentItem]+"' i]").select(this.parentNode.parentNode).moveToFront();
 
-                    document.querySelector("[refOnly*='"+retValue+"' i]")[0].scrollIntoView();
-                    currentItem++;
-              } else {
-                currentItem = resultCtr;
-                  document.querySelector("[refOnly*='"+retValue+"' i]")[resultCtr].scrollIntoView();
-                //resp = false;
-                return;
-              }
-            }
-          } catch (ex) {
-                try {
-                    d3.selectAll("[longTitle*='"+retValue+"' i]").classed("highlight",true);
-                    resultCtr = d3.selectAll("[longTitle*='"+retValue+"' i]").size();
-                  //    d3.selectAll("[longTitle*='"+returnValue[0]+"' i]").select(this.parentNode.parentNode).moveToFront();
-                  d3.selectAll("[longTitle*='"+retValue+"' i]").each(function(d, i) {
-                    //    currentItem=1;
+           //    currentItem++;
+               if (conf == true || resultCtr == 1)
+               {
 
-                          document.querySelector("[longTitle*='"+retValue+"' i]").scrollIntoView();
-                            if(currentItem != resultCtr) {
+                 d3.selectAll(".glow").classed("glow",false);
+                 d3.select(this).classed("glow", true);
+                 //  d3.select(this).classed("glow", true);
 
-                        //  while (currentItem <= resultCtr && conf == true ) {
-                            //console.log(i);
-                            var theText = d3.select(this).text();
-                          //  console.log("thetext:" + theText);
-                          var conf;
-                          if (resultCtr > 1)
-                          {
-                             conf = confirm("Found " + resultCtr + " tasks.\n\nCurrently viewing result "+ parseInt(currentItem+1) +" ("+theText+"), continue?");
-                          }
-                            if (conf == true || resultCtr == 1)
-                            {
-                                  d3.selectAll("[longTitle*='"+retValue+"' i]").classed("highlight",true);
-                            //      d3.selectAll("[longTitle*='"+returnValue[currentItem]+"' i]").select(this.parentNode.parentNode).moveToFront();
-                                  document.querySelector("[longTitle*='"+retValue+"' i]").scrollIntoView();
-                                  currentItem++;
-                            } else {
-                              currentItem = resultCtr;
-                              return;
-                            }
+                 //    d3.selectAll("[longTitle*='"+retValue+"' i]").classed("highlight",true);
+               //      d3.selectAll("[longTitle*='"+returnValue[currentItem]+"' i]").select(this.parentNode.parentNode).moveToFront();
+                   //  document.querySelector("[longTitle*='"+retValue+"' i]").scrollIntoView({behavior: "smooth", block: "center"});
+                     currentItem++;
+               } else {
+                 currentItem = resultCtr;
+                 return;
+               }
 
-                      //    if(currentItem == resultCtr) { return; };
-                          }
-                  })
-                }
-                catch (ex2) {
-                  alert(returnValue[0] + " not found.");
-                }
-          }
+         //    if(currentItem == resultCtr) { return; };
+             }
+     })
+   }
+   catch (ex2) {
+     alert(returnValue[0] + " not found.");
+   }
 
-            // document.getElementById('<%= txtData1.ClientID %>').value = returnValue[0];
-             //document.getElementById('<%= txtData2.ClientID %>').value = returnValue[1];
-         }else if(result== SP.UI.DialogResult.cancel)
-         {
-           //cancelCounter ++;
-          //   SP.UI.Status.removeAllStatus(true);
-          //   var sId = SP.UI.Status.addStatus("Resize cancelled");
-          //   SP.UI.Status.setStatusPriColor(sId, 'yellow');
-         }
+ }
+     // document.getElementById('<%= txtData1.ClientID %>').value = returnValue[0];
+      //document.getElementById('<%= txtData2.ClientID %>').value = returnValue[1];
+      }else //if(result== SP.UI.DialogResult.cancel)
+      {
+        //cancelCounter ++;
+       //   SP.UI.Status.removeAllStatus(true);
+       //   var sId = SP.UI.Status.addStatus("Resize cancelled");
+       //   SP.UI.Status.setStatusPriColor(sId, 'yellow');
+      }
      }
 
 
@@ -5353,47 +6038,100 @@ function onPopUpCloseCallBackWithData2(result, returnValue) {
 
 d3.select("#collisionBtn").on("click", function(){
 //  compactChart();
-var rowTitle = "Compact this chart"
-var inputText = "<table>"+
-      "<tr><td>Enter max rows per resource:  </td>" +
-      "<td><input type='text' id='numRows' value='3' />"+
-      "</td></tr>"+
-      "<tr><td>Enter max rows per unassigned:  </td>" +
-      "<td><input type='text' id='numRowsUnassigned' value='15' />"+
-      "</td></tr>"+
+// already initialised at the beginning of the script:
+//  var compMode = "checked";
+//  var compRows = "3";
+//  var compExcUnassigned = "checked";
+//  var compRowsUnassigned = "15";
 
-      "<tr><td> Leave unassigned untouched: </td>" +
-        "<td><input type='checkbox' id='excludeUnassigned' checked />" +
-          "</td></tr></table>"+
-    "<div class='ms-dnd-dlg-buttonDiv'>"+
-    //" <input id=\"btnClientOk2\" type=\"button\" value=\"OK\" onclick=\"closePopupAndPassData()\" />"+
-    "</div>";
-  hideOKButton = true;
-  // var resp = LaunchConfirmDialogAndHandleData("Change item",msg, onPopUpCloseCallBackWithData, processedItem, itemIDVar, siteUrl, listName); //enddlg
-  LaunchConfirmDialogAndHandleData(rowTitle,inputText, onPopUpCloseCallBackWithData, hideOKButton); //enddlg
+
+
+
+  if(localStorage.getItem("CompactRows") != null) {
+    compRows = localStorage.getItem("CompactRows");
+  }
+
+  if(localStorage.getItem("CompactMode") != null) {
+  //  console.log("compact mode from local storage:" + localStorage.getItem("CompactMode"));
+    if(localStorage.getItem("CompactMode") == "false") {
+      compMode = "";
+    } else {
+      compMode = "checked";
+    };
+  //  console.log("compMode after getLocal:" + compMode);
+}
+
+console.log("compMode:" + compMode);
+
+  if(localStorage.getItem("CompactExcUnassigned") != null) {
+    if(localStorage.getItem("CompactExcUnassigned") == "false") {
+      compExcUnassigned = "";
+    } else {
+      compExcUnassigned = "checked";
+    };
+//    console.log("compexcunassigned:" + compExcUnassigned);
+  //  if
+  }
+
+  if(localStorage.getItem("CompactRowsUnassigned") != null) {
+    compRowsUnassigned = localStorage.getItem("CompactRowsUnassigned");
+  }
+
+
+  var rowTitle = "Compact this chart"
+  var inputText = "<table>"+
+        "<tr><td>Enable compact mode:</td>" +
+        "<td><input type='checkbox' id='enableCompactMode' "+compMode+" />"+
+        "</td></tr>"+
+        "<tr><td>Enter max rows per resource:  </td>" +
+        "<td><input type='text' id='numRows' value='"+compRows+"' />"+
+        "</td></tr>"+
+        "<tr><td>Enter max rows per unassigned:  </td>" +
+        "<td><input type='text' id='numRowsUnassigned' value='"+compRowsUnassigned+"' />"+
+        "</td></tr>"+
+
+        "<tr><td> Leave unassigned untouched: </td>" +
+          "<td><input type='checkbox' id='excludeUnassigned' "+compExcUnassigned+" />" +
+            "</td></tr>"+
+            "</table>"+
+      "<div class='ms-dnd-dlg-buttonDiv'>"+
+  //    " <input id=\"btnClientOk2\" type=\"button\" value=\"OK\" onclick=\"closePopupAndPassData()\" />"+ // this line not required in vanilla
+      "</div>";
+    hideOKButton = true;
+    // var resp = LaunchConfirmDialogAndHandleData("Change item",msg, onPopUpCloseCallBackWithData, processedItem, itemIDVar, siteUrl, listName); //enddlg
+    LaunchConfirmDialogAndHandleData(rowTitle,inputText, onPopUpCloseCallBackWithData, hideOKButton); //enddlg
 
 
 });
 
 
 function onPopUpCloseCallBackWithData(result, returnValue) {
-
+//  console.log(returnValue);
 //console.log(returnValue);
-         if(result== SP.UI.DialogResult.OK)
+console.log(this);
+console.log(result);
+        if(result== SP.UI.DialogResult.OK) //can't use this
+      //   if(result== true)
          {
-           closePopupAndPassData();
-             SP.UI.Status.removeAllStatus(true);
+        //   console.log(this);
+        //   closePopupAndPassData();
+          //   SP.UI.Status.removeAllStatus(true);
           //   var sId = SP.UI.Status.addStatus("Rows compacted x " + returnValue[0]);
           //   SP.UI.Status.setStatusPriColor(sId, 'green');
-
-          compactChart(parseInt(returnValue[0]), returnValue[1], parseInt(returnValue[2]));
+          localStorage.setItem("CompactRows", returnValue[0]);
+          localStorage.setItem("CompactExcUnassigned", returnValue[1]);
+          localStorage.setItem("CompactRowsUnassigned", returnValue[2]);
+          localStorage.setItem("CompactMode", returnValue[3]);
+          //console.log("returned value 3:" + returnValue[3]);
+          compactChartByLocalStorage(true);
+        //  compactChart(parseInt(returnValue[0]), returnValue[1], parseInt(returnValue[2]), returnValue[3]);
 
           //     updateListItem(siteUrl, listName, itemIDVar, processedItem);
 
 
             // document.getElementById('<%= txtData1.ClientID %>').value = returnValue[0];
              //document.getElementById('<%= txtData2.ClientID %>').value = returnValue[1];
-         }else if(result== SP.UI.DialogResult.cancel)
+         }else // if(result== SP.UI.DialogResult.cancel)
          {
            //cancelCounter ++;
           //   SP.UI.Status.removeAllStatus(true);
@@ -5403,158 +6141,395 @@ function onPopUpCloseCallBackWithData(result, returnValue) {
      }
 
 
+function compactChartByLocalStorage(redraw) {
+
+    //   compRows = "3";
+    //   compExcUnassigned = "checked";
+    //   compRowsUnassigned = "15";
+      if(localStorage.getItem("CompactRows") != null) {
+        compRows = localStorage.getItem("CompactRows");
+      }
+
+      if(localStorage.getItem("CompactMode") != null) {
+        var compModeStatus = localStorage.getItem("CompactMode");
+        if(localStorage.getItem("CompactMode") == "false") {
+          compMode = "";
+        } else {
+          compMode = "checked";
+        };
+    //    console.log("compexcunassigned:" + compExcUnassigned);
+      //  if
+      }
+
+      if(localStorage.getItem("CompactExcUnassigned") != null) {
+        if(localStorage.getItem("CompactExcUnassigned") == "false") {
+          compExcUnassigned = "";
+        } else {
+          compExcUnassigned = "checked";
+        };
+       console.log("compexcunassigned:" + compExcUnassigned);
+      //  if
+      }
+
+
+      if(localStorage.getItem("CompactRowsUnassigned") != null) {
+        compRowsUnassigned = localStorage.getItem("CompactRowsUnassigned");
+      }
+
+    if(redraw == true) {
+      //console.log("compmode before function:" + compMode);
+      compactChart(compRows, compExcUnassigned, compRowsUnassigned, compModeStatus);
+    }
+
+
+}
 
 
 
-     function compactChartByLocalStorage(redraw) {
-
-         //   compRows = "3";
-         //   compExcUnassigned = "checked";
-         //   compRowsUnassigned = "15";
-           if(localStorage.getItem("CompactRows") != null) {
-             compRows = localStorage.getItem("CompactRows");
-           }
-
-           if(localStorage.getItem("CompactMode") != null) {
-             var compModeStatus = localStorage.getItem("CompactMode");
-             if(localStorage.getItem("CompactMode") == "false") {
-               compMode = "";
-             } else {
-               compMode = "checked";
-             };
-         //    console.log("compexcunassigned:" + compExcUnassigned);
-           //  if
-           }
-
-           if(localStorage.getItem("CompactExcUnassigned") != null) {
-             if(localStorage.getItem("CompactExcUnassigned") == "false") {
-               compExcUnassigned = "";
-             } else {
-               compExcUnassigned = "checked";
-             };
-            console.log("compexcunassigned:" + compExcUnassigned);
-           //  if
-           }
-
-
-           if(localStorage.getItem("CompactRowsUnassigned") != null) {
-             compRowsUnassigned = localStorage.getItem("CompactRowsUnassigned");
-           }
-
-         if(redraw == true) {
-           //console.log("compmode before function:" + compMode);
-           compactChart(compRows, compExcUnassigned, compRowsUnassigned, compModeStatus);
-         }
-
-
-     }
-
-
-
-function compactChart(compactRows, excludeUnassigned, compactRowsUnassigned) {
-
+function compactChart(compactRows, excludeUnassigned, compactRowsUnassigned, compModeStatus) {
+/*  console.log("compMode within function:" + compModeStatus);
   console.log("compactRowsUnassigned:" + compactRowsUnassigned);
-  console.log("excludeUnassigned:" + excludeUnassigned);
+  console.log("excludeUnassigned:" + excludeUnassigned); */
+
+  //  makeFilterDefs();
 d3.selectAll(".AssignedGroup").each(function(d, i) {
 
-  if(excludeUnassigned == true && d3.select(this).attr('assignedName') == "ZZ Not assigned") {
+/*  if((excludeUnassigned == true || excludeUnassigned == 'true') && d3.select(this).attr('assignedName') == "ZZ Not assigned") {
+  //  console.log('returning');
       return;
-    } else {
+    } else { */
 //  console.log("hit it");
-          var previousObj;
-          var newHeight = BAR_H*vertScale;
-          var newY = 0;
-          //    var hitadjusted = false;
-          //    var testCtr = -1;
-          var maxRows = compactRows;
+  var thisGroup = this;
+//  if(i == 0) {
+  if(d.key.startsWith("00-")) {
+    d3.select(this).attr("height",0);
+    console.log(d);
+  } else {
 
-          if (d3.select(this).attr('assignedName') == "ZZ Not assigned") {
-            if(excludeUnassigned == true) {
-              maxRows = parseInt(d3.select(this).attr('data-length'));
+  //    var previousObj;
+      var newHeight = BAR_H*vertScale;
+      var newY = 0;
+  //    var hitadjusted = false;
+  //    var testCtr = -1;
+      var maxRows = compactRows;
+
+      if (d3.select(this).attr('assignedName') == "ZZ Not assigned") {
+        if(excludeUnassigned == true) {
+          maxRows = parseInt(d3.select(this).attr('data-length'));
+      } else {
+        maxRows = compactRowsUnassigned;
+      }
+      }
+        newHeight = barSpacer + (BAR_H+2)*oldScale*vertScale*maxRows;
+        compactHeight = newHeight;
+      var size = d3.select(this).selectAll(".barGroup").size();
+
+        if (compModeStatus == true || compModeStatus == "true") {
+          //  console.log("compModeStatus inside if:" + compModeStatus);
+              //d3.select(this).attr("y", (BAR_H*(compactRows-(i+1)%compactRows)));
+          //    d3.select(this).attr("y", (BAR_H+2)*(i%maxRows));
+              d3.select(this).select('.today').attr('y2', newHeight);
+
+             d3.select(this)
+              .attr("height", function (d,i) {
+              return newHeight;
+            })
+              .attr('y', function (d,i) {
+                var gpDim =computeDimensions(d3.select(this));
+                 return newHeight+gpDim.height*vertScale;
+              })
           } else {
-            maxRows = compactRowsUnassigned;
-          }
-          }
-            newHeight = barSpacer + (BAR_H+2)*oldScale*vertScale*maxRows;
-            compactHeight = newHeight;
-          var size = d3.select(this).selectAll(".barGroup").size();
+              d3.select(this).attr("y", vertScale*(BAR_H+2) * i);
+              d3.select(this).select('.today').attr('y2', (BAR_H+2)*oldScale*vertScale*size);
 
-            if (compModeStatus == true || compModeStatus == "true") {
-              //  console.log("compModeStatus inside if:" + compModeStatus);
-                  //d3.select(this).attr("y", (BAR_H*(compactRows-(i+1)%compactRows)));
-              //    d3.select(this).attr("y", (BAR_H+2)*(i%maxRows));
-                  d3.select(this).select('.today').attr('y2', newHeight);
+             d3.select(this).attr("height",(BAR_H+2)*oldScale*vertScale*(size));
 
-                 d3.select(this)
-                  .attr("height", function (d,i) {
-                  return newHeight;
-                })
-                  .attr('y', function (d,i) {
-                    var gpDim =computeDimensions(d3.select(this));
-                     return newHeight+gpDim.height*vertScale;
-                  })
-              } else {
-                  d3.select(this).attr("y", vertScale*(BAR_H+2) * i);
-                  d3.select(this).select('.today').attr('y2', (BAR_H+2)*oldScale*vertScale*size);
+        //  d3.select(this).attr("y", 0);
+        }
 
-                 d3.select(this).attr("height",(BAR_H+2)*oldScale*vertScale*(size));
 
-            //  d3.select(this).attr("y", 0);
-            }
+  //    console.log("size:" + size);
+  // PLACE THE BARS
+      d3.select(this).selectAll(".barGroup")
+      .each(function(d, i) {
 
-            d3.select(this).selectAll(".barGroup")
-              .each(function(d, i) {
+      //  testCtr = -1;
+      //  if ((i+1) % 2 == 0 )
+        //  if ((i+1) % compactRows != 0 )
+      //  {
 
-              //  testCtr = -1;
-              //  if ((i+1) % 2 == 0 )
-                //  if ((i+1) % compactRows != 0 )
-              //  {
-              if (compModeStatus == true || compModeStatus == "true") {
-                //  console.log("compModeStatus inside if 2:" + compModeStatus);
-                    //d3.select(this).attr("y", (BAR_H*(compactRows-(i+1)%compactRows)));
-                    d3.select(this).attr("y", barSpacer+((vertScale*BAR_H)+2)*(i%maxRows));
-                //    d3.select(this).select('.today').attr('y2', newHeight);
+      if (compModeStatus == true || compModeStatus == "true") {
+        //  console.log("compModeStatus inside if 2:" + compModeStatus);
+            //d3.select(this).attr("y", (BAR_H*(compactRows-(i+1)%compactRows)));
+            d3.select(this).attr("y", barSpacer+((vertScale*BAR_H)+2)*(i%maxRows));
+        //    d3.select(this).select('.today').attr('y2', newHeight);
 
-              //     d3.select(this).attr("height",newHeight)
-                //   .attr('y', function (d,i) {
-              //      var gpDim =computeDimensions(d3.select(this));
-              //       return newHeight+gpDim.height;
-              //     })
-                } else {
-                    d3.select(this).attr("y", barSpacer+((vertScale*BAR_H)+2) * i);
-                //    d3.select(this).select('.today').attr('y2', (BAR_H+2)*oldScale*size);
+      //     d3.select(this).attr("height",newHeight)
+        //   .attr('y', function (d,i) {
+      //      var gpDim =computeDimensions(d3.select(this));
+      //       return newHeight+gpDim.height;
+      //     })
+        } else {
+            d3.select(this).attr("y", barSpacer+((vertScale*BAR_H)+2) * i);
+        //    d3.select(this).select('.today').attr('y2', (BAR_H+2)*oldScale*size);
 
-                //   d3.select(this).attr("height",(BAR_H+2)*oldScale*size);
+        //   d3.select(this).attr("height",(BAR_H+2)*oldScale*size);
 
-            //    d3.select(this).attr("y", 0);
-              }
-        //0
-
-        //      })
+    //    d3.select(this).attr("y", 0);
+      }
+//0
 
       })
     //});
+/*
+var nodesToForce = d3.select(this).selectAll(".barGroup");
+
+
+var scale = d3.scaleLinear()
+	.domain([0, 29])
+	.range([padding, width - padding]);
+
+  var yScale = d3.scaleLinear()
+  	.domain([0, maxRows])
+  	.range([0, newHeight]);
+
+// pretty close actually: it does move them on the y axis
+
+var forceY = d3.forceY(newHeight).strength(3);
+var init = forceY.initialize;
+var nodesToForce = d3.select(this).selectAll(".barGroup");
+forceY.initialize = function(nodes) {
+  init(nodes.filter(function(n,i) {return i;}));
+}
+
+var simulation = d3.forceSimulation()
+  .nodes(nodesToForce)
+//  .force("pickyCentre", forceY)
+//  .force("y", d3.forceY(height / 2))
+.force("y", function(d,i) {
+
+     d3.forceY(i)
+})
+  //.force("x", d3.forceX(function(d) { return x(d.value); }).strength(1))
+//   .force("y", d3.forceY(75).strength(0.05))
+  .force("collide", d3.forceCollide(function(d) {
+      return d.y + 1;
+  }));
+
+
+var padding = 10;
+*/
+/*
+nodesToForce.data().forEach(function(nd,i) {
+  d.y = d3.select(this).attr("y");
+})
+
+*/
 
 /*
-      d3.select(this).select('.today').attr('y2', newHeight);
-     d3.select(this).attr("height",newHeight)
 
-   .attr('y', function (d,i) {
-    var gpDim =computeDimensions(d3.select(this));
-     return newHeight+gpDim.height;
-   }) */
+    d3.forceSimulation()
+        .velocityDecay(0)
+        .alphaTarget(1)
+        .on('tick', ticked)
+        .force('box', boxForce)
+        .force('collision', collisionForce)
+        .nodes(nodesToForce)
 
- } // end if not excluding unassigned
+
+var collisionForce = rectCollide()
+  //  .size(function (d) { return [d.size, d.size] })
+      .size(function (d) { return [0, newHeight] })
+var boxForce = boundedBox()
+    .bounds([[0, 0], [width, height]])
+    .size(function (d) { return [0, newHeight] })
+
+
+
+    function rectCollide() {
+        var nodes, sizes, masses
+        var size = constant([0, 0])
+        var strength = 1
+        var iterations = 1
+        function force() {
+            var node, size, mass, xi, yi
+            var i = -1
+            while (++i < iterations) { iterate() }
+            function iterate() {
+                var j = -1
+                var tree = d3.quadtree(nodes, xCenter, yCenter).visitAfter(prepare)
+                while (++j < nodes.length) {
+                    node = nodes[j]
+                    size = sizes[j]
+                    mass = masses[j]
+                    xi = xCenter(node)
+                    yi = yCenter(node)
+                    tree.visit(apply)
+                }
+            }
+            function apply(quad, x0, y0, x1, y1) {
+                var data = quad.data
+                var xSize = (size[0] + quad.size[0]) / 2
+                var ySize = (size[1] + quad.size[1]) / 2
+                if (data) {
+                    if (data.index <= node.index) { return }
+                    var x = xi - xCenter(data)
+                    var y = yi - yCenter(data)
+                    var xd = Math.abs(x) - xSize
+                    var yd = Math.abs(y) - ySize
+                    if (xd < 0 && yd < 0) {
+                        var l = Math.sqrt(x * x + y * y)
+                        var m = masses[data.index] / (mass + masses[data.index])
+                        if (Math.abs(xd) < Math.abs(yd)) {
+                            node.vx -= (x *= xd / l * strength) * m
+                            data.vx += x * (1 - m)
+                        } else {
+                            node.vy -= (y *= yd / l * strength) * m
+                            data.vy += y * (1 - m)
+                        }
+                    }
+                }
+                return x0 > xi + xSize || y0 > yi + ySize ||
+                       x1 < xi - xSize || y1 < yi - ySize
+            }
+            function prepare(quad) {
+                if (quad.data) {
+                    quad.size = sizes[quad.data.index]
+                } else {
+                    quad.size = [0, 0]
+                    var i = -1
+                    while (++i < 4) {
+                        if (quad[i] && quad[i].size) {
+                            quad.size[0] = Math.max(quad.size[0], quad[i].size[0])
+                            quad.size[1] = Math.max(quad.size[1], quad[i].size[1])
+                        }
+                    }
+                }
+            }
+        }
+        function xCenter(d) { return d.x + d.vx + sizes[d.index][0] / 2 }
+        function yCenter(d) { return d.y + d.vy + sizes[d.index][1] / 2 }
+        force.initialize = function (_) {
+            sizes = (nodes = _).map(size)
+            masses = sizes.map(function (d) { return d[0] * d[1] })
+        }
+        force.size = function (_) {
+            return (arguments.length
+                 ? (size = typeof _ === 'function' ? _ : constant(_), force)
+                 : size)
+        }
+        force.strength = function (_) {
+            return (arguments.length ? (strength = +_, force) : strength)
+        }
+        force.iterations = function (_) {
+            return (arguments.length ? (iterations = +_, force) : iterations)
+        }
+        return force
+    }
+    function boundedBox() {
+        var nodes, sizes
+        var bounds
+        var size = constant([0, 0])
+        function force() {
+            var node, size
+            var xi, x0, x1, yi, y0, y1
+            var i = -1
+            while (++i < nodes.length) {
+                node = nodes[i]
+                size = sizes[i]
+                xi = node.x + node.vx
+                x0 = bounds[0][0] - xi
+                x1 = bounds[1][0] - (xi + size[0])
+                yi = node.y + node.vy
+                y0 = bounds[0][1] - yi
+                y1 = bounds[1][1] - (yi + size[1])
+                if (x0 > 0 || x1 < 0) {
+                    node.x += node.vx
+                    node.vx = -node.vx
+                    if (node.vx < x0) { node.x += x0 - node.vx }
+                    if (node.vx > x1) { node.x += x1 - node.vx }
+                }
+                if (y0 > 0 || y1 < 0) {
+                    node.y += node.vy
+                    node.vy = -node.vy
+                    if (node.vy < y0) { node.vy += y0 - node.vy }
+                    if (node.vy > y1) { node.vy += y1 - node.vy }
+                }
+            }
+        }
+        force.initialize = function (_) {
+            sizes = (nodes = _).map(size)
+        }
+        force.bounds = function (_) {
+            return (arguments.length ? (bounds = _, force) : bounds)
+        }
+        force.size = function (_) {
+            return (arguments.length
+                 ? (size = typeof _ === 'function' ? _ : constant(_), force)
+                 : size)
+        }
+        return force
+    }
+    function ticked() {
+        nodesToForce
+          //  .attr('x', function (d) { return d.x })
+            .attr('y', function (d) { return d.y })
+    }
+
+
+    function constant(_) {
+        return function () { return _ }
+    }
+
+  */
+/*
+
+  //taken out - this actually DOES detect collisions but I can't get it to move everything nicely
+  // next thing to look at is try to use quads/force - this example is for vertical labels:
+  // https://blockbuilder.org/mforando/f44ceb116a570be8ce2cfa42e2744b26
+
+    var currObj;
+    var previousObj;
+          // do it again to see if i can detect overlaps now
+          var allBars =  d3.select(this).selectAll(".bars");
+          allBars.each(function(d,i) {
+            currObj = this;
+
+            if(i > 0) {
+              console.log('intersecting rect:');
+              allBars.each(function(d,k) {
+              console.log(intersectRect(this, currObj));
+              if(intersectRect(this, currObj)) {
+                var parentY = d3.select(this.parentNode).attr("y");
+                d3.select(this.parentNode).attr("y", function(d, j) {
+                  console.log(parentY);
+                  return parseFloat(parentY) + 5;
+                })
+              }
+              //    previousObj = this;
+              })
+            }
+
+
+          })
+
+*/
+} // end if i != 0
+
+
+
+ //} // end if not excluding unassigned
   })
    calculateAndApplyHeight();
 //d3.select("[assignedName='"+testName+"']").attr("height",newHeight);
 
-console.log("finished");
+//console.log("finished");
 }//);
 
 
 d3.select('#getDataBtn').on("click", function() {
   localStorage.setItem('chartData',JSON.stringify(getUnnestedData()));
+
 //  localStorage.setItem('chartData',JSON.stringify(getData()));
   localStorage.setItem('chartDataDate',new Date());
   var extraMessage = "<div>Data changes in this chart have been saved in local storage on this browser and will be recalled upon F5 refresh.</div>&nbsp;<div></div>"+
@@ -5585,7 +6560,7 @@ function updateObjectDataNew(newNameKey, ProjectKey, oldName){
       mydata.values.forEach(function(project, k) {
         if(project.values[0].key == ProjectKey) {
           tempObj = project;
-          console.log(tempObj);
+        //  console.log(tempObj);
           delete project;
         }
       })
@@ -5696,7 +6671,7 @@ d3.select('#instructions').on("click", function() {
   catchAllZoom.on("click", function() {
   //  alert("clicked");
   //  alert('zoom clicked')
-  console.log("catchall clicked, class:"+d3.select(this).attr("class"));
+  //console.log("catchall clicked, class:"+d3.select(this).attr("class"));
   d3.event.stopPropagation();
   if(zoomable == true) {
 
@@ -5716,7 +6691,7 @@ d3.select('#instructions').on("click", function() {
           d3.selectAll('#zoomOverlay').classed('hidden', true)
       .attr("pointer-events", "false");
 
-      d3.select("#UnlockZoomBtn").attr("value", "Unlock Zoom/Pan").attr("locked","true");
+    //  d3.select("#UnlockZoomBtn").attr("value", "Unlock Zoom/Pan").attr("locked","true");
       //$("#instructions").text("Drag bars, use the lower pink circle to resize, the upper circle to view information");
 
 
@@ -6335,32 +7310,52 @@ function addResource(input) {
 }
 
 
-function alterHideRemGroup(checkbox) {
-
-    var checkedStatus = $(checkbox).is(':checked');
-    remGroupBool = checkedStatus;
-    console.log("remGroupBool:" + remGroupBool);
-    if(remGroupBool == true) {
-      $("#hideRem").text("REMOVE");
-    } else {
-      $("#hideRem").text("hide");
-    }
-}
 
 
 function alterResourceStatus(checkbox) {
 //  console.log(checkbox);
 //  console.log($(checkbox).is(':checked'));
+  var hiddenRes = [];
+
+  d3.selectAll(".resourceCheckbox:checked").each(function(d) {
+    cb = d3.select(this);
+    hiddenRes.push(cb.attr("resource"));
+  });
+
+
+  d3.selectAll(".resourceCheckbox").each(function(d) {
+    cb = d3.select(this);
+  //  console.log(cb.attr("resource"));
+  });
+
+    //console.log(d3.selectAll(".resourceCheckbox:checked"));
+  //  console.log(hiddenRes);
+  localStorage.setItem("HiddenResources",JSON.stringify(hiddenRes));
+
   var checkedStatus = $(checkbox).is(':checked');
   var keyName = $(checkbox).attr('id');
   var resName = $(checkbox).attr('resource');
+
+
   if(checkedStatus == true)
   {
-  d3.select("[id='assignedto-"+resName+"']").classed("Remove", true);
+    console.log("checked status is true");
+          console.log("remgrBool:" + remGroupBool);
+    if (remGroupBool == true || remGroupBool == "") {
 
+      d3.select("[id='assignedto-"+resName+"']").classed("Remove", true);
+    //  $("[id='assignedto-"+resName+"']").removeClass("hideGroup");
+    d3.select("[id='assignedto-"+resName+"']").classed("hideGroup", false);
+    } else {
+
+        d3.select("[id='assignedto-"+resName+"']").classed("hideGroup", true);
+
+    }
 } else {
-//  $("[id='assignedto-"+resName+"']").removeClass("Remove");
-  d3.select("[id='assignedto-"+resName+"']").classed("Remove",false);
+
+  $("[id='assignedto-"+resName+"']").removeClass("Remove");
+  d3.select("[id='assignedto-"+resName+"']").classed("hideGroup",false);
+//  d3.select("[id='assignedto-"+resName+"']").classed("hidden", false);
 }
 
 wrapper = document.querySelector('.chart');
@@ -6371,9 +7366,13 @@ infoDetails = infowrapper.getBoundingClientRect();
 
 bBoxHeight = wrapperDetails.height;
 
-console.log('bboxheight:' + bBoxHeight);
+//console.log('bboxheight:' + bBoxHeight);
 
 $(".axisWeekFloating3.tick > line").attr("y2",-(wrapperDetails.height));
+
+  //    calculateAndApplyHeight(BAR_H);
+//  calculateAndApplyHeight();
+
 
   //d3.select("[]")
   //  console.log($("[id='assignedto-"+resName+"']").html());
